@@ -1,0 +1,4 @@
+/.git -- git文件夹
+/.gitignore
+/node_modules
+/.idea
