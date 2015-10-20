@@ -1,14 +1,3 @@
 {
-  "dbconfig": {
-    "host": "localhost",
-    "user": "root",
-    "password": "",
-    "database": ""
-  },
-  "dbconfigslave": {
-    "host": "localhost",
-    "user": "root",
-    "password": "",
-    "database": ""
-  }
+
 }
