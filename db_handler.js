@@ -4,6 +4,7 @@
 "use strict"
 var mysql = require('mysql');
 var logger = require('./logger');
+var _ = require('underscore');
 
 var DBHandler = function() {
 

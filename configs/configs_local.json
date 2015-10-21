@@ -3,12 +3,12 @@
     "host": "localhost",
     "user": "root",
     "password": "",
-    "database": ""
+    "database": "test"
   },
   "dbconfigslave": {
     "host": "localhost",
     "user": "root",
     "password": "",
-    "database": ""
+    "database": "test"
   }
 }
