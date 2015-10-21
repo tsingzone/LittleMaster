@@ -3,7 +3,6 @@
  */
 var express = require('express');
 var router = express.Router();
-var teacherController = require('../../controllers/TeacherController');
 
 router.get('/', function (req, res) {
     console.log("teacher.js /")
