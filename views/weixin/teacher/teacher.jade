@@ -3,5 +3,9 @@
 
 extends ../layout
 block content
-   h1= title
-   p Welcome to #{title}
+    script.
+        $(function() {
+            $('#find_job').addClass('current')
+        })
+    h1= title
+    p Welcome to #{title}
