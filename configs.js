@@ -18,8 +18,8 @@ function loadConfig(configKey) {
     if (!configKey) {
         throw { "name": "InvalidArgument", "message": "Must provide a config key!" };
     }
-    var baseConfig = loadJsonFromFile("../configs/configs.json");
-    var extraConfig = loadJsonFromFile("../configs/configs_" + configKey + ".json");
+    var baseConfig = loadJsonFromFile("./configs/configs.json");
+    var extraConfig = loadJsonFromFile("./configs/configs_" + configKey + ".json");
     var config = extend(true, baseConfig, extraConfig);
 
     console.log("config:" + JSON.stringify(config));
