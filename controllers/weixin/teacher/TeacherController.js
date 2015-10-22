@@ -15,10 +15,10 @@ teacher.prototype.getName = function () {
 }
 
 _.extend(teacher.prototype, {
-    getUserCenterData: function (sourceMap) {
-        var result = Teacher.getUserCenterData(sourceMap);
-        console.log('result:' + JSON.stringify(result));
-        return {"title": result};
+    getUserCenterData: function (sourceMap, callback) {
+        Teacher.getUserCenterData(sourceMap, function (err, result) {
+            callback(result[0]);
+        });
     },
 });
 

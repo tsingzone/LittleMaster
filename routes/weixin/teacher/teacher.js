@@ -20,7 +20,10 @@ router.get("/", function (req, res) {
     console.log("个人中心首页");
     var id = req.id;
     var sourceMap = {"id": id};
-    res.render(getView("teacher"), teacherController.getUserCenterData(sourceMap));
+    teacherController.getUserCenterData(sourceMap, function(result){
+        res.render(getView("teacher"), {title:result});
+    });
+
 });
 
 
