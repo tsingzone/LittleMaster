@@ -5,6 +5,9 @@
 var path = require('path');
 var express = require('express');
 var router = express.Router();
+var TeacherController = require('../../../controllers/weixin/teacher/TeacherController');
+var teacherController = new TeacherController();
+var _ = require('underscore');
 
 // 获取视图路径
 var getView = function (view) {
@@ -15,7 +18,9 @@ var getView = function (view) {
 // 个人中心首页
 router.get("/", function (req, res) {
     console.log("个人中心首页");
-    res.render(getView("teacher"), {title: "Teacher"});
+    var id = req.id;
+    var sourceMap = {"id": id};
+    res.render(getView("teacher"), teacherController.getUserCenterData(sourceMap));
 });
 
 
