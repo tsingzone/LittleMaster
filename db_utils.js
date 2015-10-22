@@ -4,7 +4,6 @@
 var Configs = require('./configs');
 var DBHandler = require('./db_handler');
 var logger = require('./logger');
-var utils = require("./utils/utils");
 
 var DBUtils = {
     getDBConnection: function() {
