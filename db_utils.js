@@ -1,5 +1,5 @@
 /**
- * Created by William on 15/10/20.
+ * Created by William on 15/10/20.  
  */
 var Configs = require('./configs');
 var DBHandler = require('./db_handler');
@@ -8,14 +8,20 @@ var utils = require("./utils/utils");
 
 var DBUtils = {
     getDBConnection: function() {
-        var dbconfig = Configs.getConfig().dbconfig;
-        this.dbhandler = new DBHandler();
-        this.dbhandler.init(dbconfig);
+        if(this.dbhandler == null) {
+            var dbconfig = Configs.getConfig().dbconfig;
+            this.dbhandler = new DBHandler();
+            this.dbhandler.init(dbconfig);
+        }
+        return this.dbhandler;
     },
     getSlaveDBConnection: function() {
-        var slaveDBConfig = Configs.getConfig().dbconfigslave;
-        this.slavedbhandler = new DBHandler();
-        this.slavedbhandler.init(slaveDBConfig);
+        if(this.slavedbhandler == null) {
+            var slaveDBConfig = Configs.getConfig().dbconfigslave;
+            this.slavedbhandler = new DBHandler();
+            this.slavedbhandler.init(slaveDBConfig);
+        }
+        return this.slavedbhandler;
     }
 }
 

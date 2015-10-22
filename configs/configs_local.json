@@ -2,13 +2,13 @@
   "dbconfig": {
     "host": "localhost",
     "user": "root",
-    "password": "",
-    "database": ""
+    "password": "123456",
+    "database": "xiaoxiansheng"
   },
   "dbconfigslave": {
     "host": "localhost",
     "user": "root",
     "password": "",
-    "database": ""
+    "database": "test"
   }
 }
