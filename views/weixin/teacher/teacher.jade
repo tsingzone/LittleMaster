@@ -2,10 +2,26 @@
    Created by michel_feng on 15/10/21.
 
 extends ../layout
+
+block header-title
+    个人中心
+
 block content
+    #content-top
+        div(style="height:9px")
+        img#content-img(src="", alt="")
+        span#content-text 昵称
+
+    #content-main
+        #my-profile
+            span 我的简历
+        #sign-jobs
+            span 已报名兼职
+        #collect-jobs
+
+block script
     script.
         $(function() {
             $('#find_job').addClass('current')
         })
-    p Welcome to #{title.nickname}
-    p aaa #{nickname}
+

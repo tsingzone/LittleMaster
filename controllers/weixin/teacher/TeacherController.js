@@ -3,22 +3,26 @@
  */
 var _ = require('underscore');
 var Teacher = require('../../../models/weixin/teacher/Teacher');
+var path = require('path');
 
 var teacher = function TeacherController() {
-    this.name = "teacher";
 };
 
 module.exports = teacher;
 
-teacher.prototype.getName = function () {
-    return this.name;
-}
-
 _.extend(teacher.prototype, {
-    getUserCenterData: function (sourceMap, callback) {
+    getUserCenterData: function (req, res) {
+        var id = req.id;
+        var sourceMap = {"id": id};
         Teacher.getUserCenterData(sourceMap, function (err, result) {
-            callback(result[0]);
+            console.log(result);
+            res.render(getView("teacher"), {title: result});
         });
-    },
+    }
 });
 
+
+var getView = function getView(viewName){
+    var dir = "weixin/teacher/";
+    return path.join(dir, viewName);
+};

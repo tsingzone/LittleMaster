@@ -2,27 +2,16 @@
  * Created by michel_feng on 15/10/21.
  */
 
-var path = require('path');
 var express = require('express');
 var router = express.Router();
 var TeacherController = require('../../../controllers/weixin/teacher/TeacherController');
 var teacherController = new TeacherController();
-var _ = require('underscore');
-
-// 获取视图路径
-var getView = function (view) {
-    var dir = "weixin/teacher/";
-    return path.join(dir, view);
-};
 
 // 个人中心首页
 router.get("/", function (req, res) {
     console.log("个人中心首页");
-    var id = req.id;
-    var sourceMap = {"id": id};
-    teacherController.getUserCenterData(sourceMap, function(result){
-        res.render(getView("teacher"), {title:result});
-    });
+
+    teacherController.getUserCenterData(req, res);
 
 });
 

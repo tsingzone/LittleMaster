@@ -2,17 +2,32 @@
 doctype html
 html
     head
+        meta(name="viewport" content="width=device-width, initial-scale=1, user-scalable=no")
+        meta(name="format-detection" content="telephone=no")
         title 小先生
         link(rel='stylesheet', href='/stylesheets/normalize.css')
         link(rel='stylesheet', href='/stylesheets/style.css')
         script(src='/js/jquery-2.1.4.min.js')
         script(src='/js/main.js')
     body
+        block header
+            #header
+                span#header-back(class='header')
+                    block header-back
+                        &nbsp;
+                span#header-title(class='header')
+                    block header-title
+                span#header-save(class='header')
+                    block header-save
+                        &nbsp;
+
         block content
 
         block footer
             #footer
                 #find_job.footer 找兼职
                 #personal_center.footer 个人中心
+
+        block script
 
 

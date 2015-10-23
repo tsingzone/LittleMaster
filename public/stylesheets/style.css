@@ -1,5 +1,9 @@
+*{
+    font-family: "Microsoft YaHei"
+}
+
 #header {
-    background: #00B7FF;
+    background: #56CDB8;
     height: 50px;
 }
 #footer{
@@ -7,7 +11,7 @@
     bottom: 0;
     height: 50px;
     width: 100%;
-    background: #ffff00;
+    background: #E4E4E4;
 }
 .footer{
     height: 50px;
@@ -15,11 +19,66 @@
     width: 50%;
     text-align: center;
     font-size: 20px;
-    color: #555;
-    background: #ccc;
+    color: #939393;
     display: inline-block;
+    font-weight: bold;
 }
 .current{
     color: #fff !important;
-    background: #0f0 !important;
+    background: #56CDB8 !important;
 }
+
+.header{
+    float: left;
+    display: block;
+    text-align: center;
+    font-size: 20px;
+    color: #FFFFFF;
+    line-height: 50px;
+    box-sizing: border-box;
+}
+
+#header-back{
+    padding-left: 10px;
+    text-align: left;
+    width: 12%;
+}
+
+#header-title{
+    width: 76%;
+    font-weight: bold;
+}
+
+#header-save{
+    width: 12%;
+    font-size: 16px;
+    padding-right: 2px;
+}
+
+
+/* 个人中心首页 */
+#content-top{
+    display: block;
+    background: #56CDB8;
+    width: 100%;
+    height: 160px;
+}
+
+#content-img{
+    display: block;
+    margin: 0 auto;
+    border: 2px solid #62aa9d;
+    border-radius: 100%;
+    width: 91px;
+    height: 91px;
+    background: #FFFFFF;
+}
+
+#content-text{
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    line-height: 32px;
+    color: #FFFFFF;
+}
+/* end 个人中心首页 */
