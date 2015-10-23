@@ -23,13 +23,13 @@ router.get("/profile", function (req, res) {
 // 已报名兼职
 router.get("/sign", function (req, res) {
     console.log("已报名兼职");
-    res.render(getView("teacher"), {title: "get"});
+    teacherController.getSignJobs(req, res);
 });
 
 // 已收藏兼职
 router.get("/collect", function (req, res) {
     console.log("已收藏兼职");
-    res.render(getView("teacher"), {title: "get"});
+    teacherController.getCollectJobs(req, res);
 });
 
 // 证书

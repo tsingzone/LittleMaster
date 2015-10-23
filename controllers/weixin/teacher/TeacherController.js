@@ -25,6 +25,12 @@ _.extend(teacher.prototype, {
         Teacher.getProfile(sourceMap, function(err, result){
             res.render(getView("profile"), {title: "profile"});
         });
+    },
+    getSignJobs: function (req, res) {
+        res.render(getView("sign"), {title: "Sign"});
+    },
+    getCollectJobs: function(req, res){
+        res.render(getView("collect"), {title: "Collect"});
     }
 });
 
