@@ -55,7 +55,6 @@
     padding-right: 2px;
 }
 
-
 /* 个人中心首页 */
 #content-top{
     display: block;
@@ -111,3 +110,38 @@
     height: 20px;
 }
 /* end 个人中心首页 */
+
+/* start 找兼职首页 */
+#screening{
+    width: 100%;
+    max-width: 100%;
+}
+#screening span{
+    display: inline-block;
+    width: 25%;
+    text-align: center;
+    height: 44px;
+    line-height: 44px;
+    font-size: 16px;
+    color: #333;
+    border-bottom: 2px solid #A4A4A4;
+}
+.dropDown{
+    display: inline-block;
+    margin: 0 -15px 0 5px;
+    width: 10px;
+    height: 7px;
+    background-image: url("../images/dd1.png");
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    background-size: 100%;
+}
+.vertical{
+    display: inline-block;
+    height: 24px;
+    float: right;
+    margin: 10px 0;
+    background: #A4A4A4;
+    width: 2px;
+}
+/* end 找兼职首页 */

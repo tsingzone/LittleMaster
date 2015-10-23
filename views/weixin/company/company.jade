@@ -2,9 +2,27 @@
    Created by michel_feng on 15/10/21.
 
 extends ../layout
+block header-back
+    | 北京市
+    img(src='/images/dingwei.png')
 block header-title
-    找兼职
+    | 找兼职
 block content
+    #screening
+        span 类型
+            .dropDown
+            .vertical
+        span 地区
+            .dropDown
+            .vertical
+        span 时间
+            .dropDown
+            .vertical
+        span 排序
+            .dropDown
+    #jobs
+        .job
+
 
 block script
     script.
