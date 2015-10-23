@@ -1,0 +1,11 @@
+//
+   Created by William on 15/10/23.
+
+extends layout
+
+block content
+    form(action="/admin/login" method="post")
+        input#username(type="text", placeholder="用户名", name="username")
+        input#password(type="text", placeholder="密码", name="password")
+        input#login(type="submit" value="登录")
+    p#error-message #{err}
