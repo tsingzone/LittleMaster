@@ -41,16 +41,16 @@
 #header-back{
     padding-left: 10px;
     text-align: left;
-    width: 12%;
+    width: 33%;
 }
 
 #header-title{
-    width: 76%;
+    width: 33%;
     font-weight: bold;
 }
 
 #header-save{
-    width: 12%;
+    width: 33%;
     font-size: 16px;
     padding-right: 2px;
 }
@@ -143,5 +143,11 @@
     margin: 10px 0;
     background: #A4A4A4;
     width: 2px;
+}
+#dingwei{
+    width: 16px;
+    height: 22px;
+    margin-right: 5px;
+    margin-bottom: -3px;
 }
 /* end 找兼职首页 */

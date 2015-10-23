@@ -3,8 +3,8 @@
 
 extends ../layout
 block header-back
+    img#dingwei(src='/images/dingwei.png')
     | 北京市
-    img(src='/images/dingwei.png')
 block header-title
     | 找兼职
 block content
@@ -27,5 +27,9 @@ block content
 block script
     script.
         $(function() {
-            $('#find_job').addClass('current')
-        })
+            $('#find_job').addClass('current');
+        });
+        $("#screening span").click(function() {
+            $(this).css("color","#56CDB8");
+            $(this).find(".dropDown").css("backgroundImage",'url("../images/dd2.png")');
+        });
