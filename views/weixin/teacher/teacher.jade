@@ -4,24 +4,52 @@
 extends ../layout
 
 block header-title
-    个人中心
+    | 个人中心
 
 block content
     #content-top
         div(style="height:9px")
-        img#content-img(src="", alt="")
+        img#content-img(src="/images/default-head.png", alt="")
         span#content-text 昵称
 
     #content-main
-        #my-profile
-            span 我的简历
-        #sign-jobs
-            span 已报名兼职
-        #collect-jobs
+        #my_profile.content-line
+            span.content-line-title 我的简历
+            span.content-line-right
+                span 已完成0%
+                img(src="/images/right-arrow.png" alt=">")
+        #sign_jobs.content-line
+            span.content-line-title 已报名兼职
+            span.content-line-right
+                span 0个
+                img(src="/images/right-arrow.png" alt=">")
+        #collect_jobs.content-line
+            span.content-line-title 已收藏兼职
+            span.content-line-right
+                span 0个
+                img(src="/images/right-arrow.png" alt=">")
 
 block script
     script.
-        $(function() {
-            $('#find_job').addClass('current')
-        })
+        $(function () {
+            $('#personal_center').addClass('current');
+
+            // 跳转到我的简历页面
+            $('#my_profile').click(function () {
+                window.location.href = "/weixin/teacher/profile";
+            });
+
+            // 跳转到已报名兼职页面
+            $('#sign_jobs').click(function () {
+                alert("已报名兼职");
+            });
+
+            // 跳转到已收藏兼职页面
+            $('#collect_jobs').click(function () {
+                alert("已收藏兼职")
+            });
+        });
+
+
+
 
