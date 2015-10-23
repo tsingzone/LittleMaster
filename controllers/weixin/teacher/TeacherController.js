@@ -18,6 +18,13 @@ _.extend(teacher.prototype, {
             console.log(result);
             res.render(getView("teacher"), {title: result});
         });
+    },
+    getProfile: function(req, res){
+        var id = req.id;
+        var sourceMap = {"id": id};
+        Teacher.getProfile(sourceMap, function(err, result){
+            res.render(getView("profile"), {title: "profile"});
+        });
     }
 });
 

@@ -7,3 +7,6 @@ $(document).on('click','#find_job',function() {
 $(document).on('click','#personal_center',function() {
     window.location.href = '/weixin/teacher';
 });
+$(document).on('click','#back',function() {
+    history.go(-1);
+});

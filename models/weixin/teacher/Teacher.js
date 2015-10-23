@@ -30,6 +30,10 @@ var Teacher = {
                     on teacher.id = teacherCollect.teacher_id\
                     where weixin_user.id = ?";
         DBUtils.getDBConnection().query(sql, [source.id], callback);
+    },
+    getProfile: function (source, callback){
+        var sql = "select 1+1 as result";
+        DBUtils.getDBConnection().query(sql, [source.id], callback);
     }
 }
 
