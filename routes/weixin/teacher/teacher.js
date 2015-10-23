@@ -10,16 +10,14 @@ var teacherController = new TeacherController();
 // 个人中心首页
 router.get("/", function (req, res) {
     console.log("个人中心首页");
-
     teacherController.getUserCenterData(req, res);
-
 });
 
 
 // 我的简历
 router.get("/profile", function (req, res) {
     console.log("我的简历");
-    res.render(getView("teacher"), {title: "get"});
+    teacherController.getProfile(req, res);
 });
 
 // 已报名兼职

@@ -1,0 +1,21 @@
+// 我的简历
+   Created by michel_feng on 15/10/23.
+
+extends ../layout
+
+block header-back
+   img#back(src="/images/left-arrow.png")
+block header-title
+   | 我的简历
+block header-save
+   | 保存
+   img#save(src="/images/save.png")
+
+block content
+   h1 #{title}
+
+block script
+   script.
+      $(function () {
+         $('#personal_center').addClass('current');
+      });
