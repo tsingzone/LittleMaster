@@ -22,6 +22,7 @@ block content
             .dropDown
     #jobs
         .job
+    #mask_job
 
 
 block script
@@ -30,6 +31,12 @@ block script
             $('#find_job').addClass('current');
         });
         $("#screening span").click(function() {
+            $("#mask_job").show();
             $(this).css("color","#56CDB8");
             $(this).find(".dropDown").css("backgroundImage",'url("../images/dd2.png")');
+        });
+        $("#mask_job").click(function() {
+            $(this).hide();
+            $("#screening span").css("color","#333");
+            $(".dropDown").css("backgroundImage",'url("../images/dd1.png")');
         });
