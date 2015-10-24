@@ -17,9 +17,16 @@ router.get('/', function (req, res) {
     res.render(getView('company'), {title: "Company"});
 });
 
+router.get('/profile', function (req, res) {
+    console.log("company.js profile");
+    res.render(getView('profile'), {title: "Profile"});
+});
+
 router.get('/get', function (req, res) {
     console.log("company.js get");
     res.render(getView('company'), {title: "get"});
 });
+
+
 
 module.exports = router;

@@ -44,12 +44,6 @@
     width: 33%;
 }
 
-#back{
-    display: inline-block;
-    width: 14px;
-    vertical-align: middle;
-}
-
 #header-title{
     width: 33%;
     font-weight: bold;
@@ -59,12 +53,4 @@
     width: 33%;
     font-size: 16px;
     padding-right: 2px;
-    text-align: right;
-}
-
-#save{
-    display: inline-block;
-    width: 18px;
-    vertical-align: middle;
-    padding-left: 5px;
 }
