@@ -4,101 +4,124 @@
 extends ../layout
 
 block header-back
-   img#back(src="/images/left-arrow.png")
+    img#back(src="/images/left-arrow.png")
 block header-title
-   | 我的简历
+    | 我的简历
 block header-save
-   | 保存
-   img#save(src="/images/save.png")
+    | 保存
+    img#save(src="/images/save.png")
 
 block content
-   #first_line.bottom-line
-      img(src="/images/default-head.png" alt="")
-      span.small-text 上传头像
-   #second_line
-      span.show-text 联系方式:
-      span.input-text 123****1111
-      span.small-text 修改绑定
-   #basic_info
-      div.line-header
-         span.vertical-line
-         | 基本信息
-      div.indent.bottom-line
-         span.show-text 姓名
-         span.input-text 李嘉诚
-      div.indent.bottom-line
-         span.show-text 性别
-         input.input-text(type="radio" checked="checked" value="0" name="gender")
-         | 男
-         | &nbsp;&nbsp;
-         input.input-text(type="radio" value="0" name="gender")
-         | 女
-      div.indent
-         span.show-text 生日
-         span.input-text 1900-01-01
-   #teacher_diploma
-      div.line-header
-         span.vertical-line
-         | 拥有教师资格证才能报名兼职
-      div.indent
-         span.line-title 教师资格证
-         span.line-right
-            span.count 2个
-            img(src="/images/right-arrow.png" alt=">")
-   #education_info
-      div.line-header
-         span.vertical-line
-         | 学历信息（填写完成才能报名兼职）
-      div.indent.bottom-line
-         span.line-title
-            span.show-text 大学
-            span.input-text 香港大学
-         span.line-right
-            img(src="/images/right-arrow.png" alt=">")
-      div.indent.bottom-line
-         span.show-text 专业
-         span.input-text 广告学
-      div.indent.bottom-line
-         span.line-title
-            span.show-text 学历
-            span.input-text 硕士
-         span.line-right
-            img(src="/images/right-arrow.png" alt=">")
-      div.indent
-         span.show-text 时间
-         span.input-text 1999
-   #other_diploma
-      div.line-header
-         span.vertical-line
-         | 相关证书（选填）
-      div.indent
-         span.line-title.input-text 专业类
-         span.line-right
-            span.count 2个
-            img(src="/images/right-arrow.png" alt=">")
-   #experience
-      div.line-header
-         span.vertical-line
-         | 工作经历（至少填写一项）
-      div.indent.bottom-line
-         span.line-title.input-text 社会工作经验
-         span.line-right
-            span.count 2个
-            img(src="/images/right-arrow.png" alt=">")
-      div.indent.bottom-line
-         span.line-title.input-text 兼职经验
-         span.line-right
-            span.count 2个
-            img(src="/images/right-arrow.png" alt=">")
-      div.indent.bottom-line
-         span.line-title.input-text 校园工作经验
-         span.line-right
-            span.count 2个
-            img(src="/images/right-arrow.png" alt=">")
+    #first_line.bottom-line(onclick="goToHead()")
+        img(src="/images/default-profile.png" alt="")
+        span.small-text 上传头像
+    #second_line(onclick="goToBind()")
+        span.show-text(style="padding-left:0") 联系方式:
+        span.input-text 123****1111
+        span.small-text 修改绑定
+    #basic_info
+        div.line-header
+            span.vertical-line
+            | 基本信息
+        div.indent.bottom-line
+            span.show-text 姓名
+            span.input-text 李嘉诚
+        div.indent.bottom-line
+            span.show-text 性别
+            input.input-text(type="radio" checked="checked" value="0" name="gender" id="male")
+            label(for="male") 男
+            | &nbsp;&nbsp;
+            input.input-text(type="radio" value="1" name="gender" id="female")
+            label(for="female") 女
+        div.indent
+            span.show-text 生日
+            span.input-text 1900-01-01
+    #teacher_diploma
+        div.line-header
+            span.vertical-line
+            | 拥有教师资格证才能报名兼职
+        div.indent(onclick="goToDiploma('teacher')")
+            span.line-title.input-text 教师资格证
+            span.line-right
+                span.count 2个
+                img(src="/images/right-arrow.png" alt=">")
+    #education_info
+        div.line-header
+            span.vertical-line
+            | 学历信息（填写完成才能报名兼职）
+        div.indent.bottom-line(onclick="goToCollege()")
+            span
+                span.show-text 大学
+                span.input-text 香港大学
+            span.line-right
+                img(src="/images/right-arrow.png" alt=">")
+        div.indent.bottom-line
+            span.show-text 专业
+            span.input-text 广告学
+        div.indent.bottom-line(onclick="goToEducation()")
+            span
+                span.show-text 学历
+                span.input-text 硕士
+            span.line-right
+                img(src="/images/right-arrow.png" alt=">")
+        div.indent
+            span.show-text 时间
+            span.input-text 1999
+    #other_diploma
+        div.line-header
+            span.vertical-line
+            | 相关证书（选填）
+        div.indent(onclick="goToDiploma('other')")
+            span.line-title.input-text 专业类
+            span.line-right
+                span.count 2个
+                img(src="/images/right-arrow.png" alt=">")
+    #experience
+        div.line-header
+            span.vertical-line
+            | 工作经历（至少填写一项）
+        div.indent.bottom-line(onclick="goToExperience('social')")
+            span.line-title.input-text 社会工作经验
+            span.line-right
+                span.count 2个
+                img(src="/images/right-arrow.png" alt=">")
+        div.indent.bottom-line(onclick="goToExperience('parttime')")
+            span.line-title.input-text 兼职经验
+            span.line-right
+                span.count 2个
+                img(src="/images/right-arrow.png" alt=">")
+        div.indent.bottom-line(onclick="goToExperience('school')")
+            span.line-title.input-text 校园工作经验
+            span.line-right
+                span.count 2个
+                img(src="/images/right-arrow.png" alt=">")
 block footer
 
 block script
-   script.
-      $(function () {
-         $('#personal_center').addClass('current');
-      });
+    script.
+        $(function () {
+            $('#personal_center').addClass('current');
+        });
+        function goToHead(){
+            window.location.href = "upload";
+        }
+
+        function goToBind(){
+            window.location.href = "bind";
+        }
+
+        function goToCollege() {
+            window.location.href = "college";
+        }
+
+        function goToEducation() {
+            window.location.href = "education";
+        }
+
+        function goToExperience(type) {
+            window.location.href = "experience/" + type;
+        }
+
+        function goToDiploma(type) {
+            window.location.href = "diploma/" + type;
+        }

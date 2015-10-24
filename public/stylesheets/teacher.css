@@ -1,5 +1,5 @@
 /* start common */
-.count{
+.count {
     font-size: 14px;
 }
 
@@ -8,17 +8,20 @@
 }
 
 .line-header {
-    background: #E4E4E4;
+    background: #F0F0F0;
     font-size: 16px;
+    font-weight: bold;
     line-height: 40px;
-    color: #56CDB8;
+    color: #919191;
     padding-left: 20px;
 }
 
-.vertical-line{
-    border: 1px solid #56CDB8;
+.vertical-line {
+    border: 1.5px solid #919191;
     margin-right: 5px;
 }
+
+
 
 /* edn common */
 
@@ -61,7 +64,7 @@
     color: #333333;
 }
 
-.line-right,.content-line-right {
+.line-right, .content-line-right {
     display: inline-block;
     font-size: 16px;
     color: #56CDB8;
@@ -71,37 +74,44 @@
 
 .line-right img, .content-line-right img {
     display: inline-block;
-    padding-left: 13px;
+    padding-left: 12px;
     vertical-align: middle;
     height: 20px;
 }
-.line-right, .line-title{
-    line-height: 40px;
+
+.line-right, .line-title {
+    line-height: 38px;
 }
+
+.line-title {
+    padding-left: 14px;
+}
+
 /* end 个人中心首页 */
 
 /* start 简历页面 */
 
 #first_line {
     display: block;
-    padding: 20px;
+    padding: 25.5px 25px 25.5px;
 
 }
 
 #first_line img {
+    box-sizing: border-box;
     display: inline-block;
-    width: 80px;
-    height: 80px;
-    border-radius: 10px;
-    border: 2px solid #62aa9d;
+    width: 77px;
+    height: 77px;
+    border-radius: 5px;
+    border: 2px solid #DFDFDF;
     vertical-align: middle;
     margin: 0 auto;
-    background: #56CDB8;
+    background-repeat: no-repeat;
 }
 
 #second_line {
     display: block;
-    padding: 0 20px;
+    padding: 0 25px;
 }
 
 #second_line span {
@@ -114,11 +124,12 @@
     display: inline-block;
     font-size: 16px;
     line-height: 40px;
-    color: #E4E4E4;
+    color: #AAAAAA;
 }
 
 .show-text {
-    padding-right: 10px;
+    padding-right: 17px;
+    padding-left: 14px;
 }
 
 .input-text {
@@ -135,10 +146,8 @@
     color: #333333;
 }
 
-
 .indent {
     padding: 0 20px;
 }
-
 
 /* end 简历页面 */

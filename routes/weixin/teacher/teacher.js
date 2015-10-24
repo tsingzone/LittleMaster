@@ -13,11 +13,20 @@ router.get("/", function (req, res) {
     teacherController.getUserCenterData(req, res);
 });
 
-
 // 我的简历
 router.get("/profile", function (req, res) {
     console.log("我的简历");
     teacherController.getProfile(req, res);
+});
+
+router.get("/upload", function (req, res) {
+    console.log("上传头像");
+    teacherController.getProfileHead(req, res);
+});
+
+router.get("/bind", function (req, res) {
+    console.log("绑定手机号");
+    teacherController.getProfileMobile(req, res);
 });
 
 // 已报名兼职
@@ -35,37 +44,36 @@ router.get("/collect", function (req, res) {
 // 证书
 router.get("/diploma/:type", function (req, res) {
     console.log("证书");
-    var types = ["teacher", "other"];
-    var type = req.params.type;
-    if (types.indexOf(type) != -1) {
-        res.send(type);
-    } else {
-        res.status(404).end();
-    }
+    teacherController.getDiploma(req, res);
+
 });
 
 // 大学
 router.get("/college", function (req, res) {
     console.log("大学");
+    teacherController.getCollege(req, res);
+});
 
+router.post("/college", function (req, res) {
+    console.log("大学 post")
+    res.status(200).end();
 });
 
 // 学历
 router.get("/education", function (req, res) {
     console.log("学历");
-
+    tteacherController.getEducation(req, res);
 });
 
+router.post("/education", function (req, res) {
+    console.log("学历 post");
+    res.status(200).end();
+})
+
 // 经历
-router.get('/experience/:type', function (req, res, next) {
+router.get('/experience/:type', function (req, res) {
     console.log("经历");
-    var types = ["social", "parttime", "school"];
-    var type = req.params.type;
-    if (types.indexOf(type) != -1) {
-        res.send(type);
-    } else {
-        res.status(404).end();
-    }
+    teacherController.getExperience(req, res);
 });
 
 
