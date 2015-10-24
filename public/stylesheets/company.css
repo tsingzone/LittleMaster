@@ -115,7 +115,8 @@
 /*start 兼职详情页*/
 #pro_top{
     width: 100%;
-    min-height: 80px;
+    min-height: 90px;
+    padding-top: 10px;
     background: #56CDB8;
 }
 #pro_type{
@@ -153,8 +154,45 @@
     color: #EE8830;
 }
 #pro_content{
+    width: 86%;
+    margin: 0 auto;
+}
+.pro_content_h1{
+    border-left: 2px solid #56CDB8;
+    color: #56CDB8;
+    font-size: 16px;
+    padding-left: 6px;
+    line-height: 18px;
+    margin: 20px 0;
+    font-weight: bold;
+}
+.pro_contents{
+    max-width: 100%;
+    margin-bottom: 20px;
+    padding-left: 10px;
+    line-height: 25px;
+    font-size: 14px;
+}
+.pro_content_h2{
+    display: inline-block;
+    color: #AAAAAA;
+    margin-right: 15px;
+}
+.pro_content_pro{
+    display: inline-block;
+    max-width: 100%;
+    color: #333333;
+}
+#registration{
     width: 100%;
-    padding: 0 26px;
+    border-radius: 5px;
+    color: #FFFFFF;
+    text-align: center;
+    height: 48px;
+    line-height: 48px;
+    background: #56CDB8;
+    margin-bottom: 50px;
+    font-size: 18px;
 }
 
 /*end 兼职详情页*/
