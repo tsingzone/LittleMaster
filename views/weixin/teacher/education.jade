@@ -1,5 +1,22 @@
 //
    Created by michel_feng on 15/10/24.
-
+extends ./parent.jade
+block header-title
+    | 学历选择
 block content
-   h1= title
+    each val in educations.length ? educations : ["暂无数据"]
+        if val.id
+            div.bottom-line.one-line(id="#{val.id}")= val.name
+
+        else
+            div.no-result= val
+
+block script
+    script.
+        $(function () {
+            $("div.one-line").each(function () {
+                $(this).click(function () {
+                    alert($(this).html());
+                });
+            });
+        });

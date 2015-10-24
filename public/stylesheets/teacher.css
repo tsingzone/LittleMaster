@@ -21,7 +21,23 @@
     margin-right: 5px;
 }
 
+.one-line {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
+    line-height: 44px;
+    color: #333333;
+}
 
+.no-result {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
+    line-height: 60px;
+    color: #333333;
+}
 
 /* edn common */
 
@@ -151,3 +167,90 @@
 }
 
 /* end 简历页面 */
+
+/* start 选择学校页面 */
+.search-line {
+    display: block;
+    padding: 8px 13px;
+    background: #E4E4E4;
+    height: 28px;
+}
+
+#search {
+    display: inline-block;
+    float: left;
+    max-width: 6%;
+    padding-right: 10px;
+    vertical-align: middle;
+}
+
+#college {
+    display: inline-block;
+    float: left;
+    width: 82%;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    line-height: 26px;
+    color: #333333;
+    vertical-align: middle;
+}
+
+#clear {
+    display: inline-block;
+    float: right;
+    max-width: 6%;
+    padding-left: 7px;
+    vertical-align: middle;
+}
+@media screen and (min-width: 1920px){
+    #clear, #search{
+        max-width: 1.5%;
+    }
+    #college{
+        width: 95.5%;
+    }
+}
+@media screen and (min-width: 1001px) and (max-width: 1919px){
+    #clear, #search{
+        max-width: 2.5%;
+    }
+    #college{
+        width: 92.5%;
+    }
+}
+
+@media screen and (min-width:568px) and (max-width: 1000px){
+    #clear, #search{
+        max-width: 4%;
+    }
+    #college{
+        width: 88%;
+    }
+}
+@media screen and (min-width:415px) and (max-width: 567px) {
+    #clear, #search{
+        max-width: 5%;
+    }
+    #college{
+        width: 84%;
+    }
+}
+@media screen and (min-width:375px) and (max-width: 414px){
+    #clear, #search{
+        max-width: 6%;
+    }
+    #college{
+        width: 82%;
+    }
+}
+
+@media screen and (max-width:374px) {
+    #clear, #search{
+        max-width: 8%;
+    }
+    #college{
+        width: 76%;
+    }
+}
+/* end 选择学校页面 */

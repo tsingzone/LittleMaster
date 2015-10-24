@@ -1,5 +1,11 @@
 //
    Created by michel_feng on 15/10/24.
-
+extends ./parent.jade
+block header-title
+   case title
+      when 'teacher'
+         | 教师资格证书
+      when 'other'
+         | 专业类证书
 block content
    h1= title

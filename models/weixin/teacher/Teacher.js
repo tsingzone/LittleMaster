@@ -34,6 +34,13 @@ var Teacher = {
     getProfile: function (source, callback){
         var sql = "select 1+1 as result";
         DBUtils.getDBConnection().query(sql, [source.id], callback);
+    },
+    getEducation: function (callback) {
+        var sql = "select id, name from sys_education where status = 1";
+        DBUtils.getDBConnection().query(sql, [], callback);
+    },
+    searchCollege: function(source, callback){
+
     }
 }
 

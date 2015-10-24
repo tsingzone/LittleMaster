@@ -59,8 +59,45 @@ _.extend(teacher.prototype, {
     getCollege: function (req, res) {
         res.render(getView("college"), {title: "College"});
     },
+    searchCollege: function (req, res) {
+        var sourceMap = {
+            searchText: validData(req.body.college)
+        };
+        var collegesMap = {
+            '北京':{
+                1: '北大',
+                2: '清华'
+            },
+            '山东':{
+                3: '山大',
+                4: '山师'
+            }
+        };
+        var tmp = collegesMap[sourceMap.searchText];
+        res.json({colleges: tmp});
+        //Teacher.searchCollege(sourceMap, function (err, result) {
+        //    if(err){
+        //
+        //    }
+        //    var collegesMap = {
+        //        '北京':{
+        //            1: '北大',
+        //            2: '清华'
+        //        },
+        //        '山东':{
+        //            3: '山大',
+        //            4: '山师'
+        //        }
+        //    };
+        //    var tmp = collegesMap[sourceMap.searchText];
+        //    res.send({colleges: tmp});
+        //});
+    },
     getEducation: function (req, res) {
-        res.render("weixin/teacher/education", {title: "Education"});
+        Teacher.getEducation(function (err, result) {
+            console.log(result);
+            res.render(getView("education"), {educations: result});
+        });
     }
 });
 
@@ -69,3 +106,12 @@ var getView = function getView(viewName) {
     var dir = "weixin/teacher/";
     return path.join(dir, viewName);
 };
+
+var invalidReg =  /select|drop|delete|insert|into|update|where|left|join|on|right/
+var validData = function (text) {
+    if(text.toLowerCase().match(invalidReg)){
+        return null;
+    }else{
+        return text.trim();
+    }
+}

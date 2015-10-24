@@ -1,5 +1,13 @@
 //
    Created by michel_feng on 15/10/24.
-
+extends ./parent.jade
+block header-title
+   case title
+      when 'social'
+         | 社会经历填写
+      when 'parttime'
+         | 兼职经历填写
+      when 'school'
+         | 校园经历填写
 block content
    h1= title

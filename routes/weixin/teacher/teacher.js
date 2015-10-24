@@ -56,13 +56,13 @@ router.get("/college", function (req, res) {
 
 router.post("/college", function (req, res) {
     console.log("大学 post")
-    res.status(200).end();
+    teacherController.searchCollege(req, res);
 });
 
 // 学历
 router.get("/education", function (req, res) {
     console.log("学历");
-    tteacherController.getEducation(req, res);
+    teacherController.getEducation(req, res);
 });
 
 router.post("/education", function (req, res) {
