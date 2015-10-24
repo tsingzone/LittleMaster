@@ -1,3 +1,5 @@
+/*start 找兼职首页*/
+
 #screening{
     width: 100%;
     max-width: 100%;
@@ -68,7 +70,7 @@
 .job_content{
     display: inline-block;
     vertical-align: middle;
-    max-width: 70%;
+    max-width: 69%;
 }
 .job_time{
     font-size: 14px;
@@ -107,3 +109,52 @@
     font-size: 16px;
     color: #333333;
 }
+
+/*end 找兼职首页*/
+
+/*start 兼职详情页*/
+#pro_top{
+    width: 100%;
+    min-height: 80px;
+    background: #56CDB8;
+}
+#pro_type{
+    margin: 0px 23px 0 26px;
+    vertical-align: middle;
+    border: 1px solid #FFFFFF;
+}
+#pro_title{
+    max-width: 69%;
+    color: #FFFFFF;
+    vertical-align: middle;
+    display: inline-block;
+}
+#pro_h1{
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+#pro_h2{
+    font-size: 14px;
+}
+#pro_key_point{
+    width: 100%;
+}
+.pro_points{
+    display: inline-block;
+    width: 33.3%;
+    text-align: center;
+    height: 44px;
+    line-height: 44px;
+    border-bottom: 1px solid #E4E4E4;
+    font-size: 14px;
+    color: #333333;
+}
+#pro_price{
+    color: #EE8830;
+}
+#pro_content{
+    width: 100%;
+    padding: 0 26px;
+}
+
+/*end 兼职详情页*/
