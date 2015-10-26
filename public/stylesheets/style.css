@@ -46,7 +46,7 @@ body{
 #header-back{
     padding-left: 10px;
     text-align: left;
-    width: 33%;
+    width: 25%;
 }
 
 #back{
@@ -56,12 +56,12 @@ body{
 }
 
 #header-title{
-    width: 33%;
+    width: 50%;
     font-weight: bold;
 }
 
 #header-save{
-    width: 33%;
+    width: 25%;
     font-size: 16px;
     padding-right: 2px;
     text-align: right;

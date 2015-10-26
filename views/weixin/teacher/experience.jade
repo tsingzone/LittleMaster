@@ -2,12 +2,40 @@
    Created by michel_feng on 15/10/24.
 extends ./parent.jade
 block header-title
-   case title
-      when 'social'
-         | 社会经历填写
-      when 'parttime'
-         | 兼职经历填写
-      when 'school'
-         | 校园经历填写
+    case title
+        when 'social'
+            | 社会经历填写
+        when 'parttime'
+            | 兼职经历填写
+        when 'school'
+            | 校园经历填写
 block content
-   h1= title
+    div.top-add
+        #btnAdd
+            img(src="/images/add.png", alt="")
+            | 添加经历
+
+    div.container_add_title
+        div(style="float: left; border-left: 3px solid #56CDB8; padding-left: 10px;")
+            span.experience_title 校团委技术部
+            span.experience_time 2015年7月8日-2015年9月10日
+        img#delete(src="/images/delete.png", alt="", style="float:right")
+
+    div.container_add_content
+        | 负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，
+
+    div.container_add_title
+        div(style="float: left; border-left: 3px solid #56CDB8; padding-left: 10px;")
+            span.experience_title 校团委技术部
+            span.experience_time 2015年7月8日-2015年9月10日
+        img#delete(src="/images/delete.png", alt="", style="float:right")
+
+    div.container_add_content
+        | 负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，
+
+
+block script
+    script.
+        $(function () {
+            $(".container_add_content").last().css("padding-bottom", "0px");
+        });

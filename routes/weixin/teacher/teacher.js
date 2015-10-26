@@ -19,11 +19,13 @@ router.get("/profile", function (req, res) {
     teacherController.getProfile(req, res);
 });
 
+// 上传头像
 router.get("/upload", function (req, res) {
     console.log("上传头像");
     teacherController.getProfileHead(req, res);
 });
 
+// 绑定手机号
 router.get("/bind", function (req, res) {
     console.log("绑定手机号");
     teacherController.getProfileMobile(req, res);

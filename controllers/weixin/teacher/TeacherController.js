@@ -33,10 +33,43 @@ _.extend(teacher.prototype, {
         res.render(getView("bind"), {title: "Bind"});
     },
     getSignJobs: function (req, res) {
-        res.render(getView("sign"), {title: "Sign"});
+        var source = {
+            teacherId: req.teacherId
+        };
+        var jobList = [{
+            title: "Title",
+            position: "批改",
+            startTime: "2015-10-10",
+            endTime: "2015-10-11",
+            gender: 0,
+            sallary: 100,
+            sallaryType: "元/天",
+            settlement: "日结",
+            address: "网络"
+        }];
+        Teacher.getSignJobs(source, function (err, result) {
+            res.render(getView("sign"), {jobList: jobList});
+        });
+
     },
     getCollectJobs: function (req, res) {
-        res.render(getView("collect"), {title: "Collect"});
+        var source = {
+            teacherId: req.teacherId
+        };
+        var jobList = [{
+            title: "Title",
+            position: "批改",
+            startTime: "2015-10-10",
+            endTime: "2015-10-11",
+            gender: 0,
+            sallary: 100,
+            sallaryType: "元/天",
+            settlement: "日结",
+            address: "网络"
+        }];
+        Teacher.getCollectJobs(source, function (err, result) {
+            res.render(getView("collect"), {jobList: jobList});
+        });
     },
     getDiploma: function (req, res) {
         var types = ["teacher", "other"];
@@ -63,35 +96,10 @@ _.extend(teacher.prototype, {
         var sourceMap = {
             searchText: validData(req.body.college)
         };
-        var collegesMap = {
-            '北京':{
-                1: '北大',
-                2: '清华'
-            },
-            '山东':{
-                3: '山大',
-                4: '山师'
-            }
-        };
-        var tmp = collegesMap[sourceMap.searchText];
-        res.json({colleges: tmp});
-        //Teacher.searchCollege(sourceMap, function (err, result) {
-        //    if(err){
-        //
-        //    }
-        //    var collegesMap = {
-        //        '北京':{
-        //            1: '北大',
-        //            2: '清华'
-        //        },
-        //        '山东':{
-        //            3: '山大',
-        //            4: '山师'
-        //        }
-        //    };
-        //    var tmp = collegesMap[sourceMap.searchText];
-        //    res.send({colleges: tmp});
-        //});
+
+        Teacher.searchCollege(sourceMap, function (err, result) {
+            res.json({colleges: result});
+        });
     },
     getEducation: function (req, res) {
         Teacher.getEducation(function (err, result) {
@@ -107,11 +115,12 @@ var getView = function getView(viewName) {
     return path.join(dir, viewName);
 };
 
-var invalidReg =  /select|drop|delete|insert|into|update|where|left|join|on|right/
+var invalidReg = /select|drop|delete|insert|into|update|where|left|join|on|right/
 var validData = function (text) {
-    if(text.toLowerCase().match(invalidReg)){
+    if (text.toLowerCase().match(invalidReg)) {
         return null;
-    }else{
+    } else {
         return text.trim();
     }
-}
+};
+

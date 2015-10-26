@@ -14,10 +14,15 @@
     line-height: 40px;
     color: #919191;
     padding-left: 20px;
+
 }
 
 .vertical-line {
-    border: 1.5px solid #919191;
+    vertical-align: text-top;
+    display: inline-block;
+    width: 2px;
+    height: 18px;
+    background: #919191;
     margin-right: 5px;
 }
 
@@ -37,6 +42,38 @@
     font-size: 18px;
     line-height: 60px;
     color: #333333;
+}
+
+.top-add {
+    border-bottom: 2px solid #E4E4E4;
+    margin-bottom: 15px;
+}
+
+.container_add_title {
+    vertical-align: middle;
+    margin: 0 28px 0 33px;
+}
+
+.container_add_content {
+    clear: both;
+    border-left: 1px solid #56CDB8;
+    padding: 10px 0 20px 10px;
+    font-size: 14px;
+    line-height: 18px;
+    color: #333333;
+    margin: 0 27px 0 34px;
+}
+.container_add_content img{
+    display: block;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto;
+}
+#delete {
+    width: 20px;
+    height: 22px;
+    vertical-align: middle;
+    margin: 0 auto;
 }
 
 /* edn common */
@@ -203,54 +240,105 @@
     padding-left: 7px;
     vertical-align: middle;
 }
-@media screen and (min-width: 1920px){
-    #clear, #search{
+
+@media screen and (min-width: 1920px) {
+    #clear, #search {
         max-width: 1.5%;
     }
-    #college{
+
+    #college {
         width: 95.5%;
     }
 }
-@media screen and (min-width: 1001px) and (max-width: 1919px){
-    #clear, #search{
+
+@media screen and (min-width: 1001px) and (max-width: 1919px) {
+    #clear, #search {
         max-width: 2.5%;
     }
-    #college{
+
+    #college {
         width: 92.5%;
     }
 }
 
-@media screen and (min-width:568px) and (max-width: 1000px){
-    #clear, #search{
+@media screen and (min-width: 568px) and (max-width: 1000px) {
+    #clear, #search {
         max-width: 4%;
     }
-    #college{
+
+    #college {
         width: 88%;
     }
 }
-@media screen and (min-width:415px) and (max-width: 567px) {
-    #clear, #search{
+
+@media screen and (min-width: 415px) and (max-width: 567px) {
+    #clear, #search {
         max-width: 5%;
     }
-    #college{
+
+    #college {
         width: 84%;
     }
 }
-@media screen and (min-width:375px) and (max-width: 414px){
-    #clear, #search{
+
+@media screen and (min-width: 375px) and (max-width: 414px) {
+    #clear, #search {
         max-width: 6%;
     }
-    #college{
+
+    #college {
         width: 82%;
     }
 }
 
-@media screen and (max-width:374px) {
-    #clear, #search{
+@media screen and (max-width: 374px) {
+    #clear, #search {
         max-width: 8%;
     }
-    #college{
+
+    #college {
         width: 76%;
     }
 }
+
 /* end 选择学校页面 */
+
+/* start 经历填写 */
+#btnAdd {
+    margin: 20px 27px 20px 34px;
+    border-radius: 5px;
+    background: #56CDB8;
+    box-sizing: content-box;
+    text-align: center;
+    font-size: 18px;
+    line-height: 44px;
+    color: #FFFFFF;
+}
+
+#btnAdd img {
+    display: inline-block;
+    width: 22px;
+    vertical-align: middle;
+    padding-right: 5px;
+}
+
+.experience_title {
+    display: block;
+    font-size: 16px;
+    color: #56CDB8;
+}
+
+.experience_time {
+    display: block;
+    font-size: 14px;
+    color: #AAAAAA;
+}
+
+/* end 经历填写 */
+/* start 证书填写 */
+.diploma_img{
+    border:1px solid #56CDB8;
+    padding-top: 20px ;
+    padding-bottom: 20px ;
+}
+/* end 证书填写 */

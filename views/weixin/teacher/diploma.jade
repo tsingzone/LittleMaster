@@ -8,4 +8,29 @@ block header-title
       when 'other'
          | 专业类证书
 block content
-   h1= title
+   div.top-add
+      #btnAdd
+         img(src="/images/add.png", alt="")
+         | 添加证书
+
+   div.container_add_title
+      div(style="float: left; border-left: 3px solid #56CDB8; padding-left: 10px;")
+         span.experience_title 校团委技术部
+         span.experience_time 拿证时间：2015年9月10日
+      img#delete(src="/images/delete.png", alt="", style="float:right")
+   div.container_add_content
+      div.diploma_img
+         img(src="/images/default-blankimg.png")
+   div.container_add_title
+      div(style="float: left; border-left: 3px solid #56CDB8; padding-left: 10px;")
+         span.experience_title 校团委技术部
+         span.experience_time 拿证时间：2015年9月10日
+      img#delete(src="/images/delete.png", alt="", style="float:right")
+   div.container_add_content
+      div.diploma_img
+         img(src="/images/default-blankimg.png")
+block script
+   script.
+      $(function () {
+         $(".container_add_content").last().css("padding-bottom", "0px");
+      });

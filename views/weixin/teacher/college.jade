@@ -16,14 +16,19 @@ block content
 block script
     script.
         $(function () {
-            $("#college").change(function () {
+            $("#college").keydown(function () {
                         $.ajax({
                             url: "/weixin/teacher/college",
                             data: {college: $("#college").val()},
                             dataType: "json",
                             type: "post",
                             success: function (result) {
-                                alert(JSON.stringify(result.colleges));
+                                $("#result").empty();
+                                var colleges = result.colleges;
+                                for (var i = 0; i < colleges.length; i++) {
+                                    $("#result").append("<div class='bottom-line one-line' id='" + colleges[i].id + "'>" + colleges[i].name + "</div>");
+                                }
+
                             }
                         });
                     }

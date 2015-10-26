@@ -1,7 +1,7 @@
 //
    Created by michel_feng on 15/10/23.
 
-extends ../layout.jade
+extends ./parent.jade
 
 block header-back
    img#back(src="/images/left-arrow.png")
@@ -9,4 +9,29 @@ block header-title
    | 已收藏兼职
 
 block content
-   h1= title
+   #job_list
+      if jobList
+         for job in jobList
+            .job
+               .job_type
+                  | #{job.position}
+               .job_content
+                  .job_time
+                     | 工作日期: #{job.startTime}-#{job.endTime}
+                  .job_title #{job.title}
+                  .job_others
+                     | #{job.address}
+                     | #{job.gender}
+                     case job.gender
+                        when 0
+                           | 男性
+                        when 1
+                           | 女性
+                        when 2
+                           | 性别不限
+                     | #{job.settlement}
+                     .job_price #{job.sallary}#{job.sallaryType}
+      else
+         div.no-result
+            | 尚未报名兼职
+block script

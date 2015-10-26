@@ -10,6 +10,7 @@ var company = require('./company/company');
 router.use(function (req, res, next) {
     console.log("Weixin verify....");
     req.id = "1";
+    req.teacherId = 1;
     next();
 });
 
