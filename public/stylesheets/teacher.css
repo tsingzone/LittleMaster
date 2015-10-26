@@ -203,6 +203,11 @@
     padding: 0 20px;
 }
 
+.no-border{
+    border: none;
+    width: 80%;
+    line-height: 30px;
+}
 /* end 简历页面 */
 
 /* start 选择学校页面 */

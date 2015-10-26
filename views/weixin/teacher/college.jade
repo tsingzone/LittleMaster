@@ -12,26 +12,45 @@ block content
         img#clear(src="/images/clear.png")
 
     div#result
-
 block script
+    script(src="/js/college.js")
     script.
         $(function () {
             $("#college").keydown(function () {
-                        $.ajax({
-                            url: "/weixin/teacher/college",
-                            data: {college: $("#college").val()},
-                            dataType: "json",
-                            type: "post",
-                            success: function (result) {
-                                $("#result").empty();
-                                var colleges = result.colleges;
-                                for (var i = 0; i < colleges.length; i++) {
-                                    $("#result").append("<div class='bottom-line one-line' id='" + colleges[i].id + "'>" + colleges[i].name + "</div>");
-                                }
+                        var searchText = $("#college").val().trim();
+                        if (!searchText) {
+                            return;
+                        }
 
+                        var resultArray = [];
+                        $.each(collegeList, function (item, val) {
+                            var result = {};
+                            if (val.name.indexOf(searchText) != -1 && !result[val.name]) {
+                                result["name"] = val.name;
                             }
+                            if (val.province.indexOf(searchText) != -1 && !result[val.name]) {
+                                result["name"] = val.name;
+                            }
+                            if (result["name"]) {
+                                resultArray.push(result);
+                            }
+                        });
+                        resultArray = resultArray.slice(0, 10);
+                        var divParent = $("#result");
+                        divParent.empty();
+                        $.each(resultArray, function (item, val) {
+                            divParent.append("<div class='bottom-line one-line'>"
+                                    + val.name
+                                    + "</div>"
+                            );
                         });
                     }
             );
 
+            $("#clear").click(function () {
+                $("#college").val("");
+                $("#result").empty();
+            });
         });
+
+

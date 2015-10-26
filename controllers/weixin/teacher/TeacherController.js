@@ -37,6 +37,8 @@ _.extend(teacher.prototype, {
             teacherId: req.teacherId
         };
         var jobList = [{
+            id: 1,
+            teacherId: req.teacherId,
             title: "Title",
             position: "批改",
             startTime: "2015-10-10",
@@ -57,6 +59,8 @@ _.extend(teacher.prototype, {
             teacherId: req.teacherId
         };
         var jobList = [{
+            id: 1,
+            teacherId: req.teacherId,
             title: "Title",
             position: "批改",
             startTime: "2015-10-10",

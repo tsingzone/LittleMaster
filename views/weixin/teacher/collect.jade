@@ -4,34 +4,43 @@
 extends ./parent.jade
 
 block header-back
-   img#back(src="/images/left-arrow.png")
+    img#back(src="/images/left-arrow.png")
 block header-title
-   | 已收藏兼职
+    | 已收藏兼职
 
 block content
-   #job_list
-      if jobList
-         for job in jobList
-            .job
-               .job_type
-                  | #{job.position}
-               .job_content
-                  .job_time
-                     | 工作日期: #{job.startTime}-#{job.endTime}
-                  .job_title #{job.title}
-                  .job_others
-                     | #{job.address}
-                     | #{job.gender}
-                     case job.gender
-                        when 0
-                           | 男性
-                        when 1
-                           | 女性
-                        when 2
-                           | 性别不限
-                     | #{job.settlement}
-                     .job_price #{job.sallary}#{job.sallaryType}
-      else
-         div.no-result
-            | 尚未报名兼职
+    #job_list
+        if jobList
+            for job in jobList
+                .job(id="#{job.id}")
+                    .job_type
+                        | #{job.position}
+                    .job_content
+                        .job_time
+                            | 工作日期: #{job.startTime}-#{job.endTime}
+                        .job_title #{job.title}
+                        .job_others
+                            | #{job.address}
+                            //| #{job.gender}
+                            case job.gender
+                                when 0
+                                    | 男性
+                                when 1
+                                    | 女性
+                                when 2
+                                    | 性别不限
+                            | #{job.settlement}
+                            .job_price #{job.sallary}#{job.sallaryType}
+        else
+            div.no-result
+                | 尚未报名兼职
 block script
+    script.
+        $(function () {
+            $(".job").each(function () {
+                $(this).click(function () {
+                    var jobId = $(this).attr("id");
+                    window.location.href = "company/profile/" + jobId;
+                });
+            });
+        });

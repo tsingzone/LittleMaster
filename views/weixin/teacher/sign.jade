@@ -12,7 +12,7 @@ block content
     #job_list
         if jobList
             for job in jobList
-                .job
+                .job(id="#{job.id}")
                     .job_type
                         | #{job.position}
                     .job_content
@@ -21,7 +21,8 @@ block content
                         .job_title #{job.title}
                         .job_others
                             | #{job.address}
-                            | #{job.gender}
+                            | &nbsp;
+                            //| #{job.gender}
                             case job.gender
                                 when 0
                                     | 男性
@@ -29,6 +30,7 @@ block content
                                     | 女性
                                 when 2
                                     | 性别不限
+                            | &nbsp;
                             | #{job.settlement}
                             .job_price #{job.sallary}#{job.sallaryType}
         else

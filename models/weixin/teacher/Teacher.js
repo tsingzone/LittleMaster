@@ -46,6 +46,7 @@ var Teacher = {
     getSignJobs: function (source, callback) {
         var sql = "\
         select \
+            teacher_sign.id as id,\
             teacher_sign.teacher_id as teacherId, \
             company_job.title as title,\
             sys_position.`name` as position,\
@@ -71,6 +72,7 @@ var Teacher = {
     getCollectJobs: function (source, callback) {
         var sql = "\
         select \
+            teacher_sign.id as id,\
             teacher_sign.teacher_id as teacherId, \
             company_job.title as title,\
             sys_position.`name` as position,\

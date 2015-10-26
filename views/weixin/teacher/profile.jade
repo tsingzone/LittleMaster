@@ -25,7 +25,7 @@ block content
             | 基本信息
         div.indent.bottom-line
             span.show-text 姓名
-            span.input-text 李嘉诚
+            input#name.no-border(type="text", placeholder="李嘉诚")
         div.indent.bottom-line
             span.show-text 性别
             input.input-text(type="radio" checked="checked" value="0" name="gender" id="male")
@@ -57,7 +57,7 @@ block content
                 img(src="/images/right-arrow.png" alt=">")
         div.indent.bottom-line
             span.show-text 专业
-            span.input-text 广告学
+            input#major.no-border(type="text", placeholder="广告学")
         div.indent.bottom-line(onclick="goToEducation()")
             span
                 span.show-text 学历
@@ -66,7 +66,7 @@ block content
                 img(src="/images/right-arrow.png" alt=">")
         div.indent
             span.show-text 时间
-            span.input-text 1999
+            input#entryYear.no-border(type="text", placeholder="1999", min="1900", max="2999")
     #other_diploma
         div.line-header
             span.vertical-line
