@@ -95,7 +95,7 @@
     text-align: center;
 }
 
-.button img{
+.button img {
     width: 20px;
     display: inline-block;
     vertical-align: text-bottom;
@@ -377,19 +377,21 @@
 /* end 证书填写 */
 
 /* start 绑定 */
-.bind{
+.bind {
     width: 330px;
     margin: 0 auto;
     padding-bottom: 50px;
 }
-.bind-line{
+
+.bind-line {
     display: inline-block;
     margin-left: 20px;
     height: 40px;
     border-bottom: 1px solid #56CDB8;
     color: #56CDB8;
 }
-.bind input{
+
+.bind input {
     border: none;
     font-size: 18px;
     line-height: 30px;
@@ -397,7 +399,8 @@
     width: 140px;
     margin-left: 5px;
 }
-.sms-valid{
+
+.sms-valid {
     display: inline-block;
     background: #56CDB8;
     font-size: 16px;
@@ -407,7 +410,8 @@
     text-align: center;
     vertical-align: bottom;
 }
-.pic-valid{
+
+.pic-valid {
     display: inline-block;
     background: #56CDB8;
     font-size: 16px;
@@ -418,4 +422,16 @@
     text-align: center;
     vertical-align: bottom;
 }
+
 /* end 绑定 */
+/* start 上传头像 */
+.upload{
+    margin: 0 auto;
+}
+#upload_head {
+    border: 2px solid #DFDFDF;
+    margin: 20px auto 0;
+    display: block;
+}
+
+/* end 上传头像 */
