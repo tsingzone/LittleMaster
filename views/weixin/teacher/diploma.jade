@@ -2,35 +2,47 @@
    Created by michel_feng on 15/10/24.
 extends ./parent.jade
 block header-title
-   case title
-      when 'teacher'
-         | 教师资格证书
-      when 'other'
-         | 专业类证书
+    case title
+        when 'teacher'
+            | 教师资格证书
+        when 'other'
+            | 专业类证书
 block content
-   div.top-add
-      #btnAdd
-         img(src="/images/add.png", alt="")
-         | 添加证书
+    div.top-add
+        #btnAdd
+            img(src="/images/add.png", alt="")
+            | 添加证书
+    if diplomaList
+        each diploma in diplomaList
+            div(id="#{diploma.id}")
+                div.container_add_title
+                    div
+                        span.experience_title #{diploma.name}
+                        span.experience_time 拿证时间：#{diploma.achieveTime}
+                    img.delete(src="/images/delete.png", alt="", value="#{diploma.id}")
+                div.container_add_content
+                    div.diploma_img
+                        img(src="/images/default-blankimg.png")
 
-   div.container_add_title
-      div(style="float: left; border-left: 3px solid #56CDB8; padding-left: 10px;")
-         span.experience_title 校团委技术部
-         span.experience_time 拿证时间：2015年9月10日
-      img#delete(src="/images/delete.png", alt="", style="float:right")
-   div.container_add_content
-      div.diploma_img
-         img(src="/images/default-blankimg.png")
-   div.container_add_title
-      div(style="float: left; border-left: 3px solid #56CDB8; padding-left: 10px;")
-         span.experience_title 校团委技术部
-         span.experience_time 拿证时间：2015年9月10日
-      img#delete(src="/images/delete.png", alt="", style="float:right")
-   div.container_add_content
-      div.diploma_img
-         img(src="/images/default-blankimg.png")
+
 block script
-   script.
-      $(function () {
-         $(".container_add_content").last().css("padding-bottom", "0px");
-      });
+    script.
+        $(function () {
+            $(".container_add_content").last().css("padding-bottom", "0px");
+
+            $(".delete").each(function () {
+                var id = $(this).attr("value");
+                $.ajax({
+                    url: "diploma/delete",
+                    type: "post",
+                    dataType: "json",
+                    data: {diplomaId: id},
+                    success: function (result) {
+                        if (result.success) {
+                            alert("delete");
+                            $("#" + id).remove();
+                        }
+                    }
+                });
+            });
+        });

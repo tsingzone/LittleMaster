@@ -47,7 +47,11 @@ router.get("/collect", function (req, res) {
 router.get("/diploma/:type", function (req, res) {
     console.log("证书");
     teacherController.getDiploma(req, res);
+});
 
+router.post('/diploma/delete', function(req, res){
+   console.log("证书 删除");
+    teacherController.deleteDiplomaById(req, res);
 });
 
 // 大学
@@ -57,7 +61,7 @@ router.get("/college", function (req, res) {
 });
 
 router.post("/college", function (req, res) {
-    console.log("大学 post")
+    console.log("大学 post");
     teacherController.searchCollege(req, res);
 });
 

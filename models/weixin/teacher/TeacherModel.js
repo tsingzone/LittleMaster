@@ -4,7 +4,12 @@
 var DBUtils = require('../../../db_utils');
 var _ = require('underscore');
 
-var Teacher = {
+var teacher = function TeacherModel() {
+
+};
+module.exports = teacher;
+
+_.extend(teacher.prototype, {
     getUserCenterData: function (source, callback) {
         var sql = "select \
                         weixin_user.id as id,\
@@ -94,8 +99,28 @@ var Teacher = {
         on sys_settlement.id = company_job.settlement_id\
         where teacher_sign.teacher_id = ?";
         DBUtils.getDBConnection().query(sql, [source.teacherId], callback);
+    },
+    getDiploma: function (source, callback) {
+        var sql = "select \
+                teacher_diploma.id as id,\
+                teacher_diploma.teacher_id as teacherId,\
+                teacher_diploma.number as number,\
+                teacher_diploma.achieve_time as achieveTime,\
+                sys_diploma.name as diplomaName,\
+                teacher_diploma.period as period,\
+                teacher_diploma.major as major,\
+                teacher_diploma.img_path as imgPath\
+            from teacher_diploma\
+            left join sys_diploma\
+            on sys_diploma.id = teacher_diploma.diploma_id\
+            where \
+                teacher_id = ? \
+                and kind = ?\
+                and status <> -1";
+        DBUtils.getDBConnection().query(sql, [source.teacherId, source.kind], callback);
+    },
+    deleteDiploma: function (source, callback) {
+        var sql = "update teacher_diploma set status = -1 where id = ?";
+        DBUtils.getDBConnection().query(sql, [source.diplomaId], callback);
     }
-};
-
-
-module.exports = Teacher;
+});

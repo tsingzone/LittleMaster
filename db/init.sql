@@ -387,3 +387,6 @@ CREATE TABLE `weixin_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+alter TABLE teacher_diploma
+add column kind tinyint(1) not null comment '证书类型';

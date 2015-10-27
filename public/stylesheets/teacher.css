@@ -54,6 +54,12 @@
     margin: 0 28px 0 33px;
 }
 
+.container_add_title div {
+    float: left;
+    border-left: 3px solid #56CDB8;
+    padding-left: 10px;
+}
+
 .container_add_content {
     clear: both;
     border-left: 1px solid #56CDB8;
@@ -63,17 +69,20 @@
     color: #333333;
     margin: 0 27px 0 34px;
 }
-.container_add_content img{
+
+.container_add_content img {
     display: block;
     width: 110px;
     height: 110px;
     margin: 0 auto;
 }
-#delete {
+
+.delete {
     width: 20px;
     height: 22px;
     vertical-align: middle;
     margin: 0 auto;
+    float:right;
 }
 
 /* edn common */
@@ -203,11 +212,12 @@
     padding: 0 20px;
 }
 
-.no-border{
+.no-border {
     border: none;
     width: 80%;
     line-height: 30px;
 }
+
 /* end 简历页面 */
 
 /* start 选择学校页面 */
@@ -341,9 +351,10 @@
 
 /* end 经历填写 */
 /* start 证书填写 */
-.diploma_img{
-    border:1px solid #56CDB8;
-    padding-top: 20px ;
-    padding-bottom: 20px ;
+.diploma_img {
+    border: 1px solid #56CDB8;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
+
 /* end 证书填写 */

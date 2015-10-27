@@ -2,7 +2,8 @@
  * Created by michel_feng on 15/10/21.
  */
 var _ = require('underscore');
-var Teacher = require('../../../models/weixin/teacher/Teacher');
+var TeacherModel = require('../../../models/weixin/teacher/TeacherModel');
+var Teacher = new TeacherModel();
 var path = require('path');
 
 var teacher = function TeacherController() {
@@ -83,6 +84,23 @@ _.extend(teacher.prototype, {
         } else {
             res.status(404).end();
         }
+    },
+    deleteDiplomaById: function (req, res) {
+        var source = {
+            diplomaId: req.params.diplomaId
+        };
+        Teacher.deleteDiploma(source, function (err, result) {
+            var resJson = {
+                success: true,
+                message: "",
+                entity: ""
+            };
+            if (err) {
+                resJson[success] = false;
+                resJson[message] = err;
+            }
+            res.json(resJson);
+        });
     },
     getExperience: function (req, res) {
         var types = ["social", "parttime", "school"];
