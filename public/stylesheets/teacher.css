@@ -231,7 +231,7 @@
 
 .no-border {
     border: none;
-    width: 80%;
+    width: 70%;
     line-height: 30px;
 }
 
@@ -425,9 +425,10 @@
 
 /* end 绑定 */
 /* start 上传头像 */
-.upload{
+.upload {
     margin: 0 auto;
 }
+
 #upload_head {
     border: 2px solid #DFDFDF;
     margin: 20px auto 0;
@@ -435,3 +436,39 @@
 }
 
 /* end 上传头像 */
+
+/* start 添加经历 */
+.add-line {
+    border-bottom: 1px solid #E4E4E4;
+}
+
+.add-line .name {
+    border: none;
+    line-height: 30px;
+    color: #333333;
+    width: 185px;
+}
+
+.textarea span {
+    display: block;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.textarea textarea {
+    border: 1px solid #E4E4E4;
+    display: block;
+    margin: 0 auto;
+    width: 90%;
+    height: 150px;
+    color: #333333;
+}
+
+.add-line .date {
+    border: none;
+    line-height: 30px;
+    color: #333333;
+    width: 90px;
+}
+
+/* end 添加经历 */

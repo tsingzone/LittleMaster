@@ -1,0 +1,24 @@
+//
+   Created by michel_feng on 15/10/27.
+
+extends ./parent.jade
+
+block header-title
+    | 添加经历
+
+block content
+    div.add-line
+        span.show-text 工作名称
+        input(type="text").name
+    div.add-line
+        span.show-text 在职时间
+        input(type="text").date
+        | -
+        input(type="text").date
+    div.textarea
+        span.show-text 工作描述（至少15字）
+        textarea(placeholder="简要描述工作内容")
+
+    div.button
+        img(src="/images/correct.png")
+        span 保存经历

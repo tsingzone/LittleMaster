@@ -111,6 +111,15 @@ _.extend(teacher.prototype, {
             res.status(404).end();
         }
     },
+    getAddExperience: function (req, res) {
+        var types = ["social", "parttime", "school"];
+        var type = req.params.type;
+        if (types.indexOf(type) != -1) {
+            res.render(getView('experience_add'), {title: type});
+        } else {
+            res.status(404).end();
+        }
+    },
     getCollege: function (req, res) {
         res.render(getView("college"), {title: "College"});
     },

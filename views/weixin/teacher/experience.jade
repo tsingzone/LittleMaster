@@ -29,4 +29,8 @@ block script
     script.
         $(function () {
             $(".container_add_content").last().css("padding-bottom", "0px");
+
+            $("#btnAdd").click(function(){
+                window.location.href = window.location.href + '/add';
+            });
         });

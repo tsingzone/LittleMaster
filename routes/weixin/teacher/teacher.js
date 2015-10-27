@@ -82,5 +82,10 @@ router.get('/experience/:type', function (req, res) {
     teacherController.getExperience(req, res);
 });
 
+router.get('/experience/:type/add', function (req, res) {
+   console.log("添加经历");
+    teacherController.getAddExperience(req, res);
+});
+
 
 module.exports = router;
