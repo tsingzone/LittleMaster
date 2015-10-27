@@ -82,7 +82,24 @@
     height: 22px;
     vertical-align: middle;
     margin: 0 auto;
-    float:right;
+    float: right;
+}
+
+.button {
+    font-size: 20px;
+    line-height: 50px;
+    color: #FFFFFF;
+    background: #56CDB8;
+    margin: 50px 34px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.button img{
+    width: 20px;
+    display: inline-block;
+    vertical-align: text-bottom;
+    padding-right: 5px;
 }
 
 /* edn common */
@@ -358,3 +375,47 @@
 }
 
 /* end 证书填写 */
+
+/* start 绑定 */
+.bind{
+    width: 330px;
+    margin: 0 auto;
+    padding-bottom: 50px;
+}
+.bind-line{
+    display: inline-block;
+    margin-left: 20px;
+    height: 40px;
+    border-bottom: 1px solid #56CDB8;
+    color: #56CDB8;
+}
+.bind input{
+    border: none;
+    font-size: 18px;
+    line-height: 30px;
+    display: inline-block;
+    width: 140px;
+    margin-left: 5px;
+}
+.sms-valid{
+    display: inline-block;
+    background: #56CDB8;
+    font-size: 16px;
+    line-height: 40px;
+    color: #FFFFFF;
+    width: 90px;
+    text-align: center;
+    vertical-align: bottom;
+}
+.pic-valid{
+    display: inline-block;
+    background: #56CDB8;
+    font-size: 16px;
+    line-height: 30px;
+    color: #FFFFFF;
+    width: 75px;
+    margin-left: 8px;
+    text-align: center;
+    vertical-align: bottom;
+}
+/* end 绑定 */
