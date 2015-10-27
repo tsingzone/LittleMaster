@@ -122,5 +122,18 @@ _.extend(teacher.prototype, {
     deleteDiploma: function (source, callback) {
         var sql = "update teacher_diploma set status = -1 where id = ?";
         DBUtils.getDBConnection().query(sql, [source.diplomaId], callback);
+    },
+
+    deleteExperience: function (source, callback) {
+        var sql = "update teacher_experience set status = -1 where id = ?";
+        DBUtils.getDBConnection().query(sql, [source.experienceId], callback);
+    },
+    getMajorList: function (callback) {
+        var sql = "select id, name from sys_major where status = 1";
+        DBUtils.getDBConnection().query(sql, [], callback);
+    },
+    getPeriodList: function (callback) {
+        var sql = "select id, name from sys_period where status = 1";
+        DBUtils.getDBConnection().query(sql, [], callback);
     }
 });

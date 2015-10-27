@@ -33,4 +33,20 @@ block script
             $("#btnAdd").click(function(){
                 window.location.href = window.location.href + '/add';
             });
+
+            $(".delete").each(function () {
+                var id = $(this).attr("value");
+                $.ajax({
+                    url: "experience/delete",
+                    type: "post",
+                    dataType: "json",
+                    data: {experienceId: id},
+                    success: function (result) {
+                        if (result.success) {
+                            alert("delete");
+                            $("#" + id).remove();
+                        }
+                    }
+                });
+            });
         });

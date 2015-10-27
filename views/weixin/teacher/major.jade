@@ -1,0 +1,15 @@
+//
+   Created by michel_feng on 15/10/27.
+
+extends ./parent.jade
+
+block header-title
+    | 选择专业
+
+block content
+    each major in subList.length ? subList : ["暂无数据"]
+        if major.id
+            div.bottom-line.one-line(id="#{major.id}")= major.name
+
+        else
+            div.no-result= major

@@ -1,0 +1,12 @@
+//
+   Created by michel_feng on 15/10/27.
+extends  ./parent.jade
+
+block header-title
+    | 选择学段
+block content
+    each period in subList.length ? subList : ["暂无数据"]
+        if period.id
+            div.bottom-line.one-line(id="#{period.id}")= period.name
+        else
+            div.no-result= period

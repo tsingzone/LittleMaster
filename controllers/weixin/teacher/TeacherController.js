@@ -85,6 +85,34 @@ _.extend(teacher.prototype, {
             res.status(404).end();
         }
     },
+    getAddDiploma: function (req, res) {
+        var types = ["teacher", "other"];
+        var type = req.params.type;
+        if (types.indexOf(type) != -1) {
+            res.render(getView('diploma_add_' + type), {title: type});
+        } else {
+            res.status(404).end();
+        }
+    },
+    getAddDiplomaSubType: function (req, res) {
+        var types = ["major", "period"];
+        var type = req.params.type;
+        var index = types.indexOf(type);
+        switch (index) {
+            case 0:
+                Teacher.getMajorList(function (err, result) {
+                    res.render(getView(type), {title: type, subList: result});
+                });
+                break;
+            case 1:
+                Teacher.getPeriodList(function (err, result) {
+                    res.render(getView(type), {title: type, subList: result});
+                });
+                break;
+            default :
+                res.status(404).end();
+        }
+    },
     deleteDiplomaById: function (req, res) {
         var source = {
             diplomaId: req.params.diplomaId
@@ -119,6 +147,23 @@ _.extend(teacher.prototype, {
         } else {
             res.status(404).end();
         }
+    },
+    deleteExperienceById: function (req, res) {
+        var source = {
+            experienceId: req.params.experienceId
+        };
+        Teacher.deleteExperience(source, function (err, result) {
+            var resJson = {
+                success: true,
+                message: "",
+                entity: ""
+            };
+            if (err) {
+                resJson[success] = false;
+                resJson[message] = err;
+            }
+            res.json(resJson);
+        });
     },
     getCollege: function (req, res) {
         res.render(getView("college"), {title: "College"});

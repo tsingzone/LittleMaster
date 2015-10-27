@@ -1,0 +1,46 @@
+//
+   Created by michel_feng on 15/10/27.
+
+extends ./parent
+block header-title
+    | 添加证书
+block content
+    div.indent.bottom-line
+        span.show-text 证书号码：
+        span.input-text 12345436
+    div.indent.bottom-line(onclick="goToPeriod()")
+        span
+            span.show-text 学&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;段：
+            span.input-text 小学
+        span.line-right
+            img(src="/images/right-arrow.png" alt=">")
+    div.indent.bottom-line(onclick="goToMajor()")
+        span
+            span.show-text 专&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;业：
+            span.input-text 数学
+        span.line-right
+            img(src="/images/right-arrow.png" alt=">")
+    div.indent.bottom-line
+        span.show-text 拿证时间：
+        span.input-text 2015年10月27日
+    div.indent
+        div.upload_text 上传证件照
+        div.upload_pic_div
+            img.upload_pic(src="/images/default-blankimg.png")
+    div.button
+        img(src="/images/add.png")
+        span 保存证书
+
+block script
+    script.
+        $(function () {
+
+        });
+
+        function goToPeriod() {
+            location.href = location.href + "/period";
+        }
+
+        function goToMajor() {
+            location.href = location.href + "/major";
+        }

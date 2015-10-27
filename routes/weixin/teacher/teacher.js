@@ -49,8 +49,18 @@ router.get("/diploma/:type", function (req, res) {
     teacherController.getDiploma(req, res);
 });
 
-router.post('/diploma/delete', function(req, res){
-   console.log("证书 删除");
+router.get("/diploma/:type/add", function (req, res) {
+    console.log("证书 添加");
+    teacherController.getAddDiploma(req, res);
+});
+
+router.get("/diploma/teacher/add/:type", function (req, res) {
+    console.log("证书 添加 学段/专业");
+    teacherController.getAddDiplomaSubType(req, res);
+});
+
+router.post('/diploma/delete', function (req, res) {
+    console.log("证书 删除");
     teacherController.deleteDiplomaById(req, res);
 });
 
@@ -83,9 +93,13 @@ router.get('/experience/:type', function (req, res) {
 });
 
 router.get('/experience/:type/add', function (req, res) {
-   console.log("添加经历");
+    console.log("添加经历");
     teacherController.getAddExperience(req, res);
 });
 
+router.post('/experience/delete', function (req, res) {
+    console.log("经历 删除");
+    teacherController.deleteExperienceById(req, res);
+});
 
 module.exports = router;

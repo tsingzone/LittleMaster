@@ -472,3 +472,28 @@
 }
 
 /* end 添加经历 */
+/* start 添加证书 */
+.upload_text{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 40px;
+    color: #AAAAAA;
+    padding-left: 14px;
+}
+.upload_pic_div{
+    margin-left: 14px;
+    margin-right: 17px;
+    border: 2px solid #DFDFDF;
+    background: #E4E4E4;
+}
+.upload_pic{
+    vertical-align: middle;
+    display: block;
+    width: 80px;
+    margin: 0 auto;
+    padding: 40px 0;
+}
+/* end 添加证书 */
+
+
