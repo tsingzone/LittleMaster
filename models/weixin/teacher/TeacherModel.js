@@ -1,73 +1,110 @@
 /**
  * Created by michel_feng on 15/10/22.
  */
-var DBUtils = require('../../../db_utils');
 var _ = require('underscore');
 var async = require('async');
 
-var teacher = function TeacherModel() {
+var DBUtils = require('../../../db_utils');
 
+var teacher = function TeacherModel() {
+    this.name = 'TeacherModel';
 };
 module.exports = teacher;
 
 _.extend(teacher.prototype, {
     getUserCenterData: function (source, callback) {
-
         var sqlArray = [
             {
                 // 获取微信信息
-                sql: '\
-                    select \
-                        id,\
-                        open_id as openId,\
-                        nickname as nickName,\
-                        head_img as headImg\
-                    from \
-                        weixin_user\
-                    where \
-                        id = ?\
-                        and status = 1',
+                sql: 'select id, open_id as openId, nickname as nickName, head_img as headImg'
+                + ' from weixin_user '
+                + ' where id = ? and status = 1;',
                 params: [source.userId]
             },
             {
                 // 获取简历完成度
-                sql: 'select \
-                        1 + 1 as result\
-                     ',
+                sql: 'select teacher_infor.img_path, teacher_infor.`name`, teacher_infor.gender, '
+                + ' teacher_infor.birthday, teacher_infor.college, teacher_infor.majar, teacher_infor.education, '
+                + ' teacher_infor.entry_year, diploma.diplomaCount, experience.experienceCount '
+                + ' from teacher_infor '
+                + ' left join (select count(id) as diplomaCount, teacher_id from teacher_diploma where kind = 0) as diploma '
+                + ' on teacher_infor.id = diploma.teacher_id '
+                + ' left join (select count(id) as experienceCount, teacher_id from teacher_experience) experience '
+                + ' on teacher_infor.id = experience.teacher_id '
+                + ' where teacher_infor.user_id = ?',
                 params: [source.userId]
             },
             {
                 // 获取已报名兼职数
-                sql: '',
-                params: []
+                sql: 'select ifnull(count(teacher_sign.id), 0) as signCount'
+                + ' FROM teacher_sign '
+                + ' left join company_job '
+                + ' on teacher_sign.job_id = company_job.id '
+                + ' left join sys_position '
+                + ' on sys_position.id = company_job.position_id '
+                + ' left join sys_sallary_type '
+                + ' on sys_sallary_type.id = company_job.sallary_type '
+                + ' left join sys_settlement '
+                + ' on sys_settlement.id = company_job.settlement_id '
+                + ' where teacher_sign.teacher_id = ? '
+                + ' and company_job.`status` <> -1 '
+                + ' and teacher_sign.`status` <> -1 '
+                + ' and teacher_sign.progress <> 0 ',
+                params: [source.teacherId]
             },
             {
                 // 获取已收藏兼职数
-                sql: '',
-                params: []
+                sql: 'select  ifnull(count(teacher_sign.id), 0) as collectCount '
+                + ' FROM teacher_sign '
+                + ' left join company_job '
+                + ' on teacher_sign.job_id = company_job.id '
+                + ' left join sys_position '
+                + ' on sys_position.id = company_job.position_id '
+                + ' left join sys_sallary_type '
+                + ' on sys_sallary_type.id = company_job.sallary_type '
+                + ' left join sys_settlement '
+                + ' on sys_settlement.id = company_job.settlement_id '
+                + ' where teacher_sign.teacher_id = ? '
+                + ' and company_job.`status` <> -1 '
+                + ' and teacher_sign.`status` <> -1 '
+                + ' and teacher_sign.progress = 0 '
+                + ' and teacher_sign.collection = 1 ',
+                params: [source.teacherId]
             }
         ];
-        parallelFuncs([
-                function (callback) {
-                    DBUtils.getDBConnection().query(sqlArray[0].sql,
-                        sqlArray[0].params,
-                        function (err, result) {
-                            callback(err, result)
-                        });
-                },
-                function (callback) {
-                    DBUtils.getDBConnection().query(sqlArray[1].sql,
-                        sqlArray[1].params,
-                        function (err, result) {
-                            callback(err, result)
-                        });
-                }
-            ], callback
-        );
+
+        parallelFuncs(sqlArray, callback);
     },
     getProfile: function (source, callback) {
-        var sql = 'select 1+1 as result';
-        DBUtils.getDBConnection().query(sql, [source.profileId], callback);
+        var sqlArray = [
+            {
+                sql: 'select teacher_infor.id, weixin_user.id as userId, weixin_user.mobile, teacher_infor.img_path as headImg,'
+                + ' teacher_infor.`name`, teacher_infor.gender, teacher_infor.birthday, teacher_infor.college, '
+                + ' teacher_infor.majar, teacher_infor.education, teacher_infor.entry_year as entryYear '
+                + ' from teacher_infor '
+                + ' left join weixin_user on teacher_infor.user_id = weixin_user.id '
+                + ' where teacher_infor.id = ?',
+                params: [source.teacherId]
+            },
+            {
+                sql: 'select teacherId, kind, kindCount '
+                + ' from '
+                + ' (select teacher_id as teacherId, kind, count(kind) as kindCount from teacher_experience '
+                + ' group by teacher_id, kind ) experience '
+                + ' where experience.teacherId = ?',
+                params: [source.teacherId]
+            },
+            {
+                sql: 'select teacherId, kind, kindCount '
+                + ' from '
+                + ' ( select teacher_id as teacherId, kind, count(kind) as kindCount from teacher_diploma '
+                + ' group by teacher_id, kind ) diploma '
+                + ' where diploma.teacherId = ?',
+                params: [source.teacherId]
+            }
+        ];
+        parallelFuncs(sqlArray, callback);
+
     },
     getEducation: function (callback) {
         var sql = 'select id, name from sys_education where status = 1';
@@ -78,29 +115,16 @@ _.extend(teacher.prototype, {
         DBUtils.getDBConnection().query(sql, ['%' + source.searchText + '%', source.searchText], callback);
     },
     getSignJobs: function (source, callback) {
-        var sql = '\
-        select \
-            teacher_sign.id as id,\
-            teacher_sign.teacher_id as teacherId, \
-            company_job.title as title,\
-            sys_position.`name` as position,\
-            company_job.start_time as startTime,\
-            company_job.end_time as endTime,\
-            company_job.gender as gender,\
-            company_job.sallary as sallary,\
-            sys_sallary_type.`name` as sallaryType,\
-            sys_settlement.name as settlement,\
-            company_job.address\
-        FROM teacher_sign\
-        left join company_job\
-        on teacher_sign.job_id = company_job.id\
-        left join sys_position\
-        on sys_position.id = company_job.position_id\
-        left join sys_sallary_type\
-        on sys_sallary_type.id = company_job.sallary_type\
-        left join sys_settlement\
-        on sys_settlement.id = company_job.settlement_id\
-        where teacher_sign.teacher_id = ?';
+        var sql = 'select teacher_sign.id as id, teacher_sign.teacher_id as teacherId, company_job.title as title, '
+            + ' sys_position.`name` as position, company_job.start_time as startTime, company_job.end_time as endTime, '
+            + ' company_job.gender as gender, company_job.sallary as sallary, sys_sallary_type.`name` as sallaryType, '
+            + ' sys_settlement.name as settlement, company_job.address '
+            + ' FROM teacher_sign '
+            + ' left join company_job on teacher_sign.job_id = company_job.id '
+            + ' left join sys_position on sys_position.id = company_job.position_id '
+            + ' left join sys_sallary_type on sys_sallary_type.id = company_job.sallary_type '
+            + ' left join sys_settlement on sys_settlement.id = company_job.settlement_id '
+            + ' where teacher_sign.teacher_id = ?';
         DBUtils.getDBConnection().query(sql, [source.teacherId], callback);
     },
     getCollectJobs: function (source, callback) {
@@ -152,7 +176,6 @@ _.extend(teacher.prototype, {
         var sql = 'update teacher_diploma set status = -1 where id = ?';
         DBUtils.getDBConnection().query(sql, [source.diplomaId], callback);
     },
-
     deleteExperience: function (source, callback) {
         var sql = 'update teacher_experience set status = -1 where id = ?';
         DBUtils.getDBConnection().query(sql, [source.experienceId], callback);
@@ -167,9 +190,34 @@ _.extend(teacher.prototype, {
     }
 });
 
-var parallelFuncs = function (funcs, callback) {
-    async.parallel(funcs,
+var queryDb = function queryDb(args, callback) {
+    DBUtils.getDBConnection().query(args.sql, args.params, callback);
+};
+var dealWithData = function (callback) {
+    return function (err, result) {
+        if (err) {
+
+        }
+        callback(null, result);
+    };
+};
+
+var getFuncsArray = function (sqlArray) {
+    return _.map(sqlArray, function (item) {
+        return function (callback) {
+            queryDb(item, dealWithData(callback));
+        };
+    }, []);
+};
+
+var parallelFuncs = function (sqlArray, callback) {
+    async.parallel(getFuncsArray(sqlArray),
         function (err, results) {
-            callback(err, results);
+            if (err) {
+                console.log(err);
+                return callback(err);
+            }
+            console.log(JSON.parse(JSON.stringify(results)));
+            callback(null, results);
         });
 };

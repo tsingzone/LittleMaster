@@ -1,10 +1,13 @@
 /**
  * Created by michel_feng on 15/10/21.
  */
+var path = require('path');
+
 var _ = require('underscore');
+var moment = require('moment');
+
 var TeacherModel = require('../../../models/weixin/teacher/TeacherModel');
 var Teacher = new TeacherModel();
-var path = require('path');
 
 var teacher = function TeacherController() {
 };
@@ -13,27 +16,89 @@ module.exports = teacher;
 
 _.extend(teacher.prototype, {
     getUserCenterData: function (req, res) {
-        var userId = req.userId;
-        var sourceMap = {'userId': userId};
+        var sourceMap = {
+            userId: req.userId,
+            teacherId: req.teacherId
+        };
+
+        var calPercentage = function calPercentage(data) {
+            return Math.floor(100 * (_.filter(data, function (item) {
+                    if (item) {
+                        return true;
+                    }
+                }).length + 1) / 11);
+        };
+
         Teacher.getUserCenterData(sourceMap, function (err, result) {
-            console.log(result);
-            res.render(getView('teacher'), {user: result[0][0]});
+            if (err) {
+                res.status(404);
+            }
+            var percent = calPercentage(result[1][0]);
+            res.render(getView('teacher'), {
+                user: result[0][0],
+                percent: percent,
+                signCount: result[2][0].signCount,
+                collectCount: result[3][0].collectCount
+            });
         });
     },
     getProfile: function (req, res) {
-        var profileId = req.profileId;
-        if(profileId == 0 ){
-
-        }else{
-            var sourceMap = {profileId: profileId};
-            Teacher.getProfile(sourceMap, function (err, result) {
-                if(err){
-                    res.redirect(getView('weixin/error'));
-                }else{
-                    res.render(getView('profile'), {profile: result});
+        var sourceMap = {teacherId: req.teacherId};
+        Teacher.getProfile(sourceMap, function (err, result) {
+            if (err) {
+                res.redirect(getView('weixin/error'));
+            } else {
+                var profile = result[0][0];
+                if (profile) {
+                    if (profile.mobile) {
+                        profile.mobile = profile.mobile.slice(0, 3) + '****' + profile.mobile.slice(-4);
+                    }
+                    if (profile.birthday) {
+                        profile.birthday = new moment(profile.birthday).format('YYYY-MM-DD')
+                    }
+                    if (profile.entryYear) {
+                        profile.entryYear = new moment(profile.entryYear).format('YYYY');
+                    }
                 }
-            });
-        }
+                var diploma = result[1];
+                if (diploma) {
+                    diploma = JSON.parse(JSON.stringify(diploma));
+                    diploma = {
+                        teacher: _.find(diploma, function (item) {
+                            return item.kind === 0;
+                        }),
+                        other: _.find(diploma, function (item) {
+                            return item.kind === 1;
+                        })
+                    };
+                }
+
+                var experience = result[2];
+                if (experience) {
+                    experience = JSON.parse(JSON.stringify(experience));
+                    experience = {
+                        social: _.find(experience, function (item) {
+                            return item.kind === 0;
+                        }),
+                        parttime: _.find(experience, function (item) {
+                            return item.kind === 1;
+                        }),
+                        school: _.find(experience, function (item) {
+                            return item.kind === 2;
+                        })
+                    };
+                }
+
+                res.render(getView('profile'), {
+                    profile: profile,
+                    diplomaTeacher: diploma.teacher,
+                    diplomaOther: diploma.other,
+                    experienceSocial: experience.social,
+                    experienceParttime: experience.parttime,
+                    experienceSchool: experience.school
+                });
+            }
+        });
     },
     getProfileHead: function (req, res) {
         res.render(getView('upload'), {title: 'Upload'});
@@ -45,43 +110,23 @@ _.extend(teacher.prototype, {
         var source = {
             teacherId: req.teacherId
         };
-        var jobList = [{
-            id: 1,
-            teacherId: req.teacherId,
-            title: 'Title',
-            position: '批改',
-            startTime: '2015-10-10',
-            endTime: '2015-10-11',
-            gender: 0,
-            sallary: 100,
-            sallaryType: '元/天',
-            settlement: '日结',
-            address: '网络'
-        }];
-        Teacher.getSignJobs(source, function (err, result) {
-            res.render(getView('sign'), {jobList: jobList});
-        });
 
+        Teacher.getSignJobs(source, function (err, result) {
+            if (err) {
+
+            }
+            res.render(getView('sign'), {jobList: result[0]});
+        });
     },
     getCollectJobs: function (req, res) {
         var source = {
             teacherId: req.teacherId
         };
-        var jobList = [{
-            id: 1,
-            teacherId: req.teacherId,
-            title: 'Title',
-            position: '批改',
-            startTime: '2015-10-10',
-            endTime: '2015-10-11',
-            gender: 0,
-            sallary: 100,
-            sallaryType: '元/天',
-            settlement: '日结',
-            address: '网络'
-        }];
         Teacher.getCollectJobs(source, function (err, result) {
-            res.render(getView('collect'), {jobList: jobList});
+            if (err) {
+
+            }
+            res.render(getView('collect'), {jobList: result[0]});
         });
     },
     getDiploma: function (req, res) {

@@ -20,7 +20,8 @@ var wx_config = {
 router.use(function (req, res, next) {
     console.log('Weixin verify....');
     req.userId = req.query.userId || 1;
-    req.openId = req.query.openId || req.accessToken.openid || 'osWbGwS5BHkGvhhnvIV8nTlMNYWw';
+    //req.openId = req.query.openId || req.accessToken.openid || 'osWbGwS5BHkGvhhnvIV8nTlMNYWw';
+    req.openId = 'osWbGwS5BHkGvhhnvIV8nTlMNYWw';
     req.teacherId = req.query.teacherId || 1;
 
     next();
@@ -53,9 +54,9 @@ function getUser(accessToken, openId, callback) {
 }
 
 // 根据Code获取用户信息
-function getUserByCode(code, callback){
+function getUserByCode(code, callback) {
     getAccessToken(code, function (err, data) {
-        if(err){
+        if (err) {
             return callback(err);
         }
         var accessToken = JSON.parse(data.toString());

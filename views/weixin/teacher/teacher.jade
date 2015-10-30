@@ -19,17 +19,17 @@ block content
         #my_profile.content-line.bottom-line
             span.content-line-title 我的简历
             span.content-line-right
-                span.count 已完成&nbsp;0%
+                span.count 已完成&nbsp;#{percent} %
                 img(src="/images/right-arrow.png" alt=">")
         #sign_jobs.content-line.bottom-line
             span.content-line-title 已报名兼职
             span.content-line-right
-                span.count 0个
+                span.count #{signCount} 个
                 img(src="/images/right-arrow.png" alt=">")
         #collect_jobs.content-line.bottom-line
             span.content-line-title 已收藏兼职
             span.content-line-right
-                span.count 0个
+                span.count #{collectCount} 个
                 img(src="/images/right-arrow.png" alt=">")
 
 block script
@@ -44,13 +44,11 @@ block script
 
             // 跳转到已报名兼职页面
             $('#sign_jobs').click(function () {
-                alert("已报名兼职");
                 window.location.href = "/weixin/teacher/sign";
             });
 
             // 跳转到已收藏兼职页面
             $('#collect_jobs').click(function () {
-                alert("已收藏兼职");
                 window.location.href = "/weixin/teacher/collect";
             });
         });

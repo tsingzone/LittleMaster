@@ -13,11 +13,14 @@ block header-save
 
 block content
     #first_line.bottom-line(onclick="goToHead()")
-        img(src="/images/default-profile.png" alt="")
+        if profile.headImg
+            img(src="#{profile.headImg}" alt="")
+        else
+            img(src="/images/default-profile.png" alt="")
         span.small-text 上传头像
     #second_line(onclick="goToBind()")
         span.show-text(style="padding-left:0") 联系方式:
-        span.input-text 123****1111
+        span.input-text #{profile.mobile}
         span.small-text 修改绑定
     #basic_info
         div.line-header
@@ -25,17 +28,24 @@ block content
             | 基本信息
         div.indent.bottom-line
             span.show-text 姓名
-            input#name.no-border(type="text", placeholder="李嘉诚")
+            input#name.no-border(type="text", placeholder="" value="#{profile.name}")
         div.indent.bottom-line
             span.show-text 性别
-            input.input-text(type="radio" checked="checked" value="0" name="gender" id="male")
+            if (profile.gender === 0)
+                input.input-text(type="radio" checked="checked" value="0" name="gender" id="male")
+            else
+                input.input-text(type="radio" value="0" name="gender" id="male")
             label(for="male") 男
             | &nbsp;&nbsp;
-            input.input-text(type="radio" value="1" name="gender" id="female")
+            if (profile.gender === 0)
+                input.input-text(type="radio" value="1" name="gender" id="female")
+            else
+                input.input-text(type="radio" value="1" checked="checked" name="gender" id="female")
             label(for="female") 女
+
         div.indent
             span.show-text 生日
-            span.input-text 1900-01-01
+            span.input-text #{profile.birthday}
     #teacher_diploma
         div.line-header
             span.vertical-line
@@ -43,7 +53,12 @@ block content
         div.indent(onclick="goToDiploma('teacher')")
             span.line-title.input-text 教师资格证
             span.line-right
-                span.count 2个
+                span.count
+                if diplomaTeacher && diplomaTeacher.kindCount
+                    | #{diplomaTeacher.kindCount}
+                else
+                    | 0
+                |  个
                 img(src="/images/right-arrow.png" alt=">")
     #education_info
         div.line-header
@@ -52,21 +67,21 @@ block content
         div.indent.bottom-line(onclick="goToCollege()")
             span
                 span.show-text 大学
-                span.input-text 香港大学
+                span.input-text #{profile.college}
             span.line-right
                 img(src="/images/right-arrow.png" alt=">")
         div.indent.bottom-line
             span.show-text 专业
-            input#major.no-border(type="text", placeholder="广告学")
+            input#major.no-border(type="text", placeholder="" value="#{profile.majar}")
         div.indent.bottom-line(onclick="goToEducation()")
             span
                 span.show-text 学历
-                span.input-text 硕士
+                span.input-text #{profile.education}
             span.line-right
                 img(src="/images/right-arrow.png" alt=">")
         div.indent
             span.show-text 时间
-            input#entryYear.no-border(type="text", placeholder="1999", min="1900", max="2999")
+            input#entryYear.no-border(type="text", placeholder="", min="1900", max="2999" value="#{profile.entryYear}")
     #other_diploma
         div.line-header
             span.vertical-line
@@ -74,7 +89,12 @@ block content
         div.indent(onclick="goToDiploma('other')")
             span.line-title.input-text 专业类
             span.line-right
-                span.count 2个
+                span.count
+                if diplomaOther && diplomaOther.kindCount
+                    | #{diplomaOther.kindCount}
+                else
+                    | 0
+                |  个
                 img(src="/images/right-arrow.png" alt=">")
     #experience
         div.line-header
@@ -83,17 +103,32 @@ block content
         div.indent.bottom-line(onclick="goToExperience('social')")
             span.line-title.input-text 社会工作经验
             span.line-right
-                span.count 2个
+                span.count
+                if experienceSocial && experienceSocial["kindCount"]
+                    | #{experienceSocial["kindCount"]}
+                else
+                    | 0
+                |  个
                 img(src="/images/right-arrow.png" alt=">")
         div.indent.bottom-line(onclick="goToExperience('parttime')")
             span.line-title.input-text 兼职经验
             span.line-right
-                span.count 2个
+                span.count
+                if experienceParttime && experienceParttime["kindCount"]
+                    | #{experienceParttime["kindCount"]}
+                else
+                    | 0
+                |  个
                 img(src="/images/right-arrow.png" alt=">")
         div.indent.bottom-line(onclick="goToExperience('school')")
             span.line-title.input-text 校园工作经验
             span.line-right
-                span.count 2个
+                span.count
+                if experienceSchool && experienceSchool["kindCount"]
+                    | #{experienceSchool["kindCount"]}
+                else
+                    | 0
+                |  个
                 img(src="/images/right-arrow.png" alt=">")
 block footer
 
@@ -102,11 +137,11 @@ block script
         $(function () {
             $('#personal_center').addClass('current');
         });
-        function goToHead(){
+        function goToHead() {
             window.location.href = "upload";
         }
 
-        function goToBind(){
+        function goToBind() {
             window.location.href = "bind";
         }
 
