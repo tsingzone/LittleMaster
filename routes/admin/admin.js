@@ -8,6 +8,11 @@ var session = require('express-session');
 router.use(session({ secret: 'tsingzone', resave: false, saveUninitialized: true }));
 var admin = require('../../controllers/admin/AdminController');
 
+router.get('/test', function (req, res) {
+    console.log("admin test...");
+    admin.test();
+});
+
 router.post('/login', function (req, res) {
     console.log("admin login...");
     admin.login(req, res);

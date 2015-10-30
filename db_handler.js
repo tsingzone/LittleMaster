@@ -15,7 +15,7 @@ _.extend(DBHandler.prototype, {
         this.pool = mysql.createPool(dbconfig);
     },
 
-    query: function (sql, values, callback) {
+    queryDB: function (sql, values, responseFormat, callback) {
         if (!sql || sql.length <= 0) {
             logger.error("Invalid sql statement: " + sql);
             return;
@@ -32,17 +32,29 @@ _.extend(DBHandler.prototype, {
                 }
                 return;
             }
-
             connection.query(sql, values, function (err, results) {
                 connection.release();
                 if (err) {
                     logger.error("Error in query, " + sql + " " + JSON.stringify(err));
                 }
                 if (callback) {
-                    callback(err, results);
+                    if(responseFormat == 'json') {
+                        var jsonResult = JSON.parse(JSON.stringify(results));
+                        callback(err, jsonResult);
+                    } else {
+                        callback(err, results);
+                    }
                 }
             });
         });
+    },
+
+    query: function (sql, values, callback) {
+        this.queryDB(sql, values, 'array', callback);
+    },
+
+    queryJson: function (sql, values, callback) {
+        this.queryDB(sql, values, 'json', callback);
     }
 });
 

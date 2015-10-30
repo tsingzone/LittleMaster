@@ -24,6 +24,13 @@ AdminUser.findByName = function (username, callback) {
     });
 }
 
+AdminUser.test = function () {
+    var sql = "SELECT username FROM admins";
+    DBUtils.getDBConnection().queryJson(sql, [], function (err, results) {
+
+    });
+}
+
 AdminUser.deserialize = function (dbRecord) {
     var user = new AdminUser();
     user.username = dbRecord.username;
