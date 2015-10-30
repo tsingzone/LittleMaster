@@ -13,19 +13,27 @@ module.exports = teacher;
 
 _.extend(teacher.prototype, {
     getUserCenterData: function (req, res) {
-        var id = req.id;
-        var sourceMap = {"id": id};
+        var userId = req.userId;
+        var sourceMap = {"userId": userId};
         Teacher.getUserCenterData(sourceMap, function (err, result) {
             console.log(result);
-            res.render(getView("teacher"), {title: result});
+            res.render(getView("teacher"), {user: result[0][0]});
         });
     },
     getProfile: function (req, res) {
-        var id = req.id;
-        var sourceMap = {"id": id};
-        Teacher.getProfile(sourceMap, function (err, result) {
-            res.render(getView("profile"), {title: "profile"});
-        });
+        var profileId = req.profileId;
+        if(profileId == 0 ){
+
+        }else{
+            var sourceMap = {profileId: profileId};
+            Teacher.getProfile(sourceMap, function (err, result) {
+                if(err){
+                    res.redirect(getView('weixin/error'));
+                }else{
+                    res.render(getView("profile"), {profile: result});
+                }
+            });
+        }
     },
     getProfileHead: function (req, res) {
         res.render(getView("upload"), {title: "Upload"});
@@ -199,4 +207,5 @@ var validData = function (text) {
         return text.trim();
     }
 };
+
 

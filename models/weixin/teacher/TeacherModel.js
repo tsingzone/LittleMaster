@@ -3,6 +3,7 @@
  */
 var DBUtils = require('../../../db_utils');
 var _ = require('underscore');
+var async = require('async');
 
 var teacher = function TeacherModel() {
 
@@ -11,34 +12,62 @@ module.exports = teacher;
 
 _.extend(teacher.prototype, {
     getUserCenterData: function (source, callback) {
-        var sql = "select \
-                        weixin_user.id as id,\
-                        weixin_user.nickname as nickname,\
-                        weixin_user.head_img as headImg,\
-                        teacherSign.teacher_id as teacherId,\
-                        teacherSign.signCount as signCount,\
-                        teacherCollect.collectCount as collectCount\
-                    from weixin_user\
-                    left join (\
-                        select id from teacher_infor\
-                    ) as teacher\
-                    on weixin_user.id = teacher.user_id\
-                    left join (\
-                        select count(id) as signCount, teacher_id from teacher_sign\
-                        where teacher_sign.`status` = 1 and teacher_sign.progress <> 0\
-                    ) as teacherSign\
-                    on teacher.id = teacherSign.teacher_id\
-                    left join (\
-                        select count(id) as collectCount, teacher_id from teacher_sign\
-                        where teacher_sign.`status` = 1 and teacher_sign.progress = 0 and teacher_sign.collection = 1\
-                    ) as teacherCollect\
-                    on teacher.id = teacherCollect.teacher_id\
-                    where weixin_user.id = ?";
-        DBUtils.getDBConnection().query(sql, [source.id], callback);
+
+        var sqlArray = [
+            {
+                // 获取微信信息
+                sql: "\
+                    select \
+                        id,\
+                        open_id as openId,\
+                        nickname as nickName,\
+                        head_img as headImg\
+                    from \
+                        weixin_user\
+                    where \
+                        id = ?\
+                        and status = 1",
+                params: [source.userId]
+            },
+            {
+                // 获取简历完成度
+                sql: "select \
+                        1 + 1 as result\
+                     ",
+                params: [source.userId]
+            },
+            {
+                // 获取已报名兼职数
+                sql: "",
+                params: []
+            },
+            {
+                // 获取已收藏兼职数
+                sql: "",
+                params: []
+            }
+        ];
+        parallelFuncs([
+                function (callback) {
+                    DBUtils.getDBConnection().query(sqlArray[0].sql,
+                        sqlArray[0].params,
+                        function (err, result) {
+                            callback(err, result)
+                        });
+                },
+                function (callback) {
+                    DBUtils.getDBConnection().query(sqlArray[1].sql,
+                        sqlArray[1].params,
+                        function (err, result) {
+                            callback(err, result)
+                        });
+                }
+            ], callback
+        );
     },
     getProfile: function (source, callback) {
         var sql = "select 1+1 as result";
-        DBUtils.getDBConnection().query(sql, [source.id], callback);
+        DBUtils.getDBConnection().query(sql, [source.profileId], callback);
     },
     getEducation: function (callback) {
         var sql = "select id, name from sys_education where status = 1";
@@ -137,3 +166,10 @@ _.extend(teacher.prototype, {
         DBUtils.getDBConnection().query(sql, [], callback);
     }
 });
+
+var parallelFuncs = function (funcs, callback) {
+    async.parallel(funcs,
+        function (err, results) {
+            callback(err, results);
+        });
+};

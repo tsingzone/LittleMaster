@@ -10,3 +10,14 @@ block content
             div.bottom-line.one-line(id="#{period.id}")= period.name
         else
             div.no-result= period
+
+block script
+    script.
+        $(function () {
+            $(".one-line").each(function () {
+                $(this).click(function () {
+                    sessionStorage.setItem("period", $(this).html());
+
+                });
+            });
+        });

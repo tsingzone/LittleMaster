@@ -9,8 +9,11 @@ block header-title
 block content
     #content-top
         div(style="height:9px")
-        img#content-img(src="/images/default-head.png", alt="")
-        span#content-text 昵称
+        if user.headImg
+            img#content-img(src="#{user.headImg}", alt="")
+        else
+            img#content-img(src="/images/default-head.png", alt="")
+        span#content-text= user.nickName
 
     #content-main
         #my_profile.content-line.bottom-line
