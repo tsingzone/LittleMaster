@@ -38,6 +38,9 @@ var AdminController = {
         } else {
             res.render('admin/index', {username: req.session.user});
         }
+    },
+    test: function() {
+        AdminUser.test();
     }
 }
 
