@@ -14,10 +14,10 @@ module.exports = teacher;
 _.extend(teacher.prototype, {
     getUserCenterData: function (req, res) {
         var userId = req.userId;
-        var sourceMap = {"userId": userId};
+        var sourceMap = {'userId': userId};
         Teacher.getUserCenterData(sourceMap, function (err, result) {
             console.log(result);
-            res.render(getView("teacher"), {user: result[0][0]});
+            res.render(getView('teacher'), {user: result[0][0]});
         });
     },
     getProfile: function (req, res) {
@@ -30,16 +30,16 @@ _.extend(teacher.prototype, {
                 if(err){
                     res.redirect(getView('weixin/error'));
                 }else{
-                    res.render(getView("profile"), {profile: result});
+                    res.render(getView('profile'), {profile: result});
                 }
             });
         }
     },
     getProfileHead: function (req, res) {
-        res.render(getView("upload"), {title: "Upload"});
+        res.render(getView('upload'), {title: 'Upload'});
     },
     getProfileMobile: function (req, res) {
-        res.render(getView("bind"), {title: "Bind"});
+        res.render(getView('bind'), {title: 'Bind'});
     },
     getSignJobs: function (req, res) {
         var source = {
@@ -48,18 +48,18 @@ _.extend(teacher.prototype, {
         var jobList = [{
             id: 1,
             teacherId: req.teacherId,
-            title: "Title",
-            position: "批改",
-            startTime: "2015-10-10",
-            endTime: "2015-10-11",
+            title: 'Title',
+            position: '批改',
+            startTime: '2015-10-10',
+            endTime: '2015-10-11',
             gender: 0,
             sallary: 100,
-            sallaryType: "元/天",
-            settlement: "日结",
-            address: "网络"
+            sallaryType: '元/天',
+            settlement: '日结',
+            address: '网络'
         }];
         Teacher.getSignJobs(source, function (err, result) {
-            res.render(getView("sign"), {jobList: jobList});
+            res.render(getView('sign'), {jobList: jobList});
         });
 
     },
@@ -70,22 +70,22 @@ _.extend(teacher.prototype, {
         var jobList = [{
             id: 1,
             teacherId: req.teacherId,
-            title: "Title",
-            position: "批改",
-            startTime: "2015-10-10",
-            endTime: "2015-10-11",
+            title: 'Title',
+            position: '批改',
+            startTime: '2015-10-10',
+            endTime: '2015-10-11',
             gender: 0,
             sallary: 100,
-            sallaryType: "元/天",
-            settlement: "日结",
-            address: "网络"
+            sallaryType: '元/天',
+            settlement: '日结',
+            address: '网络'
         }];
         Teacher.getCollectJobs(source, function (err, result) {
-            res.render(getView("collect"), {jobList: jobList});
+            res.render(getView('collect'), {jobList: jobList});
         });
     },
     getDiploma: function (req, res) {
-        var types = ["teacher", "other"];
+        var types = ['teacher', 'other'];
         var type = req.params.type;
         if (types.indexOf(type) != -1) {
             res.render(getView('diploma'), {title: type});
@@ -94,7 +94,7 @@ _.extend(teacher.prototype, {
         }
     },
     getAddDiploma: function (req, res) {
-        var types = ["teacher", "other"];
+        var types = ['teacher', 'other'];
         var type = req.params.type;
         if (types.indexOf(type) != -1) {
             res.render(getView('diploma_add_' + type), {title: type});
@@ -103,7 +103,7 @@ _.extend(teacher.prototype, {
         }
     },
     getAddDiplomaSubType: function (req, res) {
-        var types = ["major", "period"];
+        var types = ['major', 'period'];
         var type = req.params.type;
         var index = types.indexOf(type);
         switch (index) {
@@ -128,8 +128,8 @@ _.extend(teacher.prototype, {
         Teacher.deleteDiploma(source, function (err, result) {
             var resJson = {
                 success: true,
-                message: "",
-                entity: ""
+                message: '',
+                entity: ''
             };
             if (err) {
                 resJson[success] = false;
@@ -139,7 +139,7 @@ _.extend(teacher.prototype, {
         });
     },
     getExperience: function (req, res) {
-        var types = ["social", "parttime", "school"];
+        var types = ['social', 'parttime', 'school'];
         var type = req.params.type;
         if (types.indexOf(type) != -1) {
             res.render(getView('experience'), {title: type});
@@ -148,7 +148,7 @@ _.extend(teacher.prototype, {
         }
     },
     getAddExperience: function (req, res) {
-        var types = ["social", "parttime", "school"];
+        var types = ['social', 'parttime', 'school'];
         var type = req.params.type;
         if (types.indexOf(type) != -1) {
             res.render(getView('experience_add'), {title: type});
@@ -163,8 +163,8 @@ _.extend(teacher.prototype, {
         Teacher.deleteExperience(source, function (err, result) {
             var resJson = {
                 success: true,
-                message: "",
-                entity: ""
+                message: '',
+                entity: ''
             };
             if (err) {
                 resJson[success] = false;
@@ -174,7 +174,7 @@ _.extend(teacher.prototype, {
         });
     },
     getCollege: function (req, res) {
-        res.render(getView("college"), {title: "College"});
+        res.render(getView('college'), {title: 'College'});
     },
     searchCollege: function (req, res) {
         var sourceMap = {
@@ -188,14 +188,14 @@ _.extend(teacher.prototype, {
     getEducation: function (req, res) {
         Teacher.getEducation(function (err, result) {
             console.log(result);
-            res.render(getView("education"), {educations: result});
+            res.render(getView('education'), {educations: result});
         });
     }
 });
 
 
 var getView = function getView(viewName) {
-    var dir = "weixin/teacher/";
+    var dir = 'weixin/teacher/';
     return path.join(dir, viewName);
 };
 

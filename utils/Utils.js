@@ -35,51 +35,51 @@ var utils = {
     },
 
     parse2Xml: function parse2Xml(sendJson, callback) {
-        var template = ["<xml>\n",
-            "<ToUserName><![CDATA[" + sendJson.ToUserName + "]]></ToUserName>\n",
-            "<FromUserName><![CDATA[" + sendJson.FromUserName + "]]></FromUserName>\n",
-            "<CreateTime>" + sendJson.CreateTime + "</CreateTime>\n",
-            "<MsgType><![CDATA[" + sendJson.MsgType + "]]></MsgType>\n"
+        var template = ['<xml>\n',
+            '<ToUserName><![CDATA[' + sendJson.ToUserName + ']]></ToUserName>\n',
+            '<FromUserName><![CDATA[' + sendJson.FromUserName + ']]></FromUserName>\n',
+            '<CreateTime>' + sendJson.CreateTime + '</CreateTime>\n',
+            '<MsgType><![CDATA[' + sendJson.MsgType + ']]></MsgType>\n'
         ];
         switch (sendJson.MsgType) {
-            case "text":
-                template.push("<Content><![CDATA[" + sendJson.Content + "]]></Content>\n");
+            case 'text':
+                template.push('<Content><![CDATA[' + sendJson.Content + ']]></Content>\n');
                 break;
-            case "image":
-                template.push("<Image>\n");
-                template.push("<MediaId><![CDATA[" + sendJson.MediaId + "]]></MediaId>\n");
-                template.push("</Image>\n");
+            case 'image':
+                template.push('<Image>\n');
+                template.push('<MediaId><![CDATA[' + sendJson.MediaId + ']]></MediaId>\n');
+                template.push('</Image>\n');
                 break;
-            case "voice":
-                template.push("<Voice>\n");
-                template.push("<MediaId><![CDATA[" + sendJson.MediaId + "]]></MediaId>\n");
-                template.push("</Voice>\n");
+            case 'voice':
+                template.push('<Voice>\n');
+                template.push('<MediaId><![CDATA[' + sendJson.MediaId + ']]></MediaId>\n');
+                template.push('</Voice>\n');
                 break;
-            case "video":
-                template.push("<Video>\n");
-                template.push("<MediaId><![CDATA[" + sendJson.MediaId + "]]></MediaId>\n");
-                template.push("<Title><![CDATA[" + sendJson.Title + "]]></Title>\n");
-                template.push("<Description><![CDATA[" + sendJson.Description + "]]></Description>\n");
-                template.push("</Video>\n");
+            case 'video':
+                template.push('<Video>\n');
+                template.push('<MediaId><![CDATA[' + sendJson.MediaId + ']]></MediaId>\n');
+                template.push('<Title><![CDATA[' + sendJson.Title + ']]></Title>\n');
+                template.push('<Description><![CDATA[' + sendJson.Description + ']]></Description>\n');
+                template.push('</Video>\n');
                 break;
-            case "music":
-                template.push("<Music>\n");
-                template.push("<Title><![CDATA[" + sendJson.Title + "]]></Title>\n");
-                template.push("<Description><![CDATA[" + sendJson.Description + "]]></Description>\n");
-                template.push("<MusicURL><![CDATA[" + sendJson.MusicURL + "]]></MusicURL>\n");
+            case 'music':
+                template.push('<Music>\n');
+                template.push('<Title><![CDATA[' + sendJson.Title + ']]></Title>\n');
+                template.push('<Description><![CDATA[' + sendJson.Description + ']]></Description>\n');
+                template.push('<MusicURL><![CDATA[' + sendJson.MusicURL + ']]></MusicURL>\n');
                 if (sendJson.HQMusicUrl) {
-                    template.push("<HQMusicUrl><![CDATA[" + sendJson.HQMusicUrl + "]]></HQMusicUrl>\n");
+                    template.push('<HQMusicUrl><![CDATA[' + sendJson.HQMusicUrl + ']]></HQMusicUrl>\n');
                 }
                 if (sendJson.ThumbMediaId) {
-                    template.push("<ThumbMediaId><![CDATA[" + sendJson.ThumbMediaId + "]]></ThumbMediaId>\n");
+                    template.push('<ThumbMediaId><![CDATA[' + sendJson.ThumbMediaId + ']]></ThumbMediaId>\n');
                 }
 
-                template.push("</Music>\n");
+                template.push('</Music>\n');
                 break;
         }
-        template.push("</xml>");
+        template.push('</xml>');
 
-        return template.join("");
+        return template.join('');
     }
 };
 function parseXml2Json(xmlText) {

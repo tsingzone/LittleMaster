@@ -16,7 +16,7 @@ _.extend(teacher.prototype, {
         var sqlArray = [
             {
                 // 获取微信信息
-                sql: "\
+                sql: '\
                     select \
                         id,\
                         open_id as openId,\
@@ -26,24 +26,24 @@ _.extend(teacher.prototype, {
                         weixin_user\
                     where \
                         id = ?\
-                        and status = 1",
+                        and status = 1',
                 params: [source.userId]
             },
             {
                 // 获取简历完成度
-                sql: "select \
+                sql: 'select \
                         1 + 1 as result\
-                     ",
+                     ',
                 params: [source.userId]
             },
             {
                 // 获取已报名兼职数
-                sql: "",
+                sql: '',
                 params: []
             },
             {
                 // 获取已收藏兼职数
-                sql: "",
+                sql: '',
                 params: []
             }
         ];
@@ -66,19 +66,19 @@ _.extend(teacher.prototype, {
         );
     },
     getProfile: function (source, callback) {
-        var sql = "select 1+1 as result";
+        var sql = 'select 1+1 as result';
         DBUtils.getDBConnection().query(sql, [source.profileId], callback);
     },
     getEducation: function (callback) {
-        var sql = "select id, name from sys_education where status = 1";
+        var sql = 'select id, name from sys_education where status = 1';
         DBUtils.getDBConnection().query(sql, [], callback);
     },
     searchCollege: function (source, callback) {
-        var sql = "select id, name from sys_college where name like ? or province = ? limit 10";
-        DBUtils.getDBConnection().query(sql, ["%" + source.searchText + "%", source.searchText], callback);
+        var sql = 'select id, name from sys_college where name like ? or province = ? limit 10';
+        DBUtils.getDBConnection().query(sql, ['%' + source.searchText + '%', source.searchText], callback);
     },
     getSignJobs: function (source, callback) {
-        var sql = "\
+        var sql = '\
         select \
             teacher_sign.id as id,\
             teacher_sign.teacher_id as teacherId, \
@@ -100,11 +100,11 @@ _.extend(teacher.prototype, {
         on sys_sallary_type.id = company_job.sallary_type\
         left join sys_settlement\
         on sys_settlement.id = company_job.settlement_id\
-        where teacher_sign.teacher_id = ?";
+        where teacher_sign.teacher_id = ?';
         DBUtils.getDBConnection().query(sql, [source.teacherId], callback);
     },
     getCollectJobs: function (source, callback) {
-        var sql = "\
+        var sql = '\
         select \
             teacher_sign.id as id,\
             teacher_sign.teacher_id as teacherId, \
@@ -126,11 +126,11 @@ _.extend(teacher.prototype, {
         on sys_sallary_type.id = company_job.sallary_type\
         left join sys_settlement\
         on sys_settlement.id = company_job.settlement_id\
-        where teacher_sign.teacher_id = ?";
+        where teacher_sign.teacher_id = ?';
         DBUtils.getDBConnection().query(sql, [source.teacherId], callback);
     },
     getDiploma: function (source, callback) {
-        var sql = "select \
+        var sql = 'select \
                 teacher_diploma.id as id,\
                 teacher_diploma.teacher_id as teacherId,\
                 teacher_diploma.number as number,\
@@ -145,24 +145,24 @@ _.extend(teacher.prototype, {
             where \
                 teacher_id = ? \
                 and kind = ?\
-                and status <> -1";
+                and status <> -1';
         DBUtils.getDBConnection().query(sql, [source.teacherId, source.kind], callback);
     },
     deleteDiploma: function (source, callback) {
-        var sql = "update teacher_diploma set status = -1 where id = ?";
+        var sql = 'update teacher_diploma set status = -1 where id = ?';
         DBUtils.getDBConnection().query(sql, [source.diplomaId], callback);
     },
 
     deleteExperience: function (source, callback) {
-        var sql = "update teacher_experience set status = -1 where id = ?";
+        var sql = 'update teacher_experience set status = -1 where id = ?';
         DBUtils.getDBConnection().query(sql, [source.experienceId], callback);
     },
     getMajorList: function (callback) {
-        var sql = "select id, name from sys_major where status = 1";
+        var sql = 'select id, name from sys_major where status = 1';
         DBUtils.getDBConnection().query(sql, [], callback);
     },
     getPeriodList: function (callback) {
-        var sql = "select id, name from sys_period where status = 1";
+        var sql = 'select id, name from sys_period where status = 1';
         DBUtils.getDBConnection().query(sql, [], callback);
     }
 });
