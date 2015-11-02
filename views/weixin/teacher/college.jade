@@ -7,17 +7,18 @@ block header-title
     | 选择学校
 block content
     div.search-line
-        img#search(src="/images/search.png")
-        input#college(type="text")
-        img#clear(src="/images/clear.png")
+        img#search(src='/images/search.png')
+        input#college(type='text')
+        img#clear(src='/images/clear.png')
 
     div#result
 block script
-    script(src="/js/college.js")
+    script(src='/js/college.js')
     script.
         $(function () {
-            $("#college").keydown(function () {
-                        var searchText = $("#college").val().trim();
+
+            $('#college').keydown(function () {
+                        var searchText = $('#college').val().trim();
                         if (!searchText) {
                             return;
                         }
@@ -26,31 +27,36 @@ block script
                         $.each(collegeList, function (item, val) {
                             var result = {};
                             if (val.name.indexOf(searchText) != -1 && !result[val.name]) {
-                                result["name"] = val.name;
+                                result['name'] = val.name;
                             }
                             if (val.province.indexOf(searchText) != -1 && !result[val.name]) {
-                                result["name"] = val.name;
+                                result['name'] = val.name;
                             }
-                            if (result["name"]) {
+                            if (result['name']) {
                                 resultArray.push(result);
                             }
                         });
                         resultArray = resultArray.slice(0, 10);
-                        var divParent = $("#result");
+                        var divParent = $('#result');
                         divParent.empty();
                         $.each(resultArray, function (item, val) {
-                            divParent.append("<div class='bottom-line one-line'>"
+                            divParent.append('<div class="bottom-line one-line" onclick="goToMain(\'' + val.name + '\')">'
                                     + val.name
-                                    + "</div>"
+                                    + '</div>'
                             );
                         });
                     }
             );
 
-            $("#clear").click(function () {
-                $("#college").val("");
-                $("#result").empty();
+            $('#clear').click(function () {
+                $('#college').val('');
+                $('#result').empty();
             });
+
+
         });
 
-
+        function goToMain(item) {
+            sessionStorage.setItem("college", item);
+            window.location.href = '/weixin/teacher/profile';
+        }

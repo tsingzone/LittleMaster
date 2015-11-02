@@ -7,27 +7,27 @@ block header-title
 block content
     div.indent.bottom-line
         span.show-text 证书号码：
-        span.input-text 12345436
+        input#number(type='text' value='123456').no-border
     div.indent.bottom-line(onclick="goToPeriod()")
         span
             span.show-text 学&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;段：
-            span.input-text 小学
+            span#period.input-text 小学
         span.line-right
             img(src="/images/right-arrow.png" alt=">")
     div.indent.bottom-line(onclick="goToMajor()")
         span
             span.show-text 专&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;业：
-            span.input-text 数学
+            span#major.input-text 数学
         span.line-right
             img(src="/images/right-arrow.png" alt=">")
     div.indent.bottom-line
         span.show-text 拿证时间：
-        span.input-text 2015年10月27日
+        input#achieveDate(type='text' value='2015年10月27日').no-border
     div.indent
         div.upload_text 上传证件照
         div.upload_pic_div
             img.upload_pic(src="/images/default-blankimg.png")
-    div.button
+    #saveCert.button
         img(src="/images/add.png")
         span 保存证书
 
@@ -35,6 +35,26 @@ block script
     script.
         $(function () {
 
+            if (sessionStorage.getItem("period")) {
+                $('#period').html(sessionStorage.getItem("period"));
+            }
+
+            if (sessionStorage.getItem("certMajor")) {
+                $('#major').html(sessionStorage.getItem("certMajor"));
+            }
+
+            $('#saveCert').click(function () {
+                $.ajax({
+                    url: "",
+                    data: {},
+                    dataType: "json",
+                    type: "post",
+                    success: function (result) {
+                        sessionStorage.removeItem('period');
+                        sessionStorage.removeItem('certMajor');
+                    }
+                });
+            });
         });
 
         function goToPeriod() {

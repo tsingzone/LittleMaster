@@ -14,9 +14,10 @@ block content
 block script
     script.
         $(function () {
-            $("div.one-line").each(function () {
+            $('div.one-line').each(function () {
                 $(this).click(function () {
-                    alert($(this).html());
+                    sessionStorage.setItem('education', $(this).html());
+                    window.location.href = '/weixin/teacher/profile';
                 });
             });
         });

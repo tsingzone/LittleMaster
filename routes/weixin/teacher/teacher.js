@@ -19,6 +19,11 @@ router.get('/profile', function (req, res) {
     teacherController.getProfile(req, res);
 });
 
+router.post('/profile/save', function (req, res) {
+    console.log("保存简历");
+    teacherController.saveProfile(req, res);
+});
+
 // 上传头像
 router.get('/upload', function (req, res) {
     console.log('上传头像');

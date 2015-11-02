@@ -13,3 +13,13 @@ block content
 
         else
             div.no-result= major
+block script
+    script.
+        $(function () {
+            $(".one-line").each(function () {
+                $(this).click(function () {
+                    sessionStorage.setItem("certMajor", $(this).html());
+                    window.location.href = '/weixin/teacher/diploma/teacher/add';
+                });
+            });
+        });

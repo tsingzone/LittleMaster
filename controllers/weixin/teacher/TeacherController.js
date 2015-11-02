@@ -43,7 +43,11 @@ _.extend(teacher.prototype, {
         });
     },
     getProfile: function (req, res) {
-        var sourceMap = {teacherId: req.teacherId};
+        var sourceMap = {
+            teacherId: req.teacherId,
+            userId: req.userId,
+            openId: req.openId
+        };
         Teacher.getProfile(sourceMap, function (err, result) {
             if (err) {
                 res.redirect(getView('weixin/error'));
@@ -72,6 +76,16 @@ _.extend(teacher.prototype, {
                         })
                     };
                 }
+                else {
+                    diploma = {
+                        teacher: {
+                            kindCount: 0
+                        },
+                        other: {
+                            kindCount: 0
+                        }
+                    }
+                }
 
                 var experience = result[2];
                 if (experience) {
@@ -88,6 +102,19 @@ _.extend(teacher.prototype, {
                         })
                     };
                 }
+                else {
+                    experience = {
+                        social: {
+                            kindCount: 0
+                        },
+                        parttime: {
+                            kindCount: 0
+                        },
+                        school: {
+                            kindCount: 0
+                        }
+                    }
+                }
 
                 res.render(getView('profile'), {
                     profile: profile,
@@ -100,6 +127,22 @@ _.extend(teacher.prototype, {
             }
         });
     },
+    saveProfile: function (req, res) {
+        var teacher = req.body.teacher;
+        var isParamsOk = validateParams(teacher);
+        if (isParamsOk) {
+            Teacher.saveProfile(teacher, function (err, result) {
+                if (err) {
+                    res.json({success: false, message: err});
+                } else {
+                    res.json({success: true, message: ""});
+                }
+            });
+        } else {
+            res.json({success: false, message: isParamsOk});
+        }
+    },
+
     getProfileHead: function (req, res) {
         res.render(getView('upload'), {title: 'Upload'});
     },
@@ -253,4 +296,12 @@ var validData = function (text) {
     }
 };
 
-
+var validateParams = function (data) {
+    var errList = [];
+    for (var name in data) {
+        if (!data[name]) {
+            errList.push(name + "不能为空！");
+        }
+    }
+    return errList;
+};
