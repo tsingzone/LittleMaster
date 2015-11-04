@@ -22,8 +22,12 @@ router.use(function (req, res, next) {
     req.userId = req.query.userId || 1;
     //req.openId = req.query.openId || req.accessToken.openid || 'osWbGwS5BHkGvhhnvIV8nTlMNYWw';
     req.openId = 'osWbGwS5BHkGvhhnvIV8nTlMNYWw';
-    req.teacherId = req.query.teacherId || 1;
-
+    req.teacherId = req.query.teacherId || 5;
+    req.userIds = {
+        userId: req.userId,
+        openId: req.openId,
+        teacherId: req.teacherId
+    };
     next();
     //var code = req.query.code;
     //

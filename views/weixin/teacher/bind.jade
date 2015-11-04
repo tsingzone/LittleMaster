@@ -11,14 +11,25 @@ block content
         div
             div.bind-line
                 span.bind-text 验证码
-                input(type="text")
-            span.sms-valid 获取验证码
+                input#mobile(type="text")
+            a#sms.sms-valid 获取验证码
         div
             div.bind-line
                 span.bind-text 图片验证码
                 input(type="text", style="width:110px")
-            span.pic-valid 1234
+            span#pic.pic-valid 1234
 
         div.button
             img(src="/images/correct.png")
             | 完成修改
+
+block script
+    script.
+        $(function () {
+            $('#sms').click(function () {
+                alert(11);
+                $('#sms').attr('disabled', 'disabled');
+                var mobile = $('#mobile').val();
+
+            });
+        });

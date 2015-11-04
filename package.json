@@ -22,6 +22,7 @@
     "crypto": "~0.0.3",
     "node-xml-lite": "~0.0.6",
     "urllib": "~2.5.0",
-    "moment": "~2.4.0"
+    "moment": "~2.4.0",
+    "formidable": "~1.0.17"
   }
 }

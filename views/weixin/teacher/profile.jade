@@ -12,9 +12,13 @@ block header-save
     img#save(src="/images/save.png")
 
 block content
+    input(id="teacherId",type="hidden", value="#{profile.id}")
+    input(id="userId",type="hidden", value="#{profile.userId}")
+    input(id="openId",type="hidden", value="#{profile.openId}")
     #first_line.bottom-line(onclick="goToHead()")
         if profile.headImg
-            img(src="#{profile.headImg}" alt="")
+            - profile.headImg = profile.headImg.substring(profile.headImg.indexOf('/'))
+            img#headImg(src="#{profile.headImg}" alt="" value="1")
         else
             img(src="/images/default-profile.png" alt="")
         span.small-text 上传头像
@@ -28,24 +32,24 @@ block content
             | 基本信息
         div.indent.bottom-line
             span.show-text 姓名
-            input#name.no-border(type="text", placeholder="" value="#{profile.name}")
+            input#name.no-border(type="text", placeholder="", name="name", value="#{profile.name}")
         div.indent.bottom-line
             span.show-text 性别
             if (profile.gender === 0)
-                input.input-text(type="radio" checked="checked" value="0" name="gender" id="male")
+                input.input-text(type="radio", checked="checked", value="0", name="gender", id="male")
             else
-                input.input-text(type="radio" value="0" name="gender" id="male")
+                input.input-text(type="radio", value="0", name="gender", id="male")
             label(for="male") 男
             | &nbsp;&nbsp;
             if (profile.gender === 0)
-                input.input-text(type="radio" value="1" name="gender" id="female")
+                input.input-text(type="radio", value="1", name="gender", id="female")
             else
-                input.input-text(type="radio" value="1" checked="checked" name="gender" id="female")
+                input.input-text(type="radio", value="1", checked="checked", name="gender", id="female")
             label(for="female") 女
 
         div.indent
             span.show-text 生日
-            span.input-text #{profile.birthday}
+            input#birthday(type="text", placeholder="", name="birthday", value="#{profile.birthday}").no-border
     #teacher_diploma
         div.line-header
             span.vertical-line
@@ -67,21 +71,21 @@ block content
         div.indent.bottom-line(onclick="goToCollege()")
             span
                 span.show-text 大学
-                span.input-text #{profile.college}
+                span#collegeName.input-text #{profile.college}
             span.line-right
                 img(src="/images/right-arrow.png" alt=">")
         div.indent.bottom-line
             span.show-text 专业
-            input#major.no-border(type="text", placeholder="" value="#{profile.majar}")
+            input#major.no-border(type="text", placeholder="", name="major", value="#{profile.majar}")
         div.indent.bottom-line(onclick="goToEducation()")
             span
                 span.show-text 学历
-                span.input-text #{profile.education}
+                span#education.input-text #{profile.education}
             span.line-right
                 img(src="/images/right-arrow.png" alt=">")
         div.indent
             span.show-text 时间
-            input#entryYear.no-border(type="text", placeholder="", min="1900", max="2999" value="#{profile.entryYear}")
+            input#entryYear.no-border(type="text", name="entryYear", placeholder="", min="1900", max="2999" value="#{profile.entryYear}")
     #other_diploma
         div.line-header
             span.vertical-line
@@ -135,10 +139,47 @@ block footer
 block script
     script.
         $(function () {
+            if (sessionStorage.length) {
+                if (sessionStorage.getItem('college')) {
+                    $('#collegeName').html(sessionStorage.getItem('college'));
+                }
+                if (sessionStorage.getItem('education')) {
+                    $('#education').html(sessionStorage.getItem('education'));
+                }
+            }
+
             $('#personal_center').addClass('current');
+
+            $('#header-save').click(function () {
+                var teacherInfo = {
+                    id: $('#teacherId').val(),
+                    name: $('#name').val(),
+                    gender: $(':checked').val(),
+                    birthday: $('#birthday').val(),
+                    college: $('#collegeName').text(),
+                    major: $('#major').val(),
+                    education: $('#education').text(),
+                    entryYear: $('#entryYear').val()
+                };
+                $.ajax({
+                    url: '/weixin/teacher/profile/save',
+                    data: {teacher: JSON.stringify(teacherInfo)},
+                    dataType: 'json',
+                    type: 'post',
+                    success: function (result) {
+                        if (result.success) {
+                            sessionStorage.clear();
+                        }
+                        alert(result.message);
+                    }
+                })
+            });
         });
         function goToHead() {
-            window.location.href = "upload";
+            if ($('#headImg').attr('value')) {
+                sessionStorage.setItem('headImg', $('#headImg').attr('src'));
+                window.location.href = "upload";
+            }
         }
 
         function goToBind() {

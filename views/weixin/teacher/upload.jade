@@ -3,11 +3,51 @@
 extends ./parent.jade
 
 block header-title
-   | 修改头像
-   
+    | 修改头像
+
 block content
-   div.upload
-      img#upload_head(src="/images/default-profile.png")
-      div.button
-         img(src="/images/add.png")
-         | 上传头像
+    form#uploadForm(method="post" enctype="multipart/form-data")
+        div.upload
+            #preview
+                img#upload_head(src="/images/default-profile.png")
+            div#btnUpload.button
+                img(src="/images/add.png")
+                | 上传头像
+            input#fulAvatar(type='file' name='fulAvatar' onchange='previewImage(this)' style="display: none;")
+            input#btnSubmit(type='submit' style='display:none;')
+block script
+    script.
+        $(function () {
+            if (sessionStorage) {
+                var imgSrc = sessionStorage.getItem('headImg');
+                if (imgSrc) {
+                    $('#upload_head').attr('src', imgSrc);
+                }
+            }
+            $('#upload_head').click(function () {
+                $('#fulAvatar').click();
+            });
+
+            $('#btnUpload').click(function () {
+                var fulAvatarVal = $('#fulAvatar').val();
+                if(!fulAvatarVal){
+                    alert('请选择要上传的头像！');
+                    return;
+                }
+                var extName = fulAvatarVal.substring(fulAvatarVal.lastIndexOf('.'),
+                        fulAvatarVal.length).toLowerCase();
+                if (['png', 'jgp', 'bmp', 'jpeg', 'gif'].indexOf(extName)) {
+                    $("#uploadForm").ajaxSubmit(function (result) {
+                        // 对于表单提交成功后处理，message为提交页面saveReport.htm的返回内容
+                        if (result.success) {
+                            alert(result.message);
+                            window.location.href = '/weixin/teacher/profile';
+                        } else {
+                            alert(result.message);
+                        }
+                    });
+                    return false; // 必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+                }
+
+            });
+        });
