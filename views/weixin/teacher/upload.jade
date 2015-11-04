@@ -13,7 +13,7 @@ block content
             div#btnUpload.button
                 img(src="/images/add.png")
                 | 上传头像
-            input#fulAvatar(type='file' name='fulAvatar' onchange='previewImage(this)' style="display: none;")
+            input#fulAvatar(type='file' name='fulAvatar' onchange='previewImage("upload_head", this)' style="display: none;")
             input#btnSubmit(type='submit' style='display:none;')
 block script
     script.
@@ -36,7 +36,7 @@ block script
                 }
                 var extName = fulAvatarVal.substring(fulAvatarVal.lastIndexOf('.'),
                         fulAvatarVal.length).toLowerCase();
-                if (['png', 'jgp', 'bmp', 'jpeg', 'gif'].indexOf(extName)) {
+                if (['png', 'jgp', 'jpeg'].indexOf(extName)) {
                     $("#uploadForm").ajaxSubmit(function (result) {
                         // 对于表单提交成功后处理，message为提交页面saveReport.htm的返回内容
                         if (result.success) {

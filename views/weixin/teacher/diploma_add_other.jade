@@ -3,25 +3,122 @@
 
 extends ./parent
 
+block style
+    script(src='/plugins/kalendae/kalendae.standalone.js')
+    link(rel='stylesheet' href='/plugins/kalendae/kalendae.css')
+
 block header-title
     | 添加证书
 
 block content
-    div.indent.bottom-line
-        span.show-text 证书名称：
-        span.input-text 12345436
-    div.indent.bottom-line
-        span.show-text 证书号码：
-        span.input-text 12345436
-    div.indent.bottom-line
-        span.show-text 拿证时间：
-        span.input-text 2015年10月27日
-    div.indent
-        div.upload_text 上传证件照
-        div.upload_pic_div
-            img.upload_pic(src="/images/default-blankimg.png")
+    form#uploadForm(method="post" enctype="multipart/form-data")
+        div.indent.bottom-line(onclick="goToCert()")
+            span
+                span.show-text 证书名称：
+                span#name.input-text
+                input#id(type='hidden')
+            span.line-right
+                img(src="/images/right-arrow.png" alt=">")
+        div.indent.bottom-line
+            span.show-text 证书号码：
+            input#number(type='text').no-border
+        div.indent.bottom-line
+            span.show-text 拿证时间：
+            input#achieveDate(type='text', data-kal='format:"YYYY-MM-DD"').date.auto-kal.no-border
+        div.indent
+            div.upload_text 上传证件照
+            div.upload_pic_div
+                img#upload_pic.upload_pic(src="/images/default-blankimg.png")
+            input#fulAvatar(type='file' name='fulAvatar' onchange='previewImage("upload_pic",this)' style="display: none;")
+        #saveCert.button
+            img(src="/images/add.png")
+            span 保存证书
 
-    div.button
-        img(src="/images/add.png")
-        span 保存证书
+block script
+    script.
+        $(function () {
+            $('#number').change(function () {
+                var number = $('#number').val();
+                if (number) {
+                    sessionStorage.setItem('certNum', number);
+                }
+            });
+            $('#achieveDate').change(function () {
+                var date = $('#achieveDate').val();
+                if (date) {
+                    sessionStorage.setItem('certDate', date);
+                }
+            });
+            if (sessionStorage.getItem('certName')) {
+                $('#name').html(sessionStorage.getItem('certName'));
+                $('#id').val(sessionStorage.getItem('certId'));
+            }
+            if (sessionStorage.getItem('certNum')) {
+                $('#number').val(sessionStorage.getItem('certNum'));
+            }
+            if (sessionStorage.getItem('certDate')) {
+                $('#achieveDate').val(sessionStorage.getItem('certDate'));
+            }
+
+            $('#upload_pic').click(function () {
+                $('#fulAvatar').click();
+            });
+            $('#saveCert').click(function () {
+                var id = $('#id').val();
+                var name = $('#name').text();
+                var number = $('#number').val();
+                var date = $('#achieveDate').val();
+
+                if (!name) {
+                    alert('证书名称不能为空！');
+                    $('#name').focus();
+                    return;
+                }
+                if (!number) {
+                    alert('证书号码不能为空！');
+                    $('#number').focus();
+                    return;
+                }
+                if (!date) {
+                    alert('拿证时间不能大于当前时间！');
+                    $('#achieveDate').focus();
+                    return;
+                }
+                var fulAvatarVal = $('#fulAvatar').val();
+                if (!fulAvatarVal) {
+                    alert('请选择要上传的证件照！');
+                    return;
+                }
+                var extName = fulAvatarVal.substring(fulAvatarVal.lastIndexOf('.'),
+                        fulAvatarVal.length).toLowerCase();
+                if (['png', 'jgp', 'jpeg'].indexOf(extName)) {
+                    $("#uploadForm").ajaxSubmit({
+                        type: "post",  //提交方式
+                        dataType: "json", //数据类型
+                        url: "/weixin/teacher/diploma/other/save", //请求url
+                        data: {
+                            number: number,
+                            diplomaId: id,
+                            diplomaName: name,
+                            achieveDate: date
+                        },
+                        success: function (result) { //提交成功的回调函数
+                            // 对于表单提交成功后处理，message为提交页面saveReport.htm的返回内容
+                            alert(result.message);
+                            if (result.success) {
+                                sessionStorage.removeItem('certId');
+                                sessionStorage.removeItem('certName');
+                                sessionStorage.removeItem('certNum');
+                                sessionStorage.removeItem('certDate');
+                                window.location.href = '/weixin/teacher/diploma/other';
+                            }
+                        }
+                    });
+                    return false; // 必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+                }
+            });
+        });
+        function goToCert() {
+            location.href = location.href + "/cert";
+        }
 

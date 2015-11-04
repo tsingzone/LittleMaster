@@ -216,6 +216,7 @@
                         /* falls through */
                         default:
                             self.addSelected(clickedDate);
+                            self.blur();
                             break;
                     }
 

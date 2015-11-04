@@ -2,58 +2,134 @@
    Created by michel_feng on 15/10/27.
 
 extends ./parent
+
+block style
+    script(src='/plugins/kalendae/kalendae.standalone.js')
+    link(rel='stylesheet' href='/plugins/kalendae/kalendae.css')
+
 block header-title
     | 添加证书
 block content
-    div.indent.bottom-line
-        span.show-text 证书号码：
-        input#number(type='text' value='123456').no-border
-    div.indent.bottom-line(onclick="goToPeriod()")
-        span
-            span.show-text 学&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;段：
-            span#period.input-text 小学
-        span.line-right
-            img(src="/images/right-arrow.png" alt=">")
-    div.indent.bottom-line(onclick="goToMajor()")
-        span
-            span.show-text 专&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;业：
-            span#major.input-text 数学
-        span.line-right
-            img(src="/images/right-arrow.png" alt=">")
-    div.indent.bottom-line
-        span.show-text 拿证时间：
-        input#achieveDate(type='text' value='2015年10月27日').no-border
-    div.indent
-        div.upload_text 上传证件照
-        div.upload_pic_div
-            img.upload_pic(src="/images/default-blankimg.png")
-    #saveCert.button
-        img(src="/images/add.png")
-        span 保存证书
+    form#uploadForm(method="post" enctype="multipart/form-data")
+        div.indent.bottom-line
+            span.show-text 证书号码：
+            input#number(type='text').no-border
+        div.indent.bottom-line(onclick="goToPeriod()")
+            span
+                span.show-text 学&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;段：
+                span#period.input-text
+            span.line-right
+                img(src="/images/right-arrow.png" alt=">")
+        div.indent.bottom-line(onclick="goToMajor()")
+            span
+                span.show-text 专&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;业：
+                span#major.input-text
+            span.line-right
+                img(src="/images/right-arrow.png" alt=">")
+        div.indent.bottom-line
+            span.show-text 拿证时间：
+            input#achieveDate(type='text', data-kal='format:"YYYY-MM-DD"').date.auto-kal.no-border
+        div.indent
+            div.upload_text 上传证件照
+            div.upload_pic_div
+                img#upload_pic.upload_pic(src="/images/default-blankimg.png")
+            input#fulAvatar(type='file' name='fulAvatar' onchange='previewImage("upload_pic",this)' style="display: none;")
+        #saveCert.button
+            img(src="/images/add.png")
+            span 保存证书
 
 block script
     script.
         $(function () {
+            $('#number').change(function () {
+                var number = $('#number').val();
+                if (number) {
+                    sessionStorage.setItem('tCertNum', number);
+                }
+            });
+            $('#achieveDate').change(function () {
+                var date = $('#achieveDate').val();
+                if (date) {
+                    sessionStorage.setItem('tCertDate', date);
+                }
+            });
 
-            if (sessionStorage.getItem("period")) {
-                $('#period').html(sessionStorage.getItem("period"));
+            if (sessionStorage.getItem('tCertPeriod')) {
+                $('#period').html(sessionStorage.getItem('tCertPeriod'));
+            }
+            if (sessionStorage.getItem('tCertMajor')) {
+                $('#major').html(sessionStorage.getItem('tCertMajor'));
+            }
+            if (sessionStorage.getItem('tCertNum')) {
+                $('#number').val(sessionStorage.getItem('tCertNum'));
+            }
+            if (sessionStorage.getItem('tCertDate')) {
+                $('#achieveDate').val(sessionStorage.getItem('tCertDate'));
             }
 
-            if (sessionStorage.getItem("certMajor")) {
-                $('#major').html(sessionStorage.getItem("certMajor"));
-            }
+            $('#upload_pic').click(function () {
+                $('#fulAvatar').click();
+            });
 
             $('#saveCert').click(function () {
-                $.ajax({
-                    url: "",
-                    data: {},
-                    dataType: "json",
-                    type: "post",
-                    success: function (result) {
-                        sessionStorage.removeItem('period');
-                        sessionStorage.removeItem('certMajor');
-                    }
-                });
+                var number = $('#number').val();
+                var period = $('#period').text();
+                var major = $('#major').text();
+                var date = $('#achieveDate').val();
+
+                if (!number) {
+                    alert('证书号码不能为空！');
+                    $('#number').focus();
+                    return;
+                }
+                if (!period) {
+                    alert('学段不能为空！');
+                    $('#period').focus();
+                    return;
+                }
+                if (!major) {
+                    alert('专业不能为空！');
+                    $('#major').focus();
+                    return;
+                }
+                if (!date) {
+                    alert('拿证时间不能大于当前时间！');
+                    $('#achieveDate').focus();
+                    return;
+                }
+
+                var fulAvatarVal = $('#fulAvatar').val();
+                if (!fulAvatarVal) {
+                    alert('请选择要上传的证件照！');
+                    return;
+                }
+                var extName = fulAvatarVal.substring(fulAvatarVal.lastIndexOf('.'),
+                        fulAvatarVal.length).toLowerCase();
+                if (['png', 'jgp', 'jpeg'].indexOf(extName)) {
+                    $("#uploadForm").ajaxSubmit({
+                        type: "post",  //提交方式
+                        dataType: "json", //数据类型
+                        url: "/weixin/teacher/diploma/teacher/save", //请求url
+                        data: {
+                            number: number,
+                            major: major,
+                            period: period,
+                            achieveDate: date
+                        },
+                        success: function (result) { //提交成功的回调函数
+                            // 对于表单提交成功后处理，message为提交页面saveReport.htm的返回内容
+                            alert(result.message);
+                            if (result.success) {
+                                sessionStorage.removeItem('tCertPeriod');
+                                sessionStorage.removeItem('tCertMajor');
+                                sessionStorage.removeItem('tCertNum');
+                                sessionStorage.removeItem('tCertDate');
+                                window.location.href = '/weixin/teacher/diploma/teacher';
+                            }
+                        }
+                    });
+                    return false; // 必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+                }
             });
         });
 

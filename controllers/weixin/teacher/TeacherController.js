@@ -137,7 +137,7 @@ _.extend(teacher.prototype, {
                 if (err) {
                     res.json({success: false, message: err});
                 } else {
-                    res.json({success: true, message: ""});
+                    res.json({success: true, message: "操作成功！"});
                 }
             });
         } else {
@@ -145,31 +145,15 @@ _.extend(teacher.prototype, {
         }
     },
     uploadHeadImg: function (req, res) {
-        var form = formidable.IncomingForm();
-        form.encoding = 'utf-8';
-        form.uploadDir = 'public/upload/head/';
-        form.keepExtensions = true;
-        form.maxFieldsSize = 2 * 1024 * 1024;
+        var form = getForm('head');
         form.parse(req, function (err, fields, files) {
+
             if (err) {
                 res.json({success: false, message: err});
                 return;
             }
-            var extName = '';  //后缀名
-            switch (files.fulAvatar.type) {
-                case 'image/pjpeg':
-                    extName = 'jpg';
-                    break;
-                case 'image/jpeg':
-                    extName = 'jpg';
-                    break;
-                case 'image/png':
-                    extName = 'png';
-                    break;
-                case 'image/x-png':
-                    extName = 'png';
-                    break;
-            }
+            var extName = getExtName(files.fulAvatar.type);  //后缀名
+
             if (extName.length == 0) {
                 res.json({success: false, message: '只支持png和jpg格式图片'});
                 return;
@@ -185,7 +169,7 @@ _.extend(teacher.prototype, {
                 var source = {
                     teacherId: req.userIds.teacherId,
                     imgPath: newPath
-                }
+                };
                 Teacher.chageTeacherHeadImg(source, function (err, result) {
                     if (err) {
                         console.log(err);
@@ -228,8 +212,24 @@ _.extend(teacher.prototype, {
     getDiploma: function (req, res) {
         var types = ['teacher', 'other'];
         var type = req.params.type;
-        if (types.indexOf(type) != -1) {
-            res.render(getView('diploma'), {title: type});
+        var index = types.indexOf(type);
+        if (index != -1) {
+            var source = {
+                teacherId: req.userIds.teacherId,
+                kind: index
+            };
+            Teacher.getDiploma(source, function (err, result) {
+                if (err) {
+                    res.status(404).end();
+                    return;
+                }
+                console.log(result);
+                res.render(getView('diploma'), {
+                    title: type,
+                    user: req.userIds,
+                    diplomaList: result
+                });
+            });
         } else {
             res.status(404).end();
         }
@@ -243,34 +243,117 @@ _.extend(teacher.prototype, {
             res.status(404).end();
         }
     },
+    saveDiploma: function (req, res) {
+        var types = ['teacher', 'other'];
+        var type = req.params.type;
+        var index = types.indexOf(type);
+        if (index != -1) {
+            var form = getForm('diploma');
+
+            form.parse(req, function (err, fields, files) {
+                    if (err) {
+                        res.json({success: false, message: err});
+                        return;
+                    }
+
+                    var isValid = validateParams(fields);
+                    if (isValid.length > 0) {
+                        res.json({success: false, message: isValid});
+                        return;
+                    }
+
+                    var extName = getExtName(files.fulAvatar.type);  //后缀名
+
+                    if (extName.length == 0) {
+                        res.json({success: false, message: '只支持png和jpg格式图片'});
+                        return;
+                    }
+
+                    var avatarName = req.userIds.teacherId + '-' + new Date().getTime() + '.' + extName;
+                    var newPath = form.uploadDir + avatarName;
+                    fs.rename(files.fulAvatar.path, newPath, function (err) {
+                        if (err) {
+                            res.json({success: false, message: err});
+                            return;
+                        }
+                        var source = {
+                            teacherId: req.userIds.teacherId,
+                            number: fields.number,
+                            achieveDate: fields.achieveDate,
+                            imgPath: newPath,
+                            kind: index
+                        };
+                        if (index == 0) {
+                            source['diplomaId'] = 1;
+                            source['diplomaName'] = '教师资格证';
+                            source['period'] = fields.period;
+                            source['major'] = fields.major;
+                        }
+                        else {
+                            source['diplomaId'] = fields.diplomaId;
+                            source['diplomaName'] = fields.diplomaName;
+                        }
+                        Teacher.saveDiploma(source, function (err, result) {
+                            if (err) {
+                                console.log(err);
+                                return;
+                            }
+                            res.json({success: true, message: "上传成功！"});
+                        });
+                    });  //重命名
+                }
+            )
+            ;
+        } else {
+            res.status(404).end();
+            return;
+        }
+    },
     getAddDiplomaSubType: function (req, res) {
-        var types = ['major', 'period'];
+        var types = ['major', 'period', 'cert'];
         var type = req.params.type;
         var index = types.indexOf(type);
         switch (index) {
             case 0:
                 Teacher.getMajorList(function (err, result) {
+                    if (err) {
+                        res.status(404).end();
+                        return;
+                    }
                     res.render(getView(type), {title: type, subList: result});
                 });
                 break;
             case 1:
                 Teacher.getPeriodList(function (err, result) {
+                    if (err) {
+                        res.status(404).end();
+                        return;
+                    }
+                    res.render(getView(type), {title: type, subList: result});
+                });
+                break;
+            case 2:
+                Teacher.getCertTypeList(function (err, result) {
+                    if (err) {
+                        res.status(404).end();
+                        return;
+                    }
                     res.render(getView(type), {title: type, subList: result});
                 });
                 break;
             default :
                 res.status(404).end();
         }
-    },
+    }
+    ,
     deleteDiplomaById: function (req, res) {
         var source = {
-            diplomaId: req.params.diplomaId
+            diplomaId: req.body.diplomaId
         };
         Teacher.deleteDiploma(source, function (err, result) {
             var resJson = {
                 success: true,
-                message: '',
-                entity: ''
+                message: '操作成功！',
             };
             if (err) {
                 resJson[success] = false;
@@ -278,7 +361,8 @@ _.extend(teacher.prototype, {
             }
             res.json(resJson);
         });
-    },
+    }
+    ,
     getExperience: function (req, res) {
         var type = req.params.type;
         var index = ['social', 'parttime', 'school'].indexOf(type);
@@ -304,7 +388,8 @@ _.extend(teacher.prototype, {
         } else {
             res.status(404).end();
         }
-    },
+    }
+    ,
     getAddExperience: function (req, res) {
         var type = req.params.type;
         var index = ['social', 'parttime', 'school'].indexOf(type);
@@ -316,7 +401,8 @@ _.extend(teacher.prototype, {
         } else {
             res.status(404).end();
         }
-    },
+    }
+    ,
     saveExperience: function (req, res) {
         var experience = {
             title: req.body.name,
@@ -342,7 +428,8 @@ _.extend(teacher.prototype, {
                 });
             }
         });
-    },
+    }
+    ,
     deleteExperienceById: function (req, res) {
         var source = {
             experienceId: req.body.experienceId
@@ -358,10 +445,12 @@ _.extend(teacher.prototype, {
             }
             res.json(resJson);
         });
-    },
+    }
+    ,
     getCollege: function (req, res) {
         res.render(getView('college'), {title: 'College'});
-    },
+    }
+    ,
     searchCollege: function (req, res) {
         var sourceMap = {
             searchText: validData(req.body.college)
@@ -370,14 +459,16 @@ _.extend(teacher.prototype, {
         Teacher.searchCollege(sourceMap, function (err, result) {
             res.json({colleges: result});
         });
-    },
+    }
+    ,
     getEducation: function (req, res) {
         Teacher.getEducation(function (err, result) {
             console.log(result);
             res.render(getView('education'), {educations: result});
         });
     }
-});
+})
+;
 
 
 var getView = function getView(viewName) {
@@ -402,4 +493,33 @@ var validateParams = function (data) {
         }
     }
     return errList;
+};
+
+
+var getForm = function (path) {
+    var form = formidable.IncomingForm();
+    form.encoding = 'utf-8';
+    form.uploadDir = 'public/upload/' + path + '/';
+    form.keepExtensions = true;
+    form.maxFieldsSize = 2 * 1024 * 1024;
+    return form;
+};
+
+var getExtName = function (type) {
+    var extName = '';
+    switch (type) {
+        case 'image/pjpeg':
+            extName = 'jpg';
+            break;
+        case 'image/jpeg':
+            extName = 'jpg';
+            break;
+        case 'image/png':
+            extName = 'png';
+            break;
+        case 'image/x-png':
+            extName = 'png';
+            break;
+    }
+    return extName;
 };

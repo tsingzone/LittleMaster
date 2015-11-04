@@ -66,8 +66,18 @@ router.get('/diploma/:type/add', function (req, res) {
     teacherController.getAddDiploma(req, res);
 });
 
+router.post('/diploma/:type/save', function (req, res) {
+    console.log('证书 保存');
+    teacherController.saveDiploma(req, res);
+});
+
 router.get('/diploma/teacher/add/:type', function (req, res) {
     console.log('证书 添加 学段/专业');
+    teacherController.getAddDiplomaSubType(req, res);
+});
+
+router.get('/diploma/other/add/:type', function (req, res) {
+    console.log('证书 添加 证书类型');
     teacherController.getAddDiplomaSubType(req, res);
 });
 

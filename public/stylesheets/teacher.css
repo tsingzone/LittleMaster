@@ -90,7 +90,7 @@
     line-height: 50px;
     color: #FFFFFF;
     background: #56CDB8;
-    margin: 50px 34px;
+    margin: 30px 34px;
     border-radius: 5px;
     text-align: center;
 }
@@ -226,12 +226,12 @@
 }
 
 .indent {
-    padding: 0 20px;
+    padding: 0 10px;
 }
 
 .no-border {
     border: none;
-    width: 70%;
+    width: 60%;
     line-height: 30px;
 }
 
@@ -374,6 +374,13 @@
     padding-bottom: 20px;
 }
 
+.diploma_img img {
+    display: block;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto;
+}
+
 /* end 证书填写 */
 
 /* start 绑定 */
@@ -494,9 +501,10 @@
 .upload_pic {
     vertical-align: middle;
     display: block;
-    width: 80px;
+    width: 180px;
+    height: 180px;
     margin: 0 auto;
-    padding: 40px 0;
+    padding: 10px 0;
 }
 
 /* end 添加证书 */
