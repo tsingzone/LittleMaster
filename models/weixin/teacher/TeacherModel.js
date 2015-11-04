@@ -98,7 +98,8 @@ _.extend(teacher.prototype, {
                         sql: 'select teacherId, kind, kindCount '
                         + ' from '
                         + ' (select teacher_id as teacherId, kind, count(kind) as kindCount from teacher_experience '
-                        + ' group by teacher_id, kind ) experience '
+                        + ' where status = 1 '
+                        + ' group by teacher_id, kind  ) experience '
                         + ' where experience.teacherId = ?',
                         params: [source.teacherId]
                     },
@@ -106,7 +107,8 @@ _.extend(teacher.prototype, {
                         sql: 'select teacherId, kind, kindCount '
                         + ' from '
                         + ' ( select teacher_id as teacherId, kind, count(kind) as kindCount from teacher_diploma '
-                        + ' group by teacher_id, kind ) diploma '
+                        + ' where status = 1 '
+                        + ' group by teacher_id, kind) diploma '
                         + ' where diploma.teacherId = ?',
                         params: [source.teacherId]
                     }
@@ -211,23 +213,32 @@ _.extend(teacher.prototype, {
         DBUtils.getDBConnection().query(sql, [source.teacherId], callback);
     },
     getDiploma: function (source, callback) {
-        var sql = 'select \
-                teacher_diploma.id as id,\
-                teacher_diploma.teacher_id as teacherId,\
-                teacher_diploma.number as number,\
-                teacher_diploma.achieve_time as achieveTime,\
-                sys_diploma.name as diplomaName,\
-                teacher_diploma.period as period,\
-                teacher_diploma.major as major,\
-                teacher_diploma.img_path as imgPath\
-            from teacher_diploma\
-            left join sys_diploma\
-            on sys_diploma.id = teacher_diploma.diploma_id\
-            where \
-                teacher_id = ? \
-                and kind = ?\
-                and status <> -1';
+        var sql = 'select '
+            + ' teacher_diploma.id as id, teacher_diploma.teacher_id as teacherId, '
+            + ' teacher_diploma.number as number, teacher_diploma.achieve_time as achieveTime, '
+            + ' sys_diploma.name as diplomaName, teacher_diploma.period as period, '
+            + ' teacher_diploma.major as major, teacher_diploma.img_path as imgPath '
+            + ' from teacher_diploma '
+            + ' left join sys_diploma '
+            + ' on sys_diploma.id = teacher_diploma.diploma_id '
+            + ' where '
+            + ' teacher_id = ? '
+            + ' and teacher_diploma.kind = ? '
+            + ' and teacher_diploma.status = 1 '
+            + ' and sys_diploma.status = 1';
         DBUtils.getDBConnection().query(sql, [source.teacherId, source.kind], callback);
+    },
+    saveDiploma: function (source, callback) {
+        var sql = 'insert into teacher_diploma( '
+            + ' teacher_id, diploma_id, diploma_name, number, achieve_time, period, major, img_path, status, kind'
+            + ' )'
+            + ' values ('
+            + ' ?, ?, ?, ?, ?, ?, ?, ?, ?, ?'
+            + ' )';
+        DBUtils.getDBConnection().query(sql, [source.teacherId,
+            source.diplomaId, source.diplomaName, source.number,
+            source.achieveDate, source.period, source.major, source.imgPath,
+            1, source.kind], callback);
     },
     deleteDiploma: function (source, callback) {
         var sql = 'update teacher_diploma set status = -1 where id = ?';
@@ -239,6 +250,10 @@ _.extend(teacher.prototype, {
     },
     getPeriodList: function (callback) {
         var sql = 'select id, name from sys_period where status = 1';
+        DBUtils.getDBConnection().query(sql, [], callback);
+    },
+    getCertTypeList: function (callback) {
+        var sql = 'select id, name from sys_diploma where status = 1 and id > 1';
         DBUtils.getDBConnection().query(sql, [], callback);
     },
     getExperienceList: function (source, callback) {

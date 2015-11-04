@@ -11,9 +11,9 @@ $(document).on('click', '#back', function () {
     history.go(-1);
 });
 
-function previewImage(file) {
+function previewImage(id,file) {
     if (file.files && file.files[0]) {
-        var img = document.getElementById('upload_head');
+        var img = document.getElementById(id);
         var reader = new FileReader();
         reader.onload = function (evt) {
             img.src = evt.target.result;

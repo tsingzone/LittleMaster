@@ -1,0 +1,23 @@
+//
+   Created by michel_feng on 15/11/4.
+
+extends ./parent.jade
+block header-title
+    | 证书名称
+block content
+    each diploma in subList.length ? subList : ["暂无数据"]
+        if diploma.id
+            div.bottom-line.one-line(id="#{diploma.id}")= diploma.name
+        else
+            div.no-result= diploma
+block script
+    script.
+        $(function () {
+            $(".one-line").each(function () {
+                $(this).click(function () {
+                    sessionStorage.setItem("certName", $(this).html());
+                    sessionStorage.setItem("certId", $(this).attr('id'));
+                    window.location.href = '/weixin/teacher/diploma/other/add';
+                });
+            });
+        });

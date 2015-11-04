@@ -18,11 +18,13 @@ block content
                 div.container_add_title
                     div
                         span.experience_title #{diploma.name}
-                        span.experience_time 拿证时间：#{diploma.achieveTime}
+                        - var time = (diploma.achieveTime.getYear() + 1900) + '年' + (diploma.achieveTime.getMonth()+1) + '月' + diploma.achieveTime.getDate() + '日';
+                        span.experience_time 拿证时间：#{time}
                     img.delete(src="/images/delete.png", alt="", value="#{diploma.id}")
                 div.container_add_content
                     div.diploma_img
-                        img(src="/images/default-blankimg.png")
+                        - diploma.imgPath = diploma.imgPath.substring(diploma.imgPath.indexOf('/'))
+                        img(src="#{diploma.imgPath}")
 
 
 block script
@@ -35,18 +37,22 @@ block script
             });
 
             $(".delete").each(function () {
-                var id = $(this).attr("value");
-                $.ajax({
-                    url: "diploma/delete",
-                    type: "post",
-                    dataType: "json",
-                    data: {diplomaId: id},
-                    success: function (result) {
-                        if (result.success) {
-                            alert("delete");
-                            $("#" + id).remove();
+                $(this).click(function () {
+                    var id = $(this).attr("value");
+                    $.ajax({
+                        url: "/weixin/teacher/diploma/delete",
+                        type: "post",
+                        dataType: "json",
+                        data: {diplomaId: id},
+                        success: function (result) {
+                            if (result.success) {
+                                alert(result.message);
+                                    if (result.success) {
+                                        $(document.getElementById(id)).hide();
+                                }
+                            }
                         }
-                    }
+                    });
                 });
             });
         });
