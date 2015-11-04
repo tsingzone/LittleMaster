@@ -8,6 +8,8 @@ var formidable = require('formidable');
 var _ = require('underscore');
 var moment = require('moment');
 
+var oss = require('../../../utils/Oss');
+
 var TeacherModel = require('../../../models/weixin/teacher/TeacherModel');
 var Teacher = new TeacherModel();
 
@@ -166,17 +168,38 @@ _.extend(teacher.prototype, {
                     res.json({success: false, message: err});
                     return;
                 }
-                var source = {
-                    teacherId: req.userIds.teacherId,
-                    imgPath: newPath
-                };
-                Teacher.chageTeacherHeadImg(source, function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        return;
-                    }
-                    res.json({success: true, message: "上传成功！"});
-                });
+
+                oss.putObject({
+                        Bucket: 'little-master-test',
+                        Key: newPath,                 // 注意, Key 的值不能以 / 开头, 否则会返回错误.
+                        AccessControlAllowOrigin: '',
+                        ContentType: 'image/*',
+                        CacheControl: 'no-cache',         // 参考: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9
+                        ContentDisposition: '',           // 参考: http://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html#sec19.5.1
+                        ContentEncoding: 'utf-8',         // 参考: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11
+                        ServerSideEncryption: 'AES256',
+                        Expires: null
+                    },
+                    function (err, data) {
+                        if (err) {
+                            console.log('error:', err);
+                            return;
+                        }
+
+                        console.log('success:', data);
+                        var source = {
+                            teacherId: req.userIds.teacherId,
+                            imgPath: newPath
+                        };
+                        Teacher.chageTeacherHeadImg(source, function (err, result) {
+                            if (err) {
+                                console.log(err);
+                                return;
+                            }
+                            res.json({success: true, message: "上传成功！"});
+                        });
+                    });
+
             });  //重命名
         });
     },
