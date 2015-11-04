@@ -54,6 +54,20 @@ block script
             $(".dropDown").css("backgroundImage",'url("../images/dd1.png")');
         });
         $("#type,#area,#sort").click(function() {
+            var item = $(this).attr("id");
+            $.ajax({
+                url:"/weixin/company/type",
+                type:"get",
+                dataType:"json",
+                data:"item=" + item,
+                success:function(types) {
+                    var str = "";
+                    for(var i = 0;i < types.length;i++) {
+                        str += "<div class='list'>" + types[i] + "</div>";
+                    }
+                    $("#list").html(str);
+                }
+            })
             $("#list").show();
         });
         $("#time").click(function() {
