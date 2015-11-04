@@ -2,7 +2,9 @@
  * Created by michel_feng on 15/10/21.
  */
 var path = require('path');
+var fs = require('fs');
 
+var formidable = require('formidable');
 var _ = require('underscore');
 var moment = require('moment');
 
@@ -142,7 +144,58 @@ _.extend(teacher.prototype, {
             res.json({success: false, message: isParamsOk});
         }
     },
+    uploadHeadImg: function (req, res) {
+        var form = formidable.IncomingForm();
+        form.encoding = 'utf-8';
+        form.uploadDir = 'public/upload/head/';
+        form.keepExtensions = true;
+        form.maxFieldsSize = 2 * 1024 * 1024;
+        form.parse(req, function (err, fields, files) {
+            if (err) {
+                res.json({success: false, message: err});
+                return;
+            }
+            var extName = '';  //后缀名
+            switch (files.fulAvatar.type) {
+                case 'image/pjpeg':
+                    extName = 'jpg';
+                    break;
+                case 'image/jpeg':
+                    extName = 'jpg';
+                    break;
+                case 'image/png':
+                    extName = 'png';
+                    break;
+                case 'image/x-png':
+                    extName = 'png';
+                    break;
+            }
+            if (extName.length == 0) {
+                res.json({success: false, message: '只支持png和jpg格式图片'});
+                return;
+            }
 
+            var avatarName = req.userIds.teacherId + '-' + new Date().getTime() + '.' + extName;
+            var newPath = form.uploadDir + avatarName;
+            fs.rename(files.fulAvatar.path, newPath, function (err) {
+                if (err) {
+                    res.json({success: false, message: err});
+                    return;
+                }
+                var source = {
+                    teacherId: req.userIds.teacherId,
+                    imgPath: newPath
+                }
+                Teacher.chageTeacherHeadImg(source, function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    res.json({success: true, message: "上传成功！"});
+                });
+            });  //重命名
+        });
+    },
     getProfileHead: function (req, res) {
         res.render(getView('upload'), {title: 'Upload'});
     },
@@ -227,32 +280,77 @@ _.extend(teacher.prototype, {
         });
     },
     getExperience: function (req, res) {
-        var types = ['social', 'parttime', 'school'];
         var type = req.params.type;
-        if (types.indexOf(type) != -1) {
-            res.render(getView('experience'), {title: type});
+        var index = ['social', 'parttime', 'school'].indexOf(type);
+        if (index != -1) {
+
+            var source = {
+                kind: index,
+                teacherId: req.userIds.teacherId
+            };
+            Teacher.getExperienceList(source, function (err, result) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(JSON.stringify(result));
+                    res.render(getView('experience'), {
+                        title: type,
+                        user: req.userIds,
+                        experienceList: result
+                    });
+                }
+            });
+
         } else {
             res.status(404).end();
         }
     },
     getAddExperience: function (req, res) {
-        var types = ['social', 'parttime', 'school'];
         var type = req.params.type;
-        if (types.indexOf(type) != -1) {
-            res.render(getView('experience_add'), {title: type});
+        var index = ['social', 'parttime', 'school'].indexOf(type);
+        if (index != -1) {
+            res.render(getView('experience_add'), {
+                kind: index,
+                user: req.userIds
+            });
         } else {
             res.status(404).end();
         }
     },
+    saveExperience: function (req, res) {
+        var experience = {
+            title: req.body.name,
+            startTime: req.body.startTime,
+            endTime: req.body.endTime,
+            description: req.body.description,
+            kind: req.body.kind,
+            status: 1,
+            teacherId: req.userIds.teacherId
+        };
+        Teacher.saveExperience(experience, function (err, result) {
+            if (err) {
+                console.log(err);
+                res.json({success: false, message: err});
+                return;
+            } else {
+                var types = ['social', 'parttime', 'school'];
+                console.log(types[experience.kind]);
+                res.json({
+                    success: true,
+                    message: "操作成功！",
+                    entity: types[experience.kind]
+                });
+            }
+        });
+    },
     deleteExperienceById: function (req, res) {
         var source = {
-            experienceId: req.params.experienceId
+            experienceId: req.body.experienceId
         };
         Teacher.deleteExperience(source, function (err, result) {
             var resJson = {
                 success: true,
-                message: '',
-                entity: ''
+                message: '操作成功！'
             };
             if (err) {
                 resJson[success] = false;

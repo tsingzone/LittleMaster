@@ -4,6 +4,7 @@
 
 var express = require('express');
 var router = express.Router();
+
 var TeacherController = require('../../../controllers/weixin/teacher/TeacherController');
 var teacherController = new TeacherController();
 
@@ -28,6 +29,12 @@ router.post('/profile/save', function (req, res) {
 router.get('/upload', function (req, res) {
     console.log('上传头像');
     teacherController.getProfileHead(req, res);
+});
+
+router.post('/upload', function (req, res) {
+    console.log('上传头像 post');
+    teacherController.uploadHeadImg(req, res);
+
 });
 
 // 绑定手机号
@@ -75,21 +82,11 @@ router.get('/college', function (req, res) {
     teacherController.getCollege(req, res);
 });
 
-router.post('/college', function (req, res) {
-    console.log('大学 post');
-    teacherController.searchCollege(req, res);
-});
-
 // 学历
 router.get('/education', function (req, res) {
     console.log('学历');
     teacherController.getEducation(req, res);
 });
-
-router.post('/education', function (req, res) {
-    console.log('学历 post');
-    res.status(200).end();
-})
 
 // 经历
 router.get('/experience/:type', function (req, res) {
@@ -101,6 +98,11 @@ router.get('/experience/:type/add', function (req, res) {
     console.log('添加经历');
     teacherController.getAddExperience(req, res);
 });
+
+router.post('/experience/save', function (req, res) {
+    console.log('保存经历');
+    teacherController.saveExperience(req, res);
+})
 
 router.post('/experience/delete', function (req, res) {
     console.log('经历 删除');

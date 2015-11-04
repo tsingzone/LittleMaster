@@ -1,6 +1,8 @@
 //
    Created by michel_feng on 15/10/24.
+
 extends ./parent.jade
+
 block header-title
     case title
         when 'social'
@@ -10,43 +12,52 @@ block header-title
         when 'school'
             | 校园经历填写
 block content
+    input(id="teacherId",type="hidden", value="#{user.id}")
+    input(id="userId",type="hidden", value="#{user.userId}")
+    input(id="openId",type="hidden", value="#{user.openId}")
     div.top-add
         #btnAdd
             img(src="/images/add.png", alt="")
             | 添加经历
+    if experienceList
+        for experience in experienceList
+            div.container_add_title(name='#{experience.id}')
+                div
+                    span.experience_title #{experience.title}
+                    - var getDate = function(date) {
+                    -       return (date.getYear() + 1900) + '年' + (date.getMonth()+1) + '月' + date.getDate() + '日'
+                    -    }
+                    - var start = getDate(experience.startTime);
+                    - var end = getDate(experience.endTime);
+                    span.experience_time #{start} — #{end}
+                img.delete(src="/images/delete.png", alt="", value="#{experience.id}")
 
-    div.container_add_title
-        div
-            span.experience_title 校团委技术部
-            span.experience_time 2015年7月8日-2015年9月10日
-        img.delete(src="/images/delete.png", alt="", value="")
-
-    div.container_add_content
-        | 负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，负责部门各项事务，
-
-
+            div.container_add_content(name='#{experience.id}')
+                | #{experience.description}
 block script
     script.
         $(function () {
             $(".container_add_content").last().css("padding-bottom", "0px");
 
-            $("#btnAdd").click(function(){
+            $("#btnAdd").click(function () {
                 window.location.href = window.location.href + '/add';
             });
 
             $(".delete").each(function () {
-                var id = $(this).attr("value");
-                $.ajax({
-                    url: "experience/delete",
-                    type: "post",
-                    dataType: "json",
-                    data: {experienceId: id},
-                    success: function (result) {
-                        if (result.success) {
-                            alert("delete");
-                            $("#" + id).remove();
+                $(this).click(function () {
+                    var id = $(this).attr("value");
+                    $.ajax({
+                        url: "/weixin/teacher/experience/delete",
+                        type: "post",
+                        dataType: "json",
+                        data: {experienceId: id},
+                        success: function (result) {
+                            alert(result.message);
+                            if (result.success) {
+                                $(document.getElementsByName(id)).hide();
+                            }
                         }
-                    }
+                    });
                 });
             });
         });

@@ -13,9 +13,12 @@ block header-save
 
 block content
     input(id="teacherId",type="hidden", value="#{profile.id}")
+    input(id="userId",type="hidden", value="#{profile.userId}")
+    input(id="openId",type="hidden", value="#{profile.openId}")
     #first_line.bottom-line(onclick="goToHead()")
         if profile.headImg
-            img(src="#{profile.headImg}" alt="")
+            - profile.headImg = profile.headImg.substring(profile.headImg.indexOf('/'))
+            img#headImg(src="#{profile.headImg}" alt="" value="1")
         else
             img(src="/images/default-profile.png" alt="")
         span.small-text 上传头像
@@ -164,15 +167,19 @@ block script
                     dataType: 'json',
                     type: 'post',
                     success: function (result) {
-                        alert(JSON.stringify(result));
-                        sessionStorage.clear();
-                        alert(sessionStorage.length);
+                        if (result.success) {
+                            sessionStorage.clear();
+                        }
+                        alert(result.message);
                     }
                 })
             });
         });
         function goToHead() {
-            window.location.href = "upload";
+            if ($('#headImg').attr('value')) {
+                sessionStorage.setItem('headImg', $('#headImg').attr('src'));
+                window.location.href = "upload";
+            }
         }
 
         function goToBind() {

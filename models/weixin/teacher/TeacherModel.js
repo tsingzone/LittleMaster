@@ -86,9 +86,9 @@ _.extend(teacher.prototype, {
             var searchFunc = function () {
                 var sqlArray = [
                     {
-                        sql: 'select teacher_infor.id, weixin_user.id as userId, weixin_user.mobile, teacher_infor.img_path as headImg,'
-                        + ' teacher_infor.`name`, teacher_infor.gender, teacher_infor.birthday, teacher_infor.college, '
-                        + ' teacher_infor.majar, teacher_infor.education, teacher_infor.entry_year as entryYear '
+                        sql: 'select teacher_infor.id, weixin_user.id as userId, weixin_user.open_id as openId, weixin_user.mobile, '
+                        + ' teacher_infor.img_path as headImg, teacher_infor.`name`, teacher_infor.gender, teacher_infor.birthday, '
+                        + ' teacher_infor.college, teacher_infor.majar, teacher_infor.education, teacher_infor.entry_year as entryYear '
                         + ' from teacher_infor '
                         + ' left join weixin_user on teacher_infor.user_id = weixin_user.id '
                         + ' where teacher_infor.id = ?',
@@ -157,6 +157,11 @@ _.extend(teacher.prototype, {
             new Date(),
             teacher.id
         ], callback);
+    },
+    chageTeacherHeadImg: function (source, callback) {
+        var sql = "update teacher_infor set img_path = ? " +
+            " where id = ?";
+        DBUtils.getDBConnection().query(sql, [source.imgPath, source.teacherId], callback);
     },
     getEducation: function (callback) {
         var sql = 'select id, name from sys_education where status = 1';
@@ -228,10 +233,6 @@ _.extend(teacher.prototype, {
         var sql = 'update teacher_diploma set status = -1 where id = ?';
         DBUtils.getDBConnection().query(sql, [source.diplomaId], callback);
     },
-    deleteExperience: function (source, callback) {
-        var sql = 'update teacher_experience set status = -1 where id = ?';
-        DBUtils.getDBConnection().query(sql, [source.experienceId], callback);
-    },
     getMajorList: function (callback) {
         var sql = 'select id, name from sys_major where status = 1';
         DBUtils.getDBConnection().query(sql, [], callback);
@@ -239,6 +240,32 @@ _.extend(teacher.prototype, {
     getPeriodList: function (callback) {
         var sql = 'select id, name from sys_period where status = 1';
         DBUtils.getDBConnection().query(sql, [], callback);
+    },
+    getExperienceList: function (source, callback) {
+        var sql = 'select id, teacher_id as teacherId, title, start_time as startTime, end_time as endTime, description, kind '
+            + ' from teacher_experience'
+            + ' where teacher_id = ? '
+            + ' and kind = ? '
+            + ' and status = 1 ';
+        DBUtils.getDBConnection().query(sql, [source.teacherId, source.kind], callback);
+    },
+    saveExperience: function (experience, callback) {
+        var sql = "insert into teacher_experience(" +
+            " teacher_id, title, start_time, end_time, description, kind, status)" +
+            " values(?, ?, ?, ?, ?, ?, ?)";
+        DBUtils.getDBConnection().query(sql, [
+            experience.teacherId,
+            experience.title,
+            experience.startTime,
+            experience.endTime,
+            experience.description,
+            experience.kind,
+            experience.status
+        ], callback);
+    },
+    deleteExperience: function (source, callback) {
+        var sql = 'update teacher_experience set status = -1 where id = ?';
+        DBUtils.getDBConnection().query(sql, [source.experienceId], callback);
     }
 });
 
