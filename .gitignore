@@ -2,4 +2,4 @@
 /.gitignore
 /node_modules
 /.idea
-/configs/configs_local.json
+/configs
