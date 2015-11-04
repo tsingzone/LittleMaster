@@ -4,10 +4,8 @@
 extends ./parent.jade
 
 block style
-    link(rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css")
-    script(src="//code.jquery.com/jquery-1.10.2.js")
-    script(src="//code.jquery.com/ui/1.11.4/jquery-ui.js")
-
+    script(src='/plugins/kalendae/kalendae.standalone.js')
+    link(rel='stylesheet' href='/plugins/kalendae/kalendae.css')
 
 block header-title
     | 添加经历
@@ -22,9 +20,9 @@ block content
         input#name(type="text").name
     div.add-line
         span.show-text 在职时间
-        input#startTime(type="text").date
+        input#startTime(type="text", data-kal='format:"YYYY-MM-DD"').date.auto-kal
         | &nbsp;&nbsp;-&nbsp;&nbsp;
-        input#endTime(type="text").date
+        input#endTime(type="text", data-kal='format:"YYYY-MM-DD"').date.auto-kal
     div.textarea
         span.show-text 工作描述（至少15字）
         textarea#description(placeholder="简要描述工作内容")
@@ -36,14 +34,7 @@ block content
 block script
     script.
         $(function () {
-            $("#startTime, #endTime").datepicker({
-                autoSize: true,
-                constrainInput: true,
-                dateFormat: 'yy-mm-dd',
-                gotoCurrent: true,
-                monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月'
-                    , '十月', '十一月', '十二月']
-            });
+
 
             $('#saveExp').click(function () {
                 var name = $('#name').val();

@@ -66,7 +66,7 @@ _.extend(teacher.prototype, {
                         profile.entryYear = new moment(profile.entryYear).format('YYYY');
                     }
                 }
-                var diploma = result[1];
+                var diploma = result[2];
                 if (diploma) {
                     diploma = JSON.parse(JSON.stringify(diploma));
                     diploma = {
@@ -89,7 +89,7 @@ _.extend(teacher.prototype, {
                     }
                 }
 
-                var experience = result[2];
+                var experience = result[1];
                 if (experience) {
                     experience = JSON.parse(JSON.stringify(experience));
                     experience = {

@@ -98,7 +98,8 @@ _.extend(teacher.prototype, {
                         sql: 'select teacherId, kind, kindCount '
                         + ' from '
                         + ' (select teacher_id as teacherId, kind, count(kind) as kindCount from teacher_experience '
-                        + ' group by teacher_id, kind ) experience '
+                        + ' where status = 1 '
+                        + ' group by teacher_id, kind  ) experience '
                         + ' where experience.teacherId = ?',
                         params: [source.teacherId]
                     },
@@ -106,7 +107,8 @@ _.extend(teacher.prototype, {
                         sql: 'select teacherId, kind, kindCount '
                         + ' from '
                         + ' ( select teacher_id as teacherId, kind, count(kind) as kindCount from teacher_diploma '
-                        + ' group by teacher_id, kind ) diploma '
+                        + ' where status = 1 '
+                        + ' group by teacher_id, kind) diploma '
                         + ' where diploma.teacherId = ?',
                         params: [source.teacherId]
                     }
