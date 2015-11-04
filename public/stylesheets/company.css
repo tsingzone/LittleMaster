@@ -1,5 +1,10 @@
 /*start 找兼职首页*/
-
+.cur {
+    color: #56CDB8;
+}
+.cur .dropDown{
+    background-image: url(../images/dd2.png);
+}
 #screening{
     width: 100%;
     max-width: 100%;
@@ -11,7 +16,6 @@
     height: 44px;
     line-height: 44px;
     font-size: 16px;
-    color: #333;
     border-bottom: 1px solid #E4E4E4;
 }
 .dropDown{
@@ -47,6 +51,7 @@
     display: none;
     z-index: 1;
     top: 95px;
+
 }
 .job{
     padding: 10px 10px;
@@ -107,9 +112,10 @@
     text-align: center;
     border-bottom: 1px solid #E4E4E4;
     font-size: 16px;
-    color: #333333;
 }
-
+.text{
+    display: inline-block;
+}
 /*end 找兼职首页*/
 
 /*start 兼职详情页*/
@@ -120,7 +126,7 @@
     background: #56CDB8;
 }
 #pro_type{
-    margin: 0px 23px 0 26px;
+    margin: 0 23px 0 26px;
     vertical-align: middle;
     border: 1px solid #FFFFFF;
 }
@@ -196,3 +202,4 @@
 }
 
 /*end 兼职详情页*/
+

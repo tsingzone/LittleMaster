@@ -15,5 +15,13 @@ var company = function CompanyController() {
 module.exports = company;
 
 _.extend(company.prototype, {
-
+    getTypeList:function(req,res) {
+        var item = req.query.item;
+        Company.getTypeList(item, function (err, result) {
+            if (err) {
+                res.status(404);
+            }
+            res.json(result);
+        });
+    }
 });

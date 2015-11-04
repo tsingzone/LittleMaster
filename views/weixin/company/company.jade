@@ -9,16 +9,20 @@ block header-title
     | 找兼职
 block content
     #screening
-        span#type 类型
+        span#type
+            .text 类型
             .dropDown
             .vertical
-        span#area 地区
+        span#area
+            .text 地区
             .dropDown
             .vertical
-        span#time 时间
+        span#time
+            .text 时间
             .dropDown
             .vertical
-        span#sort 排序
+        span#sort
+            .text 排序
             .dropDown
     #job_list
         .job
@@ -29,50 +33,89 @@ block content
                 .job_others 网络 不限性别 月结
                     .job_price 150元/天
     #list
-        .list 北京
-        .list 北京
-        .list 北京
     #mask_job
 
 
 block script
     script.
+        var checked = false;
         $(function() {
             $('#find_job').addClass('current');
         });
-        $("#screening span").click(function() {
-            $("#mask_job").show();
-            $("#screening span").css("color","#333");
-            $(".dropDown").css("backgroundImage",'url("../images/dd1.png")');
-            $(this).css("color","#56CDB8");
-            $(this).find(".dropDown").css("backgroundImage",'url("../images/dd2.png")');
+        $("#header-back,#screening span").click(function() {
+            if($(".cur").attr("id") != $(this).attr("id")) {
+                checked = false;
+                $("#list").hide();
+                $("#mask_job").hide();
+            }
+            if (checked) {
+                $("#mask_job").hide();
+                $("#list").hide();
+                $("#screening span").removeClass("cur");
+                checked = false;
+            } else {
+                var item = $(this).attr("id");
+                if(item == "header-back") {
+                    location.href = "company/city";
+                } else {
+                    $("#mask_job").show();
+                    $("#screening span").removeClass("cur");
+                    $(this).addClass("cur");
+                    switch (item) {
+                        case "time":
+
+                            break;
+                        case "sort":
+                            var str = "";
+                            str += "<div class='list'>最新发布</div>"
+                                + "<div class='list'>高价优先</div>"
+                                + "<div class='list'>离我最近</div>"
+                                + "<div class='list'>日结优先</div>"
+                                + "<div class='list'>周末优先</div>";
+                            $("#list").html(str);
+                            $("#list").show();
+                            break;
+                        case "type":
+                            $.ajax({
+                                url:"/weixin/company/type",
+                                type:"get",
+                                dataType:"json",
+                                data:"item=" + item,
+                                success:function(lists) {
+                                    var str = "";
+                                    for(var i = 0;i < lists.length;i++) {
+                                        str += "<div class='list' typeId='" + lists[i]["id"] + "' >" + lists[i]["name"] + "</div>";
+                                    }
+                                    $("#list").html(str);
+                                }
+                            });
+                            $("#list").show();
+                            break;
+                        case "area":
+
+                            break;
+                    }
+                }
+                checked = true;
+            }
         });
         $("#mask_job").click(function() {
             $(this).hide();
             $("#list").hide();
-            $("#screening span").css("color","#333");
-            $(".dropDown").css("backgroundImage",'url("../images/dd1.png")');
+            $("#screening span").removeClass("cur");
+            checked = false;
         });
-        $("#type,#area,#sort").click(function() {
-            var item = $(this).attr("id");
-            $.ajax({
-                url:"/weixin/company/type",
-                type:"get",
-                dataType:"json",
-                data:"item=" + item,
-                success:function(types) {
-                    var str = "";
-                    for(var i = 0;i < types.length;i++) {
-                        str += "<div class='list'>" + types[i] + "</div>";
-                    }
-                    $("#list").html(str);
-                }
-            })
-            $("#list").show();
+        $(".list").click(function() {
+            var city = $("#header-back").html();
+            var type = $("#type").html();
+            var area = $("#area").html();
+            var time = $("#time").html();
+            var sort = $("#sort").html();
+
         });
         $("#time").click(function() {
             $("#calendar").show();
         });
         $(document).on("click",".job",function() {
-            location.href = "company/profile"
+            location.href = "company/profile";
         });

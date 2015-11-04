@@ -30,7 +30,12 @@ router.get('/get', function (req, res) {
 
 router.get('/type', function (req, res) {
     console.log("company.js type");
-    companyController.getCollege(req, res);
+    companyController.getTypeList(req, res);
+});
+
+router.get('/jobs', function (req, res) {
+    console.log("company.js jobs");
+    companyController.getJobList(req, res);
     res.json(types);
 });
 

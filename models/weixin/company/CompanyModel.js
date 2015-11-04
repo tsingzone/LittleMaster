@@ -12,7 +12,13 @@ var company = function CompanyModel() {
 module.exports = company;
 
 _.extend(company.prototype, {
-    getList: function(screeningArr) {
+    //获取类型列表
+    getTypeList: function(item,callback) {
+        var sql = "select id,name from sys_position where status = 1";
+        DBUtils.getDBConnection().query(sql, [], callback);
+    },
+    //获取兼职列表
+    getJobList: function(screeningArr) {
         //city,type,area,time,sort
     }
 });
