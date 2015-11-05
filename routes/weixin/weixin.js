@@ -2,118 +2,113 @@
  * Created by michel_feng on 15/10/21.
  */
 var express = require('express');
-//var urllib = require('urllib');
-
+var urllib = require('urllib');
 var router = express.Router();
+
+
+var Config = require('../../configs');
+var wx_config = Config.getConfig().weixinconfig;
 var teacher = require('./teacher/teacher');
 var company = require('./company/company');
+var weixinController = require('../../controllers/weixin/WeixinController').createNew();
 
-var util = require('../../utils/Utils');
-
-var wx_config = {
-    token: 'TsingZone2015',
-    AppId: 'wxbd6f3476bedbb55f',
-    AppSecret: 'a8d342199c246fbaac755c7c47ea5041'
-};
 
 // 路由拦截
 router.use(function (req, res, next) {
     console.log('Weixin verify....');
-    req.userId = req.query.userId || 1;
-    //req.openId = req.query.openId || req.accessToken.openid || 'osWbGwS5BHkGvhhnvIV8nTlMNYWw';
-    req.openId = 'osWbGwS5BHkGvhhnvIV8nTlMNYWw';
-    req.teacherId = req.query.teacherId || 5;
-    req.userIds = {
-        userId: req.userId,
-        openId: req.openId,
-        teacherId: req.teacherId
-    };
-    next();
-    //var code = req.query.code;
-    //
-    //if (code) {
-    //    getUserByCode(code, function (err, data) {
-    //        req.accessToken = JSON.parse(data.toString());
-    //        console.log(req.accessToken);
-    //        req.userId = req.query.userId || 1;
-    //        req.openId = req.query.openId || req.accessToken.openid || '1';
-    //        console.log('openId=' + req.openId);
-    //        req.teacherId = req.query.teacherId || 1;
-    //        next();
-    //    });
-    //}
+
+    var code = req.query.code;
+    if (code) {
+        console.log('------ By Code -------')
+        getUserByCode(code, function (err, data) {
+            var userInfo = JSON.parse(data.toString());
+            // TODO: 更新数据库中weixin_user的信息
+
+            // TODO: 根据openid 获取用户的userId, openId, teacherId
+
+            req.userId = req.query.userId || 1;
+            req.openId = req.query.openId || userInfo.openid || 'osWbGwS5BHkGvhhnvIV8nTlMNYWw';
+            req.teacherId = req.query.teacherId || 5;
+            next();
+        });
+    } else {
+        console.log('------ No Code -------')
+        req.userId = req.query.userId || 1;
+        //req.openId = req.query.openId || req.accessToken.openid || 'osWbGwS5BHkGvhhnvIV8nTlMNYWw';
+        req.openId = 'osWbGwS5BHkGvhhnvIV8nTlMNYWw';
+        req.teacherId = req.query.teacherId || 5;
+        req.userIds = {
+            userId: req.userId,
+            openId: req.openId,
+            teacherId: req.teacherId
+        };
+        next();
+    }
 });
 
 // 获取access_token
-function getAccessToken(code, callback) {
-    var url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + wx_config.AppId +
-        '&secret=' + wx_config.AppSecret + '&code=' + code + '&grant_type=authorization_code';
-    urllib.request(url, callback);
+function getAccessToken(openId, callback) {
+    var url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' + wx_config.appId + '&secret=' + wx_config.appSecret;
+    urllib.request(url, function (err, data) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        var result = {
+            access_token: JSON.parse(data.toString()).access_token,
+            openid: openId
+        }
+        callback(null, result);
+    });
+}
+// 通过用户授权code获取access_token
+function getAccessTokenByCode(code, callback) {
+    var url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + wx_config.appId +
+        '&secret=' + wx_config.appSecret + '&code=' + code + '&grant_type=authorization_code';
+    urllib.request(url, function (err, data) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        getAccessToken(JSON.parse(data.toString()).openid, callback);
+    });
+}
+
+
+function validAccessToken(accessToken, openId, callback) {
+    var url = 'https://api.weixin.qq.com/sns/auth?access_token=' + accessToken + '&openid=' + openId;
+    urllib.request(url, function (err, data) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        callback(null, data);
+    });
 }
 
 // 获取用户信息
 function getUser(accessToken, openId, callback) {
-    var url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + accessToken + '&openid=' + openId + '&lang=zh_CN';
-    urllib.request(url, callback);
+    var url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' + accessToken + '&openid=' + openId + '&lang=zh_CN'
+    console.log(url);
+    urllib.request(url, function (err, data) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        callback(null, data);
+    });
 }
 
 // 根据Code获取用户信息
 function getUserByCode(code, callback) {
-    getAccessToken(code, function (err, data) {
-        if (err) {
-            return callback(err);
-        }
-        var accessToken = JSON.parse(data.toString());
-        getUser(accessToken.accessToken, accessToken.openId, callback);
+    getAccessTokenByCode(code, function (err, data) {
+        console.log(data)
+        getUser(data.access_token, data.openid, callback);
     });
 }
 
-router.get('/', function (req, res) {
-    var signatrue = req.query.signatrue;
-    var nonce = req.query.nonce;
-    var timestamp = req.query.timestamp;
-    var echostr = req.query.echostr;
-    var plainText = [wx_config.token, nonce, timestamp].sort().join('');
-    var sign = util.sha1(plainText);
-    console.log(plainText);
-    console.log(sign);
-    if (sign != signatrue) {
-        res.status(400).send('Bad Request');
-    } else {
-        res.send(echostr);
-    }
-});
-
-var sendJson = {
-    FromUserName: 'uid',
-    ToUserName: 'sp',
-    CreateTime: 'createTime',
-    MsgType: 'type',
-    Content: 'text',
-    MediaId: '',
-    Title: '',
-    Description: '',
-    MusicURL: '',
-    HQMusicUrl: '',
-    ThumbMediaId: ''
-};
-
-router.post('/', function (req, res) {
-    util.parse2Json(req, function (err, data) {
-        sendJson.FromUserName = data.ToUserName;
-        sendJson.ToUserName = data.FromUserName;
-        sendJson.CreateTime = Math.floor(Date.now() / 1000);
-
-        // 业务处理
-        sendJson.MsgType = 'text';
-
-        sendJson.Content = 'SOS';
-
-        // 返回信息
-        res.send(util.parse2Xml(sendJson));
-    });
-});
-
+router.get('/', weixinController.checkSign);
+router.post('/', weixinController.replyInfo);
 
 // 分发教师相关的路由信息
 router.use('/teacher', teacher);

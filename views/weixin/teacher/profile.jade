@@ -1,7 +1,11 @@
 // 我的简历
    Created by michel_feng on 15/10/23.
 
-extends ../layout
+extends ./parent
+
+block style
+    script(src='/plugins/kalendae/kalendae.standalone.js')
+    link(rel='stylesheet' href='/plugins/kalendae/kalendae.css')
 
 block header-back
     img#back(src="/images/left-arrow.png")
@@ -46,10 +50,9 @@ block content
             else
                 input.input-text(type="radio", value="1", checked="checked", name="gender", id="female")
             label(for="female") 女
-
         div.indent
             span.show-text 生日
-            input#birthday(type="text", placeholder="", name="birthday", value="#{profile.birthday}").no-border
+            input#birthday(type="text", placeholder="", name="birthday", value="#{profile.birthday}", data-kal='format:"YYYY-MM-DD"').no-border.auto-kal
     #teacher_diploma
         div.line-header
             span.vertical-line
@@ -85,7 +88,7 @@ block content
                 img(src="/images/right-arrow.png" alt=">")
         div.indent
             span.show-text 时间
-            input#entryYear.no-border(type="text", name="entryYear", placeholder="", min="1900", max="2999" value="#{profile.entryYear}")
+            input#entryYear.no-border(type="text", name="entryYear", placeholder="", min="1900", max="2999" value="#{profile.entryYear}" data-kal='format:"YYYY-MM-DD"').no-border.auto-kal
     #other_diploma
         div.line-header
             span.vertical-line
@@ -134,19 +137,33 @@ block content
                     | 0
                 |  个
                 img(src="/images/right-arrow.png" alt=">")
-block footer
 
 block script
     script.
         $(function () {
-            if (sessionStorage.length) {
-                if (sessionStorage.getItem('college')) {
-                    $('#collegeName').html(sessionStorage.getItem('college'));
-                }
-                if (sessionStorage.getItem('education')) {
-                    $('#education').html(sessionStorage.getItem('education'));
-                }
-            }
+            $('#name').change(function () {
+                sessionStorage.setItem('profileName', $('#name').val());
+            });
+
+            $('#male').change(function () {
+                sessionStorage.setItem('profileGender', $('#male').val());
+            });
+            $('#female').change(function () {
+                sessionStorage.setItem('profileGender', $('#female').val());
+            });
+            $('#birthday').change(function () {
+                sessionStorage.setItem('profileBirthday', $('#birthday').val());
+            });
+
+            $('#major').change(function () {
+                sessionStorage.setItem('profileMajor', $('#major').val());
+            });
+
+            $('#entryYear').change(function () {
+                sessionStorage.setItem('profileEntryYear', $('#entryYear').val());
+            });
+
+            loadSessionStorage();
 
             $('#personal_center').addClass('current');
 
@@ -161,6 +178,11 @@ block script
                     education: $('#education').text(),
                     entryYear: $('#entryYear').val()
                 };
+                var isValid = validateParams(teacherInfo);
+                if (isValid) {
+                    alert(isValid);
+                    return;
+                }
                 $.ajax({
                     url: '/weixin/teacher/profile/save',
                     data: {teacher: JSON.stringify(teacherInfo)},
@@ -200,4 +222,72 @@ block script
 
         function goToDiploma(type) {
             window.location.href = "diploma/" + type;
+        }
+
+        function loadSessionStorage() {
+            if (sessionStorage.length) {
+                if (sessionStorage.getItem('college')) {
+                    $('#collegeName').html(sessionStorage.getItem('college'));
+                }
+                if (sessionStorage.getItem('education')) {
+                    $('#education').html(sessionStorage.getItem('education'));
+                }
+                if (sessionStorage.getItem('profileName')) {
+                    $('#name').val(sessionStorage.getItem('profileName'));
+                }
+                if (sessionStorage.getItem('profileBirthday')) {
+                    $('#birthday').val(sessionStorage.getItem('profileBirthday'));
+                }
+                if (sessionStorage.getItem('profileGender')) {
+                    $('#male').attr('checked', true);
+                } else {
+                    $('#female').attr('checked', true);
+                }
+                if (sessionStorage.getItem('profileMajor')) {
+                    $('#major').val(sessionStorage.getItem('profileMajor'));
+                }
+                if (sessionStorage.getItem('profileEntryYear')) {
+                    $('#entryYear').val(sessionStorage.getItem('profileEntryYear'));
+                }
+            }
+        }
+
+        function validateParams(teacherInfo) {
+            if (teacherInfo.name) {
+                if (teacherInfo.name.length > 20) {
+                    return '姓名不能超过20个字符！';
+                }
+            } else {
+                return '姓名不能为空！';
+            }
+            if (teacherInfo.birthday) {
+                var birth = new Date(teacherInfo.birthday);
+                if (birth > new Date()) {
+                    return '生日不能晚于当前时间！';
+                }
+            } else {
+                return '生日不能为空！';
+            }
+            if (!teacherInfo.college) {
+                return '大学不能为空';
+            }
+            if (teacherInfo.major) {
+                if (teacherInfo.major.length > 20) {
+                    return '专业不能超过20个字符！';
+                }
+            } else {
+                return '专业不能为空';
+            }
+            if (!teacherInfo.education) {
+                return '学历不能为空';
+            }
+            if (teacherInfo.entryYear) {
+                var entryYear = new Date(teacherInfo.entryYear);
+                if (entryYear > new Date()) {
+                    return '时间不能晚于当前时间！';
+                }
+            } else {
+                return '时间不能为空';
+            }
+            return '';
         }

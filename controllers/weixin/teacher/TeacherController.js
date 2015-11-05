@@ -9,7 +9,8 @@ var _ = require('underscore');
 var moment = require('moment');
 
 var oss = require('../../../utils/Oss');
-
+var Configs = require('../../../configs');
+var ossconfig = Configs.getConfig().ossconfig;
 var TeacherModel = require('../../../models/weixin/teacher/TeacherModel');
 var Teacher = new TeacherModel();
 
@@ -23,14 +24,6 @@ _.extend(teacher.prototype, {
         var sourceMap = {
             userId: req.userId,
             teacherId: req.teacherId
-        };
-
-        var calPercentage = function calPercentage(data) {
-            return Math.floor(100 * (_.filter(data, function (item) {
-                    if (item) {
-                        return true;
-                    }
-                }).length + 1) / 11);
         };
 
         Teacher.getUserCenterData(sourceMap, function (err, result) {
@@ -170,7 +163,7 @@ _.extend(teacher.prototype, {
                 }
 
                 oss.putObject({
-                        Bucket: 'little-master-test',
+                        Bucket: ossconfig.bucketName,
                         Key: newPath,                 // 注意, Key 的值不能以 / 开头, 否则会返回错误.
                         AccessControlAllowOrigin: '',
                         ContentType: 'image/*',
@@ -186,7 +179,6 @@ _.extend(teacher.prototype, {
                             return;
                         }
 
-                        console.log('success:', data);
                         var source = {
                             teacherId: req.userIds.teacherId,
                             imgPath: newPath
@@ -295,38 +287,58 @@ _.extend(teacher.prototype, {
                     var avatarName = req.userIds.teacherId + '-' + new Date().getTime() + '.' + extName;
                     var newPath = form.uploadDir + avatarName;
                     fs.rename(files.fulAvatar.path, newPath, function (err) {
-                        if (err) {
-                            res.json({success: false, message: err});
-                            return;
-                        }
-                        var source = {
-                            teacherId: req.userIds.teacherId,
-                            number: fields.number,
-                            achieveDate: fields.achieveDate,
-                            imgPath: newPath,
-                            kind: index
-                        };
-                        if (index == 0) {
-                            source['diplomaId'] = 1;
-                            source['diplomaName'] = '教师资格证';
-                            source['period'] = fields.period;
-                            source['major'] = fields.major;
-                        }
-                        else {
-                            source['diplomaId'] = fields.diplomaId;
-                            source['diplomaName'] = fields.diplomaName;
-                        }
-                        Teacher.saveDiploma(source, function (err, result) {
-                            if (err) {
-                                console.log(err);
-                                return;
-                            }
-                            res.json({success: true, message: "上传成功！"});
-                        });
+
+                        oss.putObject({
+                                Bucket: ossconfig.bucketName,
+                                Key: newPath,                 // 注意, Key 的值不能以 / 开头, 否则会返回错误.
+                                AccessControlAllowOrigin: '',
+                                ContentType: 'image/*',
+                                CacheControl: 'no-cache',         // 参考: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9
+                                ContentDisposition: '',           // 参考: http://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html#sec19.5.1
+                                ContentEncoding: 'utf-8',         // 参考: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11
+                                ServerSideEncryption: 'AES256',
+                                Expires: null
+                            },
+                            function (err, data) {
+
+                                if (err) {
+                                    res.json({
+                                        success: false,
+                                        message: err
+                                    });
+                                    return;
+                                }
+                                var source = {
+                                    teacherId: req.userIds.teacherId,
+                                    number: fields.number,
+                                    achieveDate: fields.achieveDate,
+                                    imgPath: newPath,
+                                    kind: index
+                                };
+                                if (index == 0) {
+                                    source['diplomaId'] = 1;
+                                    source['diplomaName'] = '教师资格证';
+                                    source['period'] = fields.period;
+                                    source['major'] = fields.major;
+                                }
+                                else {
+                                    source['diplomaId'] = fields.diplomaId;
+                                    source['diplomaName'] = fields.diplomaName;
+                                }
+                                Teacher.saveDiploma(source, function (err, result) {
+                                    if (err) {
+                                        console.log(err);
+                                        return;
+                                    }
+                                    res.json({
+                                        success: true,
+                                        message: "上传成功！"
+                                    });
+                                });
+                            });
                     });  //重命名
                 }
-            )
-            ;
+            );
         } else {
             res.status(404).end();
             return;
@@ -545,4 +557,13 @@ var getExtName = function (type) {
             break;
     }
     return extName;
+};
+
+
+var calPercentage = function calPercentage(data) {
+    return Math.floor(100 * (_.filter(data, function (item) {
+            if (item || item === 0) {
+                return true;
+            }
+        }).length + 1) / 11);
 };
