@@ -33,6 +33,7 @@ block content
                 .job_others 网络 不限性别 月结
                     .job_price 150元/天
     #list
+    #calendar
     #mask_job
 
 
@@ -41,16 +42,29 @@ block script
         var checked = false;
         $(function() {
             $('#find_job').addClass('current');
+            if(sessionStorage.getItem('cityCode')) {
+                $("#header-back").html("<img id='dingwei' src='/images/dingwei.png'/>" + sessionStorage.getItem('city'));
+                $("#header-back,#header-title,#header-save").css("width","33%");
+            } else {
+                sessionStorage.setItem('city', "北京市");
+                sessionStorage.setItem('cityCode', 110100);
+            }
+            new Kalendae(document.getElementById("calendar"), {
+                months:1,
+                mode:'multiple'
+            });
         });
         $("#header-back,#screening span").click(function() {
             if($(".cur").attr("id") != $(this).attr("id")) {
                 checked = false;
                 $("#list").hide();
                 $("#mask_job").hide();
+                $("#calendar").hide();
             }
             if (checked) {
                 $("#mask_job").hide();
                 $("#list").hide();
+                $("#calendar").hide();
                 $("#screening span").removeClass("cur");
                 checked = false;
             } else {
@@ -63,7 +77,9 @@ block script
                     $(this).addClass("cur");
                     switch (item) {
                         case "time":
-
+                            $("#calendar").css("left",($(window).width() - $("#calendar").width())/2 + 'px');
+                            $("#calendar").css("top",($(window).height() - $("#calendar").height())/2 + 'px');
+                            $("#calendar").show();
                             break;
                         case "sort":
                             var str = "";
@@ -74,13 +90,16 @@ block script
                                 + "<div class='list'>周末优先</div>";
                             $("#list").html(str);
                             $("#list").show();
+                            $(document).on("click",".list",function() {
+                                $(".list").removeClass("cur");
+                                $(this).addClass("cur");
+                            });
                             break;
                         case "type":
                             $.ajax({
                                 url:"/weixin/company/type",
                                 type:"get",
                                 dataType:"json",
-                                data:"item=" + item,
                                 success:function(lists) {
                                     var str = "";
                                     for(var i = 0;i < lists.length;i++) {
@@ -90,9 +109,31 @@ block script
                                 }
                             });
                             $("#list").show();
+                            $(document).on("click",".list",function() {
+                                $(".list").removeClass("cur");
+                                $(this).addClass("cur");
+                            });
                             break;
                         case "area":
-
+                            var cityCode = sessionStorage.getItem('cityCode');
+                            $.ajax({
+                                url:"/weixin/company/area",
+                                type:"get",
+                                dataType:"json",
+                                data:"cityCode=" + cityCode,
+                                success:function(lists) {
+                                    var str = "";
+                                    for(var i = 0;i < lists.length;i++) {
+                                        str += "<div class='list' areaId='" + lists[i]["id"] + "' >" + lists[i]["area"] + "</div>";
+                                    }
+                                    $("#list").html(str);
+                                }
+                            });
+                            $("#list").show();
+                            $(document).on("click",".list",function() {
+                                $(".list").removeClass("cur");
+                                $(this).addClass("cur");
+                            });
                             break;
                     }
                 }
@@ -102,6 +143,7 @@ block script
         $("#mask_job").click(function() {
             $(this).hide();
             $("#list").hide();
+            $("#calendar").hide();
             $("#screening span").removeClass("cur");
             checked = false;
         });
@@ -112,9 +154,6 @@ block script
             var time = $("#time").html();
             var sort = $("#sort").html();
 
-        });
-        $("#time").click(function() {
-            $("#calendar").show();
         });
         $(document).on("click",".job",function() {
             location.href = "company/profile";

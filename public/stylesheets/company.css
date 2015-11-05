@@ -5,9 +5,20 @@
 .cur .dropDown{
     background-image: url(../images/dd2.png);
 }
+#calendar{
+    display: none;
+    position: fixed;
+    z-index: 3;
+}
 #screening{
     width: 100%;
     max-width: 100%;
+    position: fixed;
+    top: 50px;
+    height: 44px;
+    line-height: 44px;
+    z-index: 3;
+    background: #FFF;
 }
 #screening span{
     display: inline-block;
@@ -52,6 +63,9 @@
     z-index: 1;
     top: 95px;
 
+}
+#job_list{
+    margin-top: 44px;
 }
 .job{
     padding: 10px 10px;
@@ -98,7 +112,7 @@
     color: #FF8830;
 }
 #list{
-    position: fixed;
+    position: absolute;
     top: 95px;
     z-index: 2;
     background: #FFFFFF;
@@ -202,4 +216,19 @@
 }
 
 /*end 兼职详情页*/
+
+/*start 城市列表页*/
+#curCity{
+    position: fixed;
+    width: 100%;
+    top: 50px;
+    height: 44px;
+    line-height: 44px;
+    padding-left: 10px;
+    font-size: 16px;
+    background: #F2F2F2;
+    margin-bottom: 44px;
+    z-index: 3;
+}
+/*end 城市列表页*/
 

@@ -1,0 +1,27 @@
+//
+   Created by GXP on 2015/11/5.
+
+extends ../layout
+block header-back
+    img#back(src='/images/left-arrow.png')
+block header-title
+    | 城市列表
+block content
+    #curCity
+        | 当前城市：<span class = "cur">北京</span>
+    #list(style="display: block;")
+        - for (var x = 0; x < lists.length; x++)
+            .list(cityCode= lists[x].code)= lists[x].city
+block footer
+block script
+    script.
+        $(function() {
+            if(sessionStorage.getItem('city')) {
+                $("#curCity span").html(sessionStorage.getItem('city'));
+            }
+        });
+        $(document).on("click",".list",function() {
+            sessionStorage.setItem('city', $(this).html());
+            sessionStorage.setItem('cityCode', $(this).attr("cityCode"));
+            window.location.href = "/weixin/company";
+        });
