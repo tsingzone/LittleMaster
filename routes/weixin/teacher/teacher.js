@@ -6,7 +6,7 @@ var express = require('express');
 var router = express.Router();
 
 var TeacherController = require('../../../controllers/weixin/teacher/TeacherController');
-var teacherController = new TeacherController();
+var teacherController = TeacherController.createNew();
 
 // 个人中心首页
 router.get('/', function (req, res) {

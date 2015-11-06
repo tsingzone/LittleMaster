@@ -10,7 +10,7 @@ var teacher = require('./teacher/teacher');
 var company = require('./company/company');
 var weixinController = require('../../controllers/weixin/WeixinController').createNew();
 var TeacherController = require('../../controllers/weixin/teacher/TeacherController');
-var teacherController = new TeacherController();
+var teacherController = TeacherController.createNew();
 
 // 路由拦截
 router.use(function (req, res, next) {
