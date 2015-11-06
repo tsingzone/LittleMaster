@@ -7,12 +7,13 @@ var fs = require('fs');
 var formidable = require('formidable');
 var _ = require('underscore');
 var moment = require('moment');
+var async = require('async');
 
 var oss = require('../../../utils/Oss');
 var Configs = require('../../../configs');
 var ossconfig = Configs.getConfig().ossconfig;
 var TeacherModel = require('../../../models/weixin/teacher/TeacherModel');
-var Teacher = new TeacherModel();
+var Teacher = TeacherModel.createNew();
 
 var teacher = function TeacherController() {
 };
@@ -20,6 +21,33 @@ var teacher = function TeacherController() {
 module.exports = teacher;
 
 _.extend(teacher.prototype, {
+    getWeixinUserByUserId: function (userId, callback) {
+        Teacher.getWeiXinUserByUserId(userId, function (err, result) {
+            if (err) {
+                res.status(404);
+                return;
+            }
+            callback(result);
+        });
+    },
+    getWeiXinUserByOpenId: function (openId, callback) {
+        Teacher.getWeiXinUserByOpenId(openId, function (err, result) {
+            if (err) {
+                res.status(404);
+                return;
+            }
+            callback(result);
+        });
+    },
+    updateWeinXinUserByOpenId: function (userInfo, callback) {
+        Teacher.updateWeinXinUserByOpenId(userInfo, function (err, result) {
+            if (err) {
+                res.status(404);
+                return;
+            }
+            callback(result);
+        });
+    },
     getUserCenterData: function (req, res) {
         var sourceMap = {
             userId: req.userId,
@@ -313,6 +341,7 @@ _.extend(teacher.prototype, {
                                     number: fields.number,
                                     achieveDate: fields.achieveDate,
                                     imgPath: newPath,
+                                    status: 1,
                                     kind: index
                                 };
                                 if (index == 0) {
