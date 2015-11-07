@@ -10,6 +10,7 @@ body{
     position: fixed;
     top: 0;
     width: 100%;
+    z-index: 1000;
 }
 #footer{
     position: fixed;
@@ -47,6 +48,7 @@ body{
     padding-left: 10px;
     text-align: left;
     width: 25%;
+    font-size: 16px;
 }
 
 #back{

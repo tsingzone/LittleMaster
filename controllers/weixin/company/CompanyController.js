@@ -11,13 +11,32 @@ var Company = new CompanyModel();
 
 var company = function CompanyController() {
 };
-
+var getView = function (view) {
+    var dir = "weixin/company/";
+    return path.join(dir, view);
+};
 module.exports = company;
 
 _.extend(company.prototype, {
     getTypeList:function(req,res) {
-        var item = req.query.item;
-        Company.getTypeList(item, function (err, result) {
+        Company.getTypeList( function (err, result) {
+            if (err) {
+                res.status(404);
+            }
+            res.json(result);
+        });
+    },
+    getCityList:function(req,res) {
+        Company.getCityList(function (err, result) {
+            if (err) {
+                res.status(404);
+            }
+            res.render(getView('city'), {lists: result});
+        });
+    },
+    getAreaList:function(req,res) {
+        var cityCode = req.query.cityCode;
+        Company.getAreaList(cityCode, function (err, result) {
             if (err) {
                 res.status(404);
             }

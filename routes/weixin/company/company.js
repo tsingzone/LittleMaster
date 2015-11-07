@@ -23,6 +23,11 @@ router.get('/profile', function (req, res) {
     res.render(getView('profile'), {title: "Profile"});
 });
 
+router.get('/city', function (req, res) {
+    console.log("company.js city");
+    companyController.getCityList(req, res);
+});
+
 router.get('/get', function (req, res) {
     console.log("company.js get");
     res.render(getView('company'), {title: "get"});
@@ -33,10 +38,9 @@ router.get('/type', function (req, res) {
     companyController.getTypeList(req, res);
 });
 
-router.get('/jobs', function (req, res) {
-    console.log("company.js jobs");
-    companyController.getJobList(req, res);
-    res.json(types);
+router.get('/area', function (req, res) {
+    console.log("company.js area");
+    companyController.getAreaList(req, res);
 });
 
 
