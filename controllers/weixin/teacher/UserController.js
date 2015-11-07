@@ -35,6 +35,7 @@ var UserController = {
                 callback(result);
             });
         };
+
         return userController;
     }
 };

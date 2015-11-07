@@ -6,9 +6,7 @@ var _ = require('underscore');
 var fs = require('fs');
 
 var BaseController = require('./BaseController');
-var oss = require('../../../utils/Oss');
-var Configs = require('../../../configs');
-var ossconfig = Configs.getConfig().ossconfig;
+var oss = require('../../../utils/Oss').createNew();
 
 var ProfileController = {
 
@@ -22,6 +20,7 @@ var ProfileController = {
                     }
                 }).length + 1) / 11);
         };
+
         profileController.getUserCenterData = function (req, res) {
             var sourceMap = {
                 userId: req.userId,
@@ -164,17 +163,7 @@ var ProfileController = {
                         return;
                     }
 
-                    oss.putObject({
-                            Bucket: ossconfig.bucketName,
-                            Key: newPath,                 // 注意, Key 的值不能以 / 开头, 否则会返回错误.
-                            AccessControlAllowOrigin: '',
-                            ContentType: 'image/*',
-                            CacheControl: 'no-cache',         // 参考: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9
-                            ContentDisposition: '',           // 参考: http://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html#sec19.5.1
-                            ContentEncoding: 'utf-8',         // 参考: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11
-                            ServerSideEncryption: 'AES256',
-                            Expires: null
-                        },
+                    oss.putObject({key: newPath},
                         function (err, data) {
                             if (err) {
                                 console.log('error:', err);

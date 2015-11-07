@@ -4,20 +4,14 @@
 var express = require('express');
 var router = express.Router();
 
-var Config = require('../../configs');
-var wx_config = Config.getConfig().weixinconfig;
 var teacher = require('./teacher/teacher');
 var company = require('./company/company');
 var weixinController = require('../../controllers/weixin/WeixinController').createNew();
-var TeacherController = require('../../controllers/weixin/teacher/TeacherController');
-var teacherController = TeacherController.createNew();
+var teacherController = require('../../controllers/weixin/teacher/TeacherController').createNew();
 
 // 路由拦截
 router.use(function (req, res, next) {
     console.log('Weixin verify....');
-
-    var openId = req.query.openId;
-    var userId = req.query.userId;
 
     var code = req.query.code;
     if (code) {
@@ -57,13 +51,14 @@ router.use(function (req, res, next) {
     }
 });
 
-router.get('/', weixinController.checkSign);
-router.post('/', weixinController.replyInfo);
-
 // 分发教师相关的路由信息
 router.use('/teacher', teacher);
 
 // 分发企业相关的路由信息
 router.use('/company', company);
+
+// 微信消息回复
+router.get('/', weixinController.checkSign);
+router.post('/', weixinController.replyInfo);
 
 module.exports = router;

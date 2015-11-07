@@ -4,10 +4,14 @@
 
 var formidable = require('formidable');
 var path = require('path');
+var Configs = require('../../../configs');
 
 var BaseController = {
     createNew: function () {
         var baseController = {};
+
+        baseController.ossconfig = Configs.getConfig().ossconfig;
+
         baseController.getForm = function (path) {
             var form = formidable.IncomingForm();
             form.encoding = 'utf-8';
