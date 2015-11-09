@@ -22,5 +22,23 @@
     "appId": "wxbd6f3476bedbb55f",
     "appSecret": "a8d342199c246fbaac755c7c47ea5041",
     "token": "TsingZone2015"
+  },
+  "memcachedconfig": {
+    "server1": {
+      "keyPrefix" : "LittleMaster_",
+      "server": "127.0.0.1",
+      "port": "11211",
+      "weight": "1",
+      "options": {
+        "maxKeySize": 250,
+        "maxExpiration": 2592000,
+        "maxValue": 1048576,
+        "poolSize": 10,
+        "reconnect": 18000000,
+        "timeout": 5000,
+        "retries": 5,
+        "retry": 30000
+      }
+    }
   }
 }

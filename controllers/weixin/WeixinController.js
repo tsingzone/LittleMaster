@@ -9,12 +9,16 @@ var urllib = require('urllib');
 var util = require('../../utils/Utils');
 var Config = require('../../configs');
 var wx_config = Config.getConfig().weixinconfig;
+var Memcached = require('../../utils/Memcached');
+
 
 var WeixinController = {
     createNew: function () {
         var weixin = {};
 
         // ==== 私有属性 start ====
+        var memCache = Memcached.createNew();
+
         var sendInfo = SendInfo.createNew();
         var parse = Parse.createNew();
 
@@ -26,9 +30,6 @@ var WeixinController = {
 
         };
         // ==== 私有属性 end ====
-
-        // ==== 私有方法 start ====
-        // ==== 私有方法 end ====
 
         // ==== 实例方法 start ====
         // 验证sign值
@@ -61,17 +62,31 @@ var WeixinController = {
 
         // 获取acces_token
         weixin.getAccessToken = function (openId, callback) {
-            var url = strReplace(urls.getAccessTokenUrl, wx_config);
-            urllib.request(url, function (err, data) {
-                if (err) {
-                    console.log(err);
-                    return;
+            memCache.getObject('WX_ACCESS_TOKEN', function (err, result) {
+                console.log(result);
+                if (result) {
+                    var data = {
+                        access_token: data,
+                        openid: openId
+                    };
+                    callback(null, data);
+                } else {
+                    var url = strReplace(urls.getAccessTokenUrl, wx_config);
+                    urllib.request(url, function (err, data) {
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                        data = JSON.parse(data.toString());
+                        var result = {
+                            access_token: data.access_token,
+                            openid: openId
+                        };
+                        memCache.putObject('WX_ACCESS_TOKEN', data.access_token, 7200, function (err) {
+                            callback(null, result);
+                        });
+                    });
                 }
-                var result = {
-                    access_token: JSON.parse(data.toString()).access_token,
-                    openid: openId
-                }
-                callback(null, result);
             });
         };
 
@@ -135,7 +150,7 @@ var WeixinController = {
             var that = this;
             that.getAccessToken(openId, function (err, data) {
                 that.getUser(data.access_token, openId, callback);
-             });
+            });
         };
 
         // ==== 实例方法 end ====

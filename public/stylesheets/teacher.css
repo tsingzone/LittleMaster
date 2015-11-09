@@ -117,6 +117,8 @@
     margin: 0 auto;
     border: 2px solid #62aa9d;
     border-radius: 100%;
+    -moz-border-radius: 100%;
+    -webkit-border-radius: 100%;
     width: 91px;
     height: 91px;
     background: #FFFFFF;
