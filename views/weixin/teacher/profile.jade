@@ -16,19 +16,19 @@ block header-save
     img#save(src="/images/save.png")
 
 block content
-    input(id="teacherId",type="hidden", value="#{profile.id}")
-    input(id="userId",type="hidden", value="#{profile.userId}")
-    input(id="openId",type="hidden", value="#{profile.openId}")
+    input(id="teacherId",type="hidden", value="#{profile ? profile['id'] : ''}")
+    input(id="userId",type="hidden", value="#{profile ? profile['userId'] : ''}")
+    input(id="openId",type="hidden", value="#{profile ? profile['openId'] : ''}")
     #first_line.bottom-line(onclick="goToHead()")
-        if profile.headImg
-            - profile.headImg = profile.headImg.substring(profile.headImg.indexOf('/'))
-            img#headImg(src="#{profile.headImg}" alt="" value="1")
+        if profile && profile['headImg']
+            - profile['headImg'] = profile['headImg'].substring(profile['headImg'].indexOf('/'))
+            img#headImg(src="#{profile['headImg']}" alt="" value="1")
         else
             img(src="/images/default-profile.png" alt="")
         span.small-text 上传头像
     #second_line(onclick="goToBind()")
         span.show-text(style="padding-left:0") 联系方式:
-        span.input-text #{profile.mobile}
+        span.input-text= profile ? profile['mobile'] : ''
         span.small-text 修改绑定
     #basic_info
         div.line-header
@@ -36,23 +36,23 @@ block content
             | 基本信息
         div.indent.bottom-line
             span.show-text 姓名
-            input#name.no-border(type="text", placeholder="", name="name", value="#{profile.name}")
+            input#name.no-border(type="text", placeholder="", name="name", value="#{ profile ? profile['name'] : ''}")
         div.indent.bottom-line
             span.show-text 性别
-            if (profile.gender === 0)
+            if ( profile && (profile['gender'] === 0))
                 input.input-text(type="radio", checked="checked", value="0", name="gender", id="male")
             else
                 input.input-text(type="radio", value="0", name="gender", id="male")
             label(for="male") 男
             | &nbsp;&nbsp;
-            if (profile.gender === 0)
+            if (profile && (profile['gender'] === 0))
                 input.input-text(type="radio", value="1", name="gender", id="female")
             else
                 input.input-text(type="radio", value="1", checked="checked", name="gender", id="female")
             label(for="female") 女
         div.indent
             span.show-text 生日
-            input#birthday(type="text", placeholder="", name="birthday", value="#{profile.birthday}", data-kal='format:"YYYY-MM-DD"').no-border.auto-kal
+            input#birthday(type="text", placeholder="", name="birthday", value="#{profile ? profile['birthday'] : ''}", data-kal='format:"YYYY-MM-DD"').no-border.auto-kal
     #teacher_diploma
         div.line-header
             span.vertical-line
@@ -74,21 +74,21 @@ block content
         div.indent.bottom-line(onclick="goToCollege()")
             span
                 span.show-text 大学
-                span#collegeName.input-text #{profile.college}
+                span#collegeName.input-text #{ profile ? profile['college'] : ''}
             span.line-right
                 img(src="/images/right-arrow.png" alt=">")
         div.indent.bottom-line
             span.show-text 专业
-            input#major.no-border(type="text", placeholder="", name="major", value="#{profile.majar}")
+            input#major.no-border(type="text", placeholder="", name="major", value="#{profile ? profile['majar'] : ''}")
         div.indent.bottom-line(onclick="goToEducation()")
             span
                 span.show-text 学历
-                span#education.input-text #{profile.education}
+                span#education.input-text #{profile ? profile['education'] : ''}
             span.line-right
                 img(src="/images/right-arrow.png" alt=">")
         div.indent
             span.show-text 时间
-            input#entryYear.no-border(type="text", name="entryYear", placeholder="", min="1900", max="2999" value="#{profile.entryYear}" data-kal='format:"YYYY-MM-DD"').no-border.auto-kal
+            input#entryYear.no-border(type="text", name="entryYear", placeholder="", min="1900", max="2999" value="#{profile ? profile['entryYear'] : ''}" data-kal='format:"YYYY-MM-DD"').no-border.auto-kal
     #other_diploma
         div.line-header
             span.vertical-line
@@ -209,19 +209,19 @@ block script
         }
 
         function goToCollege() {
-            window.location.href = "college";
+            window.location.href = "/weixin/teacher/college?userId=#{userIds.userId}";
         }
 
         function goToEducation() {
-            window.location.href = "education";
+            window.location.href = "/weixin/teacher/education?userId=#{userIds.userId}";
         }
 
         function goToExperience(type) {
-            window.location.href = "experience/" + type;
+            window.location.href = "experience/" + type + "?userId=#{userIds.userId}";
         }
 
         function goToDiploma(type) {
-            window.location.href = "diploma/" + type;
+            window.location.href = "diploma/" + type + "?userId=#{userIds.userId}";
         }
 
         function loadSessionStorage() {

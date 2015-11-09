@@ -114,7 +114,8 @@ block script
                             number: number,
                             major: major,
                             period: period,
-                            achieveDate: date
+                            achieveDate: date,
+                            teacherId: #{userIds.teacherId}
                         },
                         success: function (result) { //提交成功的回调函数
                             // 对于表单提交成功后处理，message为提交页面saveReport.htm的返回内容
@@ -124,7 +125,7 @@ block script
                                 sessionStorage.removeItem('tCertMajor');
                                 sessionStorage.removeItem('tCertNum');
                                 sessionStorage.removeItem('tCertDate');
-                                window.location.href = '/weixin/teacher/diploma/teacher';
+                                window.location.href = '/weixin/teacher/diploma/teacher?userId=#{userIds.userId}';
                             }
                         }
                     });
@@ -134,9 +135,9 @@ block script
         });
 
         function goToPeriod() {
-            location.href = location.href + "/period";
+            location.href = "/weixin/teacher/diploma/teacher/add/period?userId=#{userIds.userId}";
         }
 
         function goToMajor() {
-            location.href = location.href + "/major";
+            location.href = "/weixin/teacher/diploma/teacher/add/major?userId=#{userIds.userId}";
         }

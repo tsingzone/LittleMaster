@@ -11,9 +11,6 @@ block header-title
     | 添加经历
 
 block content
-    input(id="teacherId",type="hidden", value="#{user.id}")
-    input(id="userId",type="hidden", value="#{user.userId}")
-    input(id="openId",type="hidden", value="#{user.openId}")
     input(id="kind",type="hidden", value="#{kind}")
     div.add-line
         span.show-text 工作名称
@@ -63,14 +60,15 @@ block script
                         name: name,
                         startTime: startTime,
                         endTime: endTime,
-                        description: description
+                        description: description,
+                        teacherId: #{userIds.teacherId}
                     },
                     type: 'post',
                     dataType: 'json',
                     success: function (result) {
                         alert(result.message);
                         if (result.success) {
-                            window.location.href = '/weixin/teacher/experience/' + result.entity
+                            window.location.href = '/weixin/teacher/experience/' + result.entity + '?userId=#{userIds.userId}';
                         }
                     }
                 });

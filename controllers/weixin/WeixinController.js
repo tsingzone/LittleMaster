@@ -4,22 +4,32 @@
 
 var xml = require('node-xml-lite');
 var _ = require('underscore');
+var urllib = require('urllib');
 
 var util = require('../../utils/Utils');
 var Config = require('../../configs');
 var wx_config = Config.getConfig().weixinconfig;
+var Memcached = require('../../utils/Memcached');
+
 
 var WeixinController = {
     createNew: function () {
         var weixin = {};
 
         // ==== 私有属性 start ====
+        var memCache = Memcached.createNew();
+
         var sendInfo = SendInfo.createNew();
         var parse = Parse.createNew();
-        // ==== 私有属性 end ====
 
-        // ==== 私有方法 start ====
-        // ==== 私有方法 end ====
+        var urls = {
+            getAccessTokenUrl: 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={appId}&secret={appSecret}',
+            getAccessTokenByCodeUrl: 'https://api.weixin.qq.com/sns/oauth2/access_token?appid={appId}&secret={appSecret}&code={code}&grant_type=authorization_code',
+            validAccessTokenUrl: 'https://api.weixin.qq.com/sns/auth?access_token={accessToken}&openid={openId}',
+            getUserUrl: 'https://api.weixin.qq.com/cgi-bin/user/info?access_token={accessToken}&openid={openId}&lang=zh_CN',
+
+        };
+        // ==== 私有属性 end ====
 
         // ==== 实例方法 start ====
         // 验证sign值
@@ -36,6 +46,7 @@ var WeixinController = {
                 res.send(echostr);
             }
         };
+        // 回复消息
         weixin.replyInfo = function (req, res) {
             parse.requestToJson(req, function (err, data) {
                 sendInfo.FromUserName = data.ToUserName;
@@ -48,6 +59,100 @@ var WeixinController = {
                 res.send(parse.toXml(sendInfo));
             });
         };
+
+        // 获取acces_token
+        weixin.getAccessToken = function (openId, callback) {
+            memCache.getObject('WX_ACCESS_TOKEN', function (err, result) {
+                console.log(result);
+                if (result) {
+                    var data = {
+                        access_token: data,
+                        openid: openId
+                    };
+                    callback(null, data);
+                } else {
+                    var url = strReplace(urls.getAccessTokenUrl, wx_config);
+                    urllib.request(url, function (err, data) {
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                        data = JSON.parse(data.toString());
+                        var result = {
+                            access_token: data.access_token,
+                            openid: openId
+                        };
+                        memCache.putObject('WX_ACCESS_TOKEN', data.access_token, 7200, function (err) {
+                            callback(null, result);
+                        });
+                    });
+                }
+            });
+        };
+
+        // 通过用户授权code获取access_token
+        weixin.getAccessTokenByCode = function (code, callback) {
+            var url = strReplace(urls.getAccessTokenByCodeUrl, {
+                appId: wx_config.appId,
+                appSecret: wx_config.appSecret,
+                code: code
+            });
+            var that = this;
+            urllib.request(url, function (err, data) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                that.getAccessToken(JSON.parse(data.toString()).openid, callback);
+            });
+        };
+
+        // 验证access_token
+        weixin.validAccessToken = function (accessToken, openId, callback) {
+            var url = strReplace(urls.validAccessTokenUrl, {
+                accessToken: accessToken,
+                openId: openId
+            });
+            urllib.request(url, function (err, data) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                callback(null, data);
+            });
+        };
+
+        // 获取用户信息
+        weixin.getUser = function (accessToken, openId, callback) {
+            var url = strReplace(urls.getUserUrl, {
+                accessToken: accessToken,
+                openId: openId
+            });
+            urllib.request(url, function (err, data) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                callback(null, data);
+            });
+        };
+
+        // 根据Code获取用户信息
+        weixin.getUserByCode = function (code, callback) {
+            var that = this;
+            that.getAccessTokenByCode(code, function (err, data) {
+                that.getUser(data.access_token, data.openid, callback);
+            });
+        };
+
+
+        weixin.getUserByOpenId = function (openId, callback) {
+            var that = this;
+            that.getAccessToken(openId, function (err, data) {
+                that.getUser(data.access_token, openId, callback);
+            });
+        };
+
         // ==== 实例方法 end ====
         return weixin;
     }
@@ -212,12 +317,16 @@ var NodeInfo = {
         };
         nodeInfo.toString = function (param) {
             var str = this.toArray().join('');
-            return str.replace(/{\w+}/g, function (matchs) {
-                return param[matchs.slice(1, -1)];
-            });
+            return strReplace(str, param);
         };
         return nodeInfo;
     }
+};
+
+var strReplace = function (str, data) {
+    return str.replace(/{\w+}/g, function (matchs) {
+        return data[matchs.slice(1, -1)];
+    });
 };
 
 /**

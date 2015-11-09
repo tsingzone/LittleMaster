@@ -8,7 +8,7 @@ block header-title
 block content
     div.search-line
         img#search(src='/images/search.png')
-        input#college(type='text')
+        input#college(type='search')
         img#clear(src='/images/clear.png')
 
     div#result
@@ -16,13 +16,11 @@ block script
     script(src='/js/college.js')
     script.
         $(function () {
-
             $('#college').keydown(function () {
                         var searchText = $('#college').val().trim();
                         if (!searchText) {
                             return;
                         }
-
                         var resultArray = [];
                         $.each(collegeList, function (item, val) {
                             var result = {};
@@ -58,5 +56,5 @@ block script
 
         function goToMain(item) {
             sessionStorage.setItem("college", item);
-            window.location.href = '/weixin/teacher/profile';
+            window.location.href = '/weixin/teacher/profile?userId=#{userIds.userId}';
         }

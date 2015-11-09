@@ -19,7 +19,7 @@ block script
             $(".one-line").each(function () {
                 $(this).click(function () {
                     sessionStorage.setItem("tCertMajor", $(this).html());
-                    window.location.href = '/weixin/teacher/diploma/teacher/add';
+                    window.location.href = '/weixin/teacher/diploma/teacher/add?userId=#{userIds.userId}';
                 });
             });
         });
