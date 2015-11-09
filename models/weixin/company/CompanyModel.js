@@ -27,7 +27,25 @@ _.extend(company.prototype, {
         DBUtils.getDBConnection().query(sql, [cityCode], callback);
     },
     //获取兼职列表
-    getJobList: function(screeningArr) {
+    getJobList: function(conditions,callback) {
         //city,type,area,time,sort
+        console.log(conditions);
+        var sql = "select j.start_time,j.end_time,j.title,j.address,j.gender,j.salary,j.treatment,p.name as typeName,"
+                + "t.name as salaryName,s.name as settlementName from company_job as j join sys_salary_type as t on "
+                + "j.salary_type = t.id join sys_position as p on j.position_id = p.id join sys_settlement as s on "
+                + "j.settlement_id = s.id where city = '" + conditions['city'] + "'";
+        if(conditions['type']) {
+            sql += "and position_id = " + conditions['type'];
+        }
+        if(conditions['area']) {
+            sql += "and area = " + conditions['area'];
+        }
+        if(conditions['time']) {
+            sql += "and start_time < " + conditions['time'] + "and end_time > " + conditions['time'];
+        }
+        if(conditions['sort']) {
+            sql += "order by ";
+        }
+        DBUtils.getDBConnection().query(sql, [], callback);
     }
 });

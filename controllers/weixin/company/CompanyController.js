@@ -42,5 +42,21 @@ _.extend(company.prototype, {
             }
             res.json(result);
         });
+    },
+    getJobList:function(req,res) {
+        var conditions = [];
+        conditions['city'] = req.query.city;
+        conditions['type'] = req.query.type;
+        conditions['area'] = req.query.area;
+        conditions['time'] = req.query.time;
+        conditions['sort'] = req.query.sort;
+
+        Company.getJobList(conditions, function (err, result) {
+            if (err) {
+                console.log(err);
+                res.status(404);
+            }
+            res.json(result);
+        });
     }
 });

@@ -43,6 +43,11 @@ router.get('/area', function (req, res) {
     companyController.getAreaList(req, res);
 });
 
+router.get('/jobList', function (req, res) {
+    console.log("company.js jobList");
+    companyController.getJobList(req, res);
+});
+
 
 
 module.exports = router;

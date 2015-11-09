@@ -7,7 +7,7 @@
 	border-radius:5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	font-size:11px;
+	font-size:13px;
 	font-family:'Helvetica Neue', 'Helvetica';
 	cursor:default;
 	position:relative;
@@ -37,7 +37,7 @@
 	color:#999;
 	line-height:17px;
 	text-align:center;
-	font-size:13px;
+	font-size:20px;
 	border-radius:10px;
 	box-shadow:0 1px 3px rgba(0,0,0,0.75);
 	cursor:pointer;
@@ -51,10 +51,10 @@
 }
 
 /** Month Container **/
-.kalendae .k-calendar {display: inline-block;zoom:1;*display:inline;width:155px;vertical-align:top;}
+.kalendae .k-calendar {display: inline-block;zoom:1;*display:inline;width:210px;vertical-align:top;}
 
 /** Month Separator **/
-.kalendae .k-separator {display: inline-block;zoom:1;*display:inline;width:2px;vertical-align:top;background:#ddd;height:155px;margin:0px 10px;}
+.kalendae .k-separator {display: inline-block;zoom:1;*display:inline;width:2px;vertical-align:top;background:#ddd;height:210px;margin:0px 10px;}
 
 /** Month Title Row **/
 .kalendae .k-title {text-align:center;white-space:nowrap;position:relative;height:18px;}
@@ -116,7 +116,7 @@
 .kalendae .k-title,
 .kalendae .k-header,
 .kalendae .k-days {
-	width:154px;
+	width:210px;
 	display:block;
 	overflow:hidden;
 }
@@ -141,17 +141,17 @@
 .kalendae .k-header span {
 	text-align:center;
 	font-weight:bold;
-	width:20px;
+	width:27px;
 	padding:1px 0;
 	color:#666;
 }
 
 .kalendae .k-days span {
-	text-align:right;
-	width:13px;
-	height:1.1em;
-	line-height:1em;
-	padding:2px 3px 2px 2px;
+	text-align:center;
+	width:20px;
+	height:1.5em;
+	line-height:1.4em;
+	padding:2px 3px 2px 3px;
 	border:1px solid transparent;
 	border-radius:3px;
 	-moz-border-radius: 3px;
