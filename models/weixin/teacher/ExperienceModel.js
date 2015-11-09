@@ -59,7 +59,7 @@ var ExperienceModel = {
          * @param source
          * @param callback
          */
-        experienceModel.deleteExperience = function (source, callback) {
+        experienceModel.deleteExperienceById = function (source, callback) {
             var sql = 'update teacher_experience set status = -1 where id = ?';
             DBUtils.getDBConnection().query(sql, [source.experienceId], function (err, result) {
                 if (err) {

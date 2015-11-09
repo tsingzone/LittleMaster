@@ -9,11 +9,11 @@ block header-title
 block content
     #content-top
         div(style="height:9px")
-        if user.headImg
+        if user && user.headImg
             img#content-img(src="#{user.headImg}", alt="")
         else
             img#content-img(src="/images/default-head.png", alt="")
-        span#content-text= user.nickName
+        span#content-text= user && user.nickName ? user.nickName : ''
 
     #content-main
         #my_profile.content-line.bottom-line
@@ -39,17 +39,17 @@ block script
 
             // 跳转到我的简历页面
             $('#my_profile').click(function () {
-                window.location.href = "/weixin/teacher/profile";
+                window.location.href = "/weixin/teacher/profile?userId=#{userIds.userId}";
             });
 
             // 跳转到已报名兼职页面
             $('#sign_jobs').click(function () {
-                window.location.href = "/weixin/teacher/sign";
+                window.location.href = "/weixin/teacher/sign?userId=#{userIds.userId}";
             });
 
             // 跳转到已收藏兼职页面
             $('#collect_jobs').click(function () {
-                window.location.href = "/weixin/teacher/collect";
+                window.location.href = "/weixin/teacher/collect?userId=#{userIds.userId}";
             });
         });
 

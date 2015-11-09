@@ -17,7 +17,10 @@ var JobController = {
                 if (err) {
 
                 }
-                res.render(getView('sign'), {jobList: result[0]});
+                res.render(jobController.getView('sign'), {
+                    jobList: result[0],
+                    userIds: req.userIds
+                });
             });
         };
         jobController.getCollectJobs = function (req, res) {
@@ -28,7 +31,10 @@ var JobController = {
                 if (err) {
 
                 }
-                res.render(getView('collect'), {jobList: result[0]});
+                res.render(jobController.getView('collect'), {
+                    jobList: result[0],
+                    userIds: req.userIds
+                });
             });
         };
         return jobController;

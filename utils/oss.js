@@ -11,7 +11,7 @@ var ossconfig = Configs.getConfig().ossconfig;
 var Oss = {
     createNew: function () {
         var oss = {};
-        oss.obj = new ALY.OSS({
+        var obj = new ALY.OSS({
             "accessKeyId": ossconfig.accessKeyId,
             "secretAccessKey": ossconfig.secretAccessKey,
             endpoint: ossconfig.endpoint,
@@ -23,9 +23,9 @@ var Oss = {
         });
 
         oss.putObject = function (params, callback) {
-            oss.obj.pubObject({
-                Bucket: params[bucketName] ? params[bucketName] : ossconfig.bucketName,
-                Key: params[key],                 // 注意, Key 的值不能以 / 开头, 否则会返回错误.
+            obj.putObject({
+                Bucket: params['bucketName'] ? params['bucketName'] : ossconfig.bucketName,
+                Key: params['key'],                 // 注意, Key 的值不能以 / 开头, 否则会返回错误.
                 AccessControlAllowOrigin: '',
                 ContentType: 'image/*',
                 CacheControl: 'no-cache',         // 参考: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9

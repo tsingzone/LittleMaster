@@ -12,9 +12,6 @@ block header-title
         when 'school'
             | 校园经历填写
 block content
-    input(id="teacherId",type="hidden", value="#{user.id}")
-    input(id="userId",type="hidden", value="#{user.userId}")
-    input(id="openId",type="hidden", value="#{user.openId}")
     div.top-add
         #btnAdd
             img(src="/images/add.png", alt="")
@@ -40,7 +37,7 @@ block script
             $(".container_add_content").last().css("padding-bottom", "0px");
 
             $("#btnAdd").click(function () {
-                window.location.href = window.location.href + '/add';
+                window.location.href = '/weixin/teacher/experience/#{title}/add?userId=#{userIds.userId}';
             });
 
             $(".delete").each(function () {

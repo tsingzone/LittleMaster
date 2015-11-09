@@ -28,7 +28,7 @@ var DiplomaController = {
                     console.log(result);
                     res.render(diplomaController.getView('diploma'), {
                         title: type,
-                        user: req.userIds,
+                        userIds: req.userIds,
                         diplomaList: result
                     });
                 });
@@ -40,7 +40,10 @@ var DiplomaController = {
             var types = ['teacher', 'other'];
             var type = req.params.type;
             if (types.indexOf(type) != -1) {
-                res.render(diplomaController.getView('diploma_add_' + type), {title: type});
+                res.render(diplomaController.getView('diploma_add_' + type), {
+                    type:type,
+                    userIds: req.userIds
+                });
             } else {
                 res.status(404).end();
             }
@@ -58,6 +61,8 @@ var DiplomaController = {
                             return;
                         }
 
+                        console.log(fields);
+
                         var isValid = diplomaController.validateParams(fields);
                         if (isValid.length > 0) {
                             res.json({success: false, message: isValid});
@@ -74,7 +79,7 @@ var DiplomaController = {
                             return;
                         }
 
-                        var avatarName = req.userIds.teacherId + '-' + new Date().getTime() + '.' + extName;
+                        var avatarName = fields.teacherId + '-' + new Date().getTime() + '.' + extName;
                         var newPath = form.uploadDir + avatarName;
                         fs.rename(files.fulAvatar.path, newPath, function (err) {
 
@@ -88,7 +93,7 @@ var DiplomaController = {
                                         return;
                                     }
                                     var source = {
-                                        teacherId: req.userIds.teacherId,
+                                        teacherId: fields.teacherId,
                                         number: fields.number,
                                         achieveDate: fields.achieveDate,
                                         imgPath: newPath,
@@ -135,9 +140,11 @@ var DiplomaController = {
                             res.status(404).end();
                             return;
                         }
+                        console.log(req.userIds);
                         res.render(diplomaController.getView(type), {
-                            title: type,
-                            subList: result
+                            type: type,
+                            subList: result,
+                            userIds: req.userIds
                         });
                     });
                     break;
@@ -148,8 +155,9 @@ var DiplomaController = {
                             return;
                         }
                         res.render(diplomaController.getView(type), {
-                            title: type,
-                            subList: result
+                            type: type,
+                            subList: result,
+                            userIds: req.userIds
                         });
                     });
                     break;
@@ -160,8 +168,9 @@ var DiplomaController = {
                             return;
                         }
                         res.render(diplomaController.getView(type), {
-                            title: type,
-                            subList: result
+                            type: type,
+                            subList: result,
+                            userIds: req.userIds
                         });
                     });
                     break;

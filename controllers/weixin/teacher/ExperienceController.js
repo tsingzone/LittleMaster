@@ -22,7 +22,7 @@ var ExperienceController = {
                         console.log(JSON.stringify(result));
                         res.render(experienceController.getView('experience'), {
                             title: type,
-                            user: req.userIds,
+                            userIds: req.userIds,
                             experienceList: result
                         });
                     }
@@ -38,7 +38,7 @@ var ExperienceController = {
             if (index != -1) {
                 res.render(experienceController.getView('experience_add'), {
                     kind: index,
-                    user: req.userIds
+                    userIds: req.userIds
                 });
             } else {
                 res.status(404).end();
@@ -52,7 +52,7 @@ var ExperienceController = {
                 description: req.body.description,
                 kind: req.body.kind,
                 status: 1,
-                teacherId: req.userIds.teacherId
+                teacherId: req.body.teacherId
             };
             teacherModel.saveExperience(experience, function (err, result) {
                 if (err) {

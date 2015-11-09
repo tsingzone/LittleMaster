@@ -14,20 +14,16 @@ var ProfileController = {
         var profileController = BaseController.createNew();
 
         var calPercentage = function calPercentage(data) {
+            console.log(data);
             return Math.floor(100 * (_.filter(data, function (item) {
                     if (item || item === 0) {
                         return true;
                     }
-                }).length + 1) / 11);
+                }).length) / 11);
         };
 
         profileController.getUserCenterData = function (req, res) {
-            var sourceMap = {
-                userId: req.userId,
-                teacherId: req.teacherId
-            };
-
-            teacherModel.getUserCenterData(sourceMap, function (err, result) {
+            teacherModel.getUserCenterData(req.userIds, function (err, result) {
                 if (err) {
                     res.status(404);
                 }
@@ -36,17 +32,13 @@ var ProfileController = {
                     user: result[0][0],
                     percent: percent,
                     signCount: result[2][0].signCount,
-                    collectCount: result[3][0].collectCount
+                    collectCount: result[3][0].collectCount,
+                    userIds: req.userIds
                 });
             });
         };
         profileController.getProfile = function (req, res) {
-            var sourceMap = {
-                teacherId: req.teacherId,
-                userId: req.userId,
-                openId: req.openId
-            };
-            teacherModel.getProfile(sourceMap, function (err, result) {
+            teacherModel.getProfile(req.userIds, function (err, result) {
                 if (err) {
                     res.redirect(profileController.getView('weixin/error'));
                 } else {
@@ -120,7 +112,8 @@ var ProfileController = {
                         diplomaOther: diploma.other,
                         experienceSocial: experience.social,
                         experienceParttime: experience.parttime,
-                        experienceSchool: experience.school
+                        experienceSchool: experience.school,
+                        userIds: req.userIds
                     });
                 }
             });
@@ -195,11 +188,14 @@ var ProfileController = {
         profileController.getEducation = function (req, res) {
             teacherModel.getEducation(function (err, result) {
                 console.log(result);
-                res.render(profileController.getView('education'), {educations: result});
+                res.render(profileController.getView('education'), {
+                    educations: result,
+                    userIds: req.userIds
+                });
             });
         };
         profileController.getCollege = function (req, res) {
-            res.render(profileController.getView('college'), {title: 'College'});
+            res.render(profileController.getView('college'), {userIds: req.userIds});
         };
         return profileController;
     }

@@ -17,12 +17,15 @@ var TeacherModel = {
         var diplomaModel = DiplomaModel.createNew();
         var userModel = UserModel.createNew();
 
-        teacherModel.getWeiXinUserByUserId = userModel.getWeixinUserByUserId;
+        teacherModel.getWeiXinUserByUserId = userModel.getWeiXinUserByUserId;
         teacherModel.getWeiXinUserByOpenId = userModel.getWeiXinUserByOpenId;
         teacherModel.updateWeinXinUserByOpenId = userModel.updateWeinXinUserByOpenId;
+        teacherModel.saveWeixinUser = userModel.saveWeixinUser;
+        teacherModel.getUserIds = userModel.getUserIds;
 
         teacherModel.getUserCenterData = profileModel.getUserCenterData;
         teacherModel.getProfile = profileModel.getProfile;
+        teacherModel.saveDefaultProfile = profileModel.saveDefaultProfile;
         teacherModel.saveProfile = profileModel.saveProfile;
         teacherModel.chageTeacherHeadImg = profileModel.chageTeacherHeadImg;
         teacherModel.getEducation = profileModel.getEducation;

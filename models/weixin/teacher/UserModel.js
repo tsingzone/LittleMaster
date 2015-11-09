@@ -7,6 +7,27 @@ var DBUtils = require('../../../db_utils');
 var UserModel = {
     createNew: function () {
         var userModel = {};
+
+        userModel.getUserIds = function (source, callback) {
+            console.log(source);
+            var sql = 'select weixin_user.id as userId, weixin_user.open_id as openId, teacher_infor.id as teacherId'
+                + ' from weixin_user '
+                + ' left join teacher_infor '
+                + ' on weixin_user.id = teacher_infor.user_id'
+                + ' where weixin_user.id = ? or weixin_user.open_id = ?';
+            DBUtils.getDBConnection().query(sql, [
+                    source.userId,
+                    source.openId
+                ],
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    callback(null, result);
+                });
+        };
+
         /**
          * 根据userId获取微信用户信息
          * @param userId
@@ -23,8 +44,7 @@ var UserModel = {
                     console.log(err);
                     return;
                 }
-                console.log(result);
-                callback(result);
+                callback(null, result);
             });
         };
 
@@ -44,8 +64,7 @@ var UserModel = {
                     console.log(err);
                     return;
                 }
-                console.log(result);
-                callback(result);
+                callback(null, result);
             });
         };
 
@@ -64,6 +83,7 @@ var UserModel = {
                 userInfo.country,
                 userInfo.province,
                 userInfo.city,
+                userInfo.unionid,
                 userInfo.sex,
                 userInfo.openid
             ], function (err, result) {
@@ -73,6 +93,34 @@ var UserModel = {
                 }
                 callback(null, result);
             });
+        };
+
+        userModel.saveWeixinUser = function (userInfo, callback) {
+            var sql = 'insert into weixin_user('
+                + ' open_id, sex, nickname, add_time, user_ip, head_img, country, province, city, union_id, status, subscribe'
+                + ' ) values ('
+                + ' ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? '
+                + ' )';
+            DBUtils.getDBConnection().query(sql, [
+                userInfo.openid,
+                userInfo.sex,
+                userInfo.nickname,
+                new Date(),
+                userInfo.userIp,
+                userInfo.headimgurl,
+                userInfo.country,
+                userInfo.province,
+                userInfo.city,
+                userInfo.unionid,
+                0,
+                userInfo.subscribe
+            ], function (err, result) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                callback(null, result);
+            })
         };
         return userModel;
     }

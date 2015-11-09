@@ -29,9 +29,13 @@ var TeacherController = {
         var jobController = JobController.createNew(teacherModel);
         var userController = UserController.createNew(teacherModel);
 
-        teacherController.getWeixinUserByUserId = userController.getWeixinUserByUserId;
+        teacherController.getWeiXinUserByUserId = userController.getWeiXinUserByUserId;
         teacherController.getWeiXinUserByOpenId = userController.getWeiXinUserByOpenId;
         teacherController.updateWeinXinUserByOpenId = userController.updateWeinXinUserByOpenId;
+        teacherController.checkIsUserExistInDb = userController.checkIsUserExistInDb;
+        teacherController.updateWeixinUser = userController.updateWeixinUser;
+        teacherController.insertWeixinUser = userController.insertWeixinUser;
+        teacherController.getUserIds = userController.getUserIds;
 
         teacherController.getUserCenterData = profileController.getUserCenterData;
         teacherController.getProfile = profileController.getProfile;

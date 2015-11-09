@@ -4,6 +4,8 @@
 var express = require('express');
 var router = express.Router();
 
+var async = require('async');
+
 var teacher = require('./teacher/teacher');
 var company = require('./company/company');
 var weixinController = require('../../controllers/weixin/WeixinController').createNew();
@@ -15,39 +17,164 @@ router.use(function (req, res, next) {
 
     var code = req.query.code;
     if (code) {
-        console.log('------ By Code -------')
-        weixinController.getUserByCode(code, function (err, data) {
-            var userInfo = JSON.parse(data.toString());
-            if (!userInfo.subscribe) {
-                // TODO: 用户未关注，跳转到提示关注的页面
+        console.log('------ 点击微信菜单 -------');
+
+        async.waterfall([
+            function getUserByCode(callback) {
+                weixinController.getUserByCode(code, function (err, data) {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    var userInfo = JSON.parse(data.toString());
+                    userInfo.userIp = req.ip;
+                    callback(null, userInfo);
+                })
+            },
+            function checkUserSubscribed(result, callback) {
+                console.log(result.subscribe);
+
+                if (result.subscribe) {
+                    console.log('-----');
+                    callback(null, result);
+                } else {
+                    // TODO: 用户未关注，跳转到提示关注的页面
+                    console.log('用户未关注');
+                    throw '用户未关注！';
+                }
+            },
+            function checkIsUserExistInDb(userInfo, callback) {
+                teacherController.checkIsUserExistInDb(userInfo, function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    console.log(result);
+                    if (result.length > 0) {
+                        // TODO: 已存在，更新用户信息，并返回最新记录信息
+                        teacherController.updateWeixinUser(userInfo, function (err, result) {
+                            if (err) {
+                                console.log(err);
+                                return;
+                            }
+                            callback(null, result);
+                        });
+                    } else {
+                        // TODO: 不存在，插入用户信息，并返回最新记录信息
+                        teacherController.insertWeixinUser(userInfo, function (err, result) {
+                            if (err) {
+                                console.log(err);
+                                return;
+                            }
+                            callback(null, result);
+                        });
+                    }
+                });
+            }
+        ], function (err, result) {
+            if (err) {
+                console.log(err);
                 return;
             }
-            // TODO: 查询用户信息是否存在
-            teacherController.getWeiXinUserByOpenId(userInfo, function (err, result) {
-
-            });
-            // TODO: 更新数据库中weixin_user的信息
-            teacherController.updateWeinXinUserByOpenId(userInfo);
-
-            // TODO: 根据openid 获取用户的userId, openId, teacherId
-
-            req.userId = req.query.userId || 1;
-            req.openId = req.query.openId || userInfo.openid;
-            req.teacherId = req.query.teacherId || 5;
-            next();
+            if (result) {
+                teacherController.getUserIds({
+                    userId: result[0].userId,
+                    openId: result[0].openId
+                }, function (err, result) {
+                    req.userIds = result[0];
+                    next();
+                });
+            } else {
+                next();
+            }
         });
-    } else {
-        console.log('------ No Code -------');
-        req.userId = req.query.userId || 1;
-        //req.openId = req.query.openId || req.accessToken.openid || 'osWbGwS5BHkGvhhnvIV8nTlMNYWw';
-        req.openId = 'osWbGwS5BHkGvhhnvIV8nTlMNYWw';
-        req.teacherId = req.query.teacherId || 5;
-        req.userIds = {
-            userId: req.userId,
-            openId: req.openId,
-            teacherId: req.teacherId
-        };
-        next();
+    }
+    else {
+        console.log('------ 点击页面链接 -------');
+        var userId = req.query.userId;
+        var openId = req.query.openId;
+
+        if (openId) {
+            updateDb(openId);
+        } else if (userId) {
+            teacherController.getWeiXinUserByUserId(userId, function (err, data) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                updateDb(data[0].openId);
+            });
+        } else {
+            next();
+        }
+        var updateDb = function (openId) {
+            async.waterfall([
+                function getAccessToken(callback) {
+                    weixinController.getUserByOpenId(openId, function (err, data) {
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                        var userInfo = JSON.parse(data.toString());
+                        userInfo.userIp = req.ip;
+                        callback(null, userInfo);
+                    });
+                },
+                function checkUserSubscribed(result, callback) {
+
+                    if (result.subscribe) {
+                        callback(null, result);
+                    } else {
+                        // TODO: 用户未关注，跳转到提示关注的页面
+                        console.log('用户未关注');
+                        throw '用户未关注！';
+                    }
+                },
+                function checkIsUserExistInDb(userInfo, callback) {
+                    teacherController.checkIsUserExistInDb(userInfo, function (err, result) {
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                        if (result.length > 0) {
+                            // TODO: 已存在，更新用户信息，并返回最新记录信息
+                            teacherController.updateWeixinUser(userInfo, function (err, result) {
+                                if (err) {
+                                    console.log(err);
+                                    return;
+                                }
+                                callback(null, result);
+                            });
+                        } else {
+                            // TODO: 不存在，插入用户信息，并返回最新记录信息
+                            teacherController.insertWeixinUser(userInfo, function (err, result) {
+                                if (err) {
+                                    console.log(err);
+                                    return;
+                                }
+                                callback(null, result);
+                            });
+                        }
+                    });
+                }
+            ], function (err, result) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                if (result) {
+                    teacherController.getUserIds({
+                        userId: result[0].userId,
+                        openId: result[0].openId
+                    }, function (err, result) {
+                        req.userIds = result[0];
+                        next();
+                    });
+                } else {
+                    next();
+                }
+            });
+        }
     }
 });
 

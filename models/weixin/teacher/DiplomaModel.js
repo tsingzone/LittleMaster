@@ -73,7 +73,7 @@ var DiplomaModel = {
          * @param source
          * @param callback
          */
-        diplomaModel.deleteDiploma = function (source, callback) {
+        diplomaModel.deleteDiplomaById = function (source, callback) {
             var sql = 'update teacher_diploma set status = -1 where id = ?';
             DBUtils.getDBConnection().query(
                 sql,

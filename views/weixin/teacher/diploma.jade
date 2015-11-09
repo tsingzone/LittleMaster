@@ -17,7 +17,7 @@ block content
             div(id="#{diploma.id}")
                 div.container_add_title
                     div
-                        span.experience_title #{diploma.name}
+                        span.experience_title #{diploma.diplomaName}
                         - var time = (diploma.achieveTime.getYear() + 1900) + '年' + (diploma.achieveTime.getMonth()+1) + '月' + diploma.achieveTime.getDate() + '日';
                         span.experience_time 拿证时间：#{time}
                     img.delete(src="/images/delete.png", alt="", value="#{diploma.id}")
@@ -33,7 +33,7 @@ block script
             $(".container_add_content").last().css("padding-bottom", "0px");
 
             $("#btnAdd").click(function () {
-                window.location.href = window.location.href + '/add';
+                window.location.href = '/weixin/teacher/diploma/#{title}/add?userId=#{userIds.userId}';
             });
 
             $(".delete").each(function () {
@@ -47,8 +47,8 @@ block script
                         success: function (result) {
                             if (result.success) {
                                 alert(result.message);
-                                    if (result.success) {
-                                        $(document.getElementById(id)).hide();
+                                if (result.success) {
+                                    $(document.getElementById(id)).hide();
                                 }
                             }
                         }

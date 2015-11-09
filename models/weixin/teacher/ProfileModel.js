@@ -49,15 +49,17 @@ var ProfileModel = {
                     // 获取微信信息
                     sql: 'select id, open_id as openId, nickname as nickName, head_img as headImg'
                     + ' from weixin_user '
-                    + ' where id = ? and status = 1;',
+                    + ' where id = ? and status <> -1;',
                     params: [source.userId]
                 },
                 {
                     // 获取简历完成度
-                    sql: 'select teacher_infor.img_path, teacher_infor.`name`, teacher_infor.gender, '
+                    sql: 'select weixin_user.mobile, teacher_infor.img_path, teacher_infor.`name`, teacher_infor.gender, '
                     + ' teacher_infor.birthday, teacher_infor.college, teacher_infor.majar, teacher_infor.education, '
                     + ' teacher_infor.entry_year, diploma.diplomaCount, experience.experienceCount '
                     + ' from teacher_infor '
+                    + ' left join weixin_user '
+                    + ' on weixin_user.id = teacher_infor.user_id'
                     + ' left join (select count(id) as diplomaCount, teacher_id from teacher_diploma where kind = 0) as diploma '
                     + ' on teacher_infor.id = diploma.teacher_id '
                     + ' left join (select count(id) as experienceCount, teacher_id from teacher_experience) experience '
@@ -106,7 +108,7 @@ var ProfileModel = {
             parallelFuncs(sqlArray, callback);
         };
         profileModel.getProfile = function (source, callback) {
-            // TODO: 检查简历是否存在
+            console.log(source);
             var sql = "select id from teacher_infor "
                 + " where user_id = ?";
             DBUtils.getDBConnection().query(sql, [source.userId], function (err, result) {
@@ -121,8 +123,8 @@ var ProfileModel = {
                             + ' teacher_infor.college, teacher_infor.majar, teacher_infor.education, teacher_infor.entry_year as entryYear '
                             + ' from teacher_infor '
                             + ' left join weixin_user on teacher_infor.user_id = weixin_user.id '
-                            + ' where teacher_infor.id = ?',
-                            params: [source.teacherId]
+                            + ' where teacher_infor.user_id = ?',
+                            params: [source.userId]
                         },
                         {
                             sql: 'select teacherId, kind, kindCount '
@@ -143,7 +145,14 @@ var ProfileModel = {
                             params: [source.teacherId]
                         }
                     ];
-                    parallelFuncs(sqlArray, callback);
+                    parallelFuncs(sqlArray, function (err, result) {
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                        console.log(result);
+                        callback(null, result);
+                    });
                 };
                 if (result.length !== 0) {
                     searchFunc();
@@ -167,7 +176,7 @@ var ProfileModel = {
         };
         profileModel.saveProfile = function (source, callback) {
             var teacher = JSON.parse(source);
-            console.log(teacher.name);
+            console.log(teacher);
             var sql = "update teacher_infor set " +
                 "name=?, " +
                 "gender=?, " +
@@ -188,7 +197,13 @@ var ProfileModel = {
                 teacher.entryYear,
                 new Date(),
                 teacher.id
-            ], callback);
+            ], function (err, result) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                callback(null, result);
+            });
         };
         profileModel.chageTeacherHeadImg = function (source, callback) {
             var sql = "update teacher_infor set img_path = ? " +

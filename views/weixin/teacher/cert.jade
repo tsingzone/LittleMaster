@@ -17,7 +17,7 @@ block script
                 $(this).click(function () {
                     sessionStorage.setItem("certName", $(this).html());
                     sessionStorage.setItem("certId", $(this).attr('id'));
-                    window.location.href = '/weixin/teacher/diploma/other/add';
+                    window.location.href = '/weixin/teacher/diploma/other/add?userId=#{userIds.userId}';
                 });
             });
         });

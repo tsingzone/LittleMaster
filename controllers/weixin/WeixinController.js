@@ -130,6 +130,14 @@ var WeixinController = {
             });
         };
 
+
+        weixin.getUserByOpenId = function (openId, callback) {
+            var that = this;
+            that.getAccessToken(openId, function (err, data) {
+                that.getUser(data.access_token, openId, callback);
+             });
+        };
+
         // ==== 实例方法 end ====
         return weixin;
     }
