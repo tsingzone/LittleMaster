@@ -11,49 +11,55 @@ block header-save
     img#collection(src='/images/shoucang.png')
 block content
     #pro_top
-        #pro_type.job_type
-            | 批改
+        #pro_type.job_type= profile.typeName
         #pro_title
-            #pro_h1 招小学作文批改兼职老师
-            #pro_h2 工作日期: 09/14-09/30
+            #pro_h1= profile.title
+            #pro_h2 工作日期: #{profile.start_time}-#{profile.end_time}
     #pro_key_point
-        .pro_points 网络办公
+        .pro_points= profile.address
             .vertical
-        .pro_points 工资日结
+        .pro_points 工资#{profile.settlementName}
             .vertical
-        #pro_price.pro_points 100元/天
+        #pro_price.pro_points= profile.salary + profile.salaryName
     #pro_content
         .pro_content_h1 基本信息
         .pro_contents
             .pro_content_h2 发布机构
-            .pro_content_pro 北京清众教育科技有限公司
+            .pro_content_pro= profile.companyName
         .pro_contents
             .pro_content_h2 薪资待遇
-            .pro_content_pro 100元/天
+            .pro_content_pro= profile.salary + profile.salaryName
         .pro_contents
             .pro_content_h2 结算方式
-            .pro_content_pro 日结
+            .pro_content_pro= profile.settlementName
         .pro_contents
             .pro_content_h2 招聘人数
-            .pro_content_pro 30人
+            .pro_content_pro #{profile.hire_count}人
         .pro_contents
             .pro_content_h2 性别要求
-            .pro_content_pro 不限
+            .pro_content_pro
+                case profile.gender
+                    when 0
+                        | 男
+                    when 1
+                        | 女
+                    when 2
+                        | 不限
         .pro_contents
             .pro_content_h2 工作地点
-            .pro_content_pro 网络办公
+            .pro_content_pro= profile.address
         .pro_contents
-            .pro_content_h2 发布机构
-            .pro_content_pro 2015-09-09
+            .pro_content_h2 发布时间
+            .pro_content_pro= profile.publish_time
         .pro_content_h1 工作简介
         .pro_contents
             .pro_content_h2 工作内容
-            .pro_content_pro 批改作文并打评语，要求1天100篇批改作文并打评语，要求1天100篇批改作文并打评语，要求1天100篇批改作文并打评语，要求1天100篇批改作文并打评语。
+            .pro_content_pro= profile.content
         .pro_contents
             .pro_content_h2 工作待遇
-            .pro_content_pro 100元/天，包吃住
+            .pro_content_pro= profile.treatment
         .pro_contents
             .pro_content_h2 工作要求
-            .pro_content_pro 服从现场管理，配合项目经理工作，服从现场管理，配合项目经理工作，服从现场管理，配合项目经理工作，服从现场管理，配合项目经理工作。
+            .pro_content_pro= profile.requirement
         #registration 立即报名
 block footer

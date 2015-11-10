@@ -34,6 +34,18 @@ _.extend(company.prototype, {
             res.render(getView('city'), {lists: result});
         });
     },
+    getProfile:function(req,res) {
+        var jobId = req.query.jobId;
+        Company.getProfile(jobId, function (err, result) {
+            if (err) {
+                res.status(404);
+            }
+            result[0].start_time = new moment(result[0].start_time).format('YYYY/MM/DD');
+            result[0].end_time = new moment(result[0].end_time).format('YYYY/MM/DD');
+            result[0].publish_time = new moment(result[0].publish_time).format('YYYY/MM/DD');
+            res.render(getView('profile'), {profile: result[0]});
+        });
+    },
     getAreaList:function(req,res) {
         var cityCode = req.query.cityCode;
         Company.getAreaList(cityCode, function (err, result) {

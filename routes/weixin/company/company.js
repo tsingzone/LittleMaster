@@ -20,7 +20,7 @@ router.get('/', function (req, res) {
 
 router.get('/profile', function (req, res) {
     console.log("company.js profile");
-    res.render(getView('profile'), {title: "Profile"});
+    companyController.getProfile(req, res);
 });
 
 router.get('/city', function (req, res) {
