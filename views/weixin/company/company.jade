@@ -71,12 +71,35 @@ block script
                 dataType:"json",
                 data:{city: city,type : type,area : area,time : time,sort : sort},
                 success:function(jobList) {
-                    alert(1);
-                    // var str = "";
-                    // for(var i = 0;i < lists.length;i++) {
-                    //     str += "<div class='list' typeId='" + lists[i]["id"] + "' >" + lists[i]["name"] + "</div>";
-                    // }
-                    // $("#job_list").html(str);
+                    var str = "";
+                    if(jobList.length > 0) {
+                        for(var i = 0;i < jobList.length;i++) {
+                             str += "<div class='job' job-id='" + jobList[i]['id'] + "'><div class='job_type'>"
+                             + jobList[i]['typeName'] + "</div><div class='job_content'><div class='job_time'>工作日期："
+                             + jobList[i]['start_time'].substring(0,10).replace(/-/g,"/") + "-"
+                             + jobList[i]['end_time'].substring(0,10).replace(/-/g,"/")
+                             + "</div><div class='job_title'>" + jobList[i]['title'] + "</div><div class='job_others'>"
+                             + jobList[i]['address'] + " ";
+                             switch (jobList[i]['gender']) {
+                                case 0:
+                                    str += "男 ";
+                                break;
+                                case 1:
+                                    str += "女 ";
+                                break;
+                                case 2:
+                                    str += "性别不限 ";
+                                break;
+                                default :
+                                    str += "性别不限 ";
+                             }
+                             str += jobList[i]['settlementName'] + "<div class='job_price'>" + jobList[i]['salary'];
+                             str += jobList[i]['salaryName'] + "</div></div></div></div>"
+                        }
+                    } else {
+                        str = "<div>暂无符合条件的兼职</div>";
+                    }
+                    $("#job_list").html(str);
                 }
             });
         }
@@ -155,7 +178,7 @@ block script
                             $(document).on("click",".list",function() {
                                 $(".list").removeClass("cur");
                                 $(this).addClass("cur");
-                                sessionStorage.setItem('type',$(this).html());
+                                sessionStorage.setItem('type',$(this).attr("typeId"));
                                 getJobList();
                             });
                             break;
@@ -203,5 +226,5 @@ block script
 
         });
         $(document).on("click",".job",function() {
-            location.href = "company/profile";
+            location.href = "company/profile?jobId=" + $(this).attr("job-id");
         });
