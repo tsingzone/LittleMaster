@@ -22,6 +22,7 @@ var TeacherModel = {
         teacherModel.updateWeinXinUserByOpenId = userModel.updateWeinXinUserByOpenId;
         teacherModel.saveWeixinUser = userModel.saveWeixinUser;
         teacherModel.getUserIds = userModel.getUserIds;
+        teacherModel.changeMobile = userModel.changeMobile;
 
         teacherModel.getUserCenterData = profileModel.getUserCenterData;
         teacherModel.getProfile = profileModel.getProfile;

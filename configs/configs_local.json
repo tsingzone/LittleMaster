@@ -25,7 +25,7 @@
   },
   "memcachedconfig": {
     "server1": {
-      "keyPrefix" : "LittleMaster_",
+      "keyPrefix": "LittleMaster_",
       "server": "127.0.0.1",
       "port": "11211",
       "weight": "1",
@@ -40,5 +40,15 @@
         "retry": 30000
       }
     }
+  },
+  "smsconfig": {
+    "server": {
+      "IP": "https://sandboxapp.cloopen.com",
+      "Port": "8883"
+    },
+    "accountSid": "8a48b5514bde8c71014be3336e8802b0",
+    "accountToken": "3104c11a2bdc400ab0039f929b098f71",
+    "appId": "aaf98f8950189e9b01504637d0d91a71",
+    "softVersion": "2013-12-26"
   }
 }

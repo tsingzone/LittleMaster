@@ -13,10 +13,8 @@ var MemCache = {
         var memcached = {};
         var server = config["server1"];
         var options = server["options"];
-        console.log(options);
         var serverUrl = [server["server"], ":", server["port"]].join('');
         var keyPrefix = server['keyPrefix'];
-        console.log(serverUrl);
         var mem = new Memcached(serverUrl, options);
 
         memcached.getObject = function (key, callback) {

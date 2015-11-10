@@ -2,16 +2,21 @@
  * Created by michel_feng on 15/11/6.
  */
 
-var _ = require('underscore');
 var fs = require('fs');
+
+var _ = require('underscore');
+var captchapng = require('captchapng');
 
 var BaseController = require('./BaseController');
 var oss = require('../../../utils/Oss').createNew();
+var sms = require('../../../utils/SmsUtil').createNew();
+var Memcached = require('../../../utils/Memcached');
 
 var ProfileController = {
 
     createNew: function (teacherModel) {
         var profileController = BaseController.createNew();
+        var memCache = Memcached.createNew();
 
         var calPercentage = function calPercentage(data) {
             console.log(data);
@@ -183,7 +188,10 @@ var ProfileController = {
             res.render(profileController.getView('upload'), {title: 'Upload'});
         };
         profileController.getProfileMobile = function (req, res) {
-            res.render(profileController.getView('bind'), {title: 'Bind'});
+            res.render(profileController.getView('bind'), {
+                title: 'Bind',
+                userIds: req.userIds
+            });
         };
         profileController.getEducation = function (req, res) {
             teacherModel.getEducation(function (err, result) {
@@ -194,8 +202,145 @@ var ProfileController = {
                 });
             });
         };
-        profileController.getCollege = function (req, res) {
-            res.render(profileController.getView('college'), {userIds: req.userIds});
+
+        profileController.bindMobile = function (req, res) {
+
+            var mobile = req.body.mobile;
+            var smsCode = req.body.smsCode;
+            var picCode = req.body.picCode;
+            var openId = req.userIds.openId;
+
+            var reg = /1\d{10}/;
+            if (mobile == '' || !reg.test(mobile)) {
+                res.json({success: false, message: "请输入正确的手机号！"});
+                return;
+            }
+
+            if (smsCode == '') {
+                res.json({success: false, message: "请输入短信验证码！"});
+                return;
+            }
+
+            if (picCode == '') {
+                res.json({success: false, message: "请输入图片验证码！"});
+                return;
+            }
+
+            memCache.getObject('RANDOM_CODE_' + openId, function (err, data) {
+                if (err) {
+                    console.log(err);
+                    res.json({success: false, message: err});
+                    return;
+                }
+                if (!data) {
+                    res.json({success: false, message: "短信验证码已过期，请重新获取！"});
+                    return;
+                }
+                if (smsCode != data) {
+                    res.json({success: false, message: "短信验证码错误，请重新输入！"});
+                    return;
+                }
+                memCache.getObject('RANDOM_CODE_PIC_' + openId, function (err, data) {
+                    if (err) {
+                        console.log(err);
+                        res.json({success: false, message: err});
+                        return;
+                    }
+                    if (picCode != data) {
+                        res.json({
+                            success: false,
+                            message: "图片验证码错误，请重新输入！"
+                        });
+                        return;
+                    }
+                    var source = {
+                        openId: openId,
+                        mobile: mobile
+                    }
+                    teacherModel.changeMobile(source, function (err, result) {
+                        if (err) {
+                            console.log(err);
+                            res.json({success: false, message: err});
+                            return;
+                        }
+                        res.json({success: true, message: "绑定成功！"});
+                    })
+
+                });
+            });
+
+        };
+
+        var origin = '1234567890';
+        var getRandCode = function () {
+            var selected = [];
+            for (var i = 0; i < 4; i++) {
+                var index = Math.floor(Math.random() * 10);
+                selected.push(origin.charAt(index));
+            }
+            console.log(selected);
+            return selected.join('');
+        };
+        profileController.randomSmsCode = function (req, res) {
+            memCache.getObject('SEND_' + req.userIds.openId, function (err, data) {
+                if (err) {
+                    console.log(err);
+                    res.json({success: false, message: err});
+                    return;
+                }
+                if (data) {
+                    res.json({success: false, message: "您的短信已发送请耐心等待！"});
+                }
+                else {
+                    var code = getRandCode();
+                    memCache.putObject('SEND_' + req.userIds.openId, code, 61, function (err) {
+                        if (err) {
+                            console.log(err);
+                            res.json({success: false, message: err});
+                            return;
+                        }
+
+                        sms.sendMessage([req.body.mobile], '40816', [code, "5"], function (err, result) {
+                            if (err) {
+                                console.log(err);
+                                res.json({success: false, message: err});
+                                return;
+                            }
+                            console.log(result.toString());
+                            memCache.putObject('RANDOM_CODE_' + req.userIds.openId, code, 300, function (err) {
+                                if (err) {
+                                    console.log(err);
+                                    res.json({success: false, message: err});
+                                    return;
+                                }
+                                res.json({
+                                    success: true,
+                                    message: "验证码已发送，请注意查收！"
+                                });
+                            })
+                        });
+                    });
+
+                }
+            });
+
+        };
+
+        profileController.randomCaptcha = function (req, res) {
+            var randomCode = parseInt(Math.floor(Math.random() * 9000 + 1000));
+            memCache.putObject('RANDOM_CODE_PIC_' + req.userIds.openId, randomCode, 300, function (err) {
+                var p = new captchapng(80, 30, randomCode);
+                p.color(0, 0, 0, 0);
+                p.color(255, 255, 255, 255);
+
+                var img = p.getBase64();
+                var imgbase64 = new Buffer(img, 'base64');
+                res.writeHead(200, {
+                    'Content-Type': 'image/png'
+                });
+
+                res.end(imgbase64);
+            });
         };
         return profileController;
     }

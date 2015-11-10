@@ -6,30 +6,107 @@ block header-title
 block content
     div.bind
         div.bind-line
-            span.bind-text 手机号
-            input(type="text")
+            input#mobile(type="text" placeholder='请输入手机号')
         div
             div.bind-line
-                span.bind-text 验证码
-                input#mobile(type="text")
-            a#sms.sms-valid 获取验证码
+                input#smsCode(type="text" placeholder='请输入短信验证码')
+                a#sms.sms-valid 获取验证码
         div
             div.bind-line
-                span.bind-text 图片验证码
-                input(type="text", style="width:110px")
-            span#pic.pic-valid 1234
+                input#pic(type="text" placeholder='请输入图片验证码')
+                img(src="/weixin/teacher/random?userId=#{userIds.userId}" onclick='this.src="/weixin/teacher/random?userId=#{userIds.userId}"').pic-valid
 
-        div.button
+        div#submit.button
             img(src="/images/correct.png")
             | 完成修改
 
 block script
     script.
+        function validateMobile(mobile) {
+            if (!mobile) {
+                alert('手机号不能为空！');
+                $('#mobile').focus();
+                return false;
+            }
+            else {
+                var re = /^1\d{10}$/;
+                if (mobile == '' || !re.test(mobile)) {
+                    alert('请输入正确的手机号！');
+                    $('#mobile').focus();
+                    return false;
+                }
+            }
+            return true;
+        }
         $(function () {
+            var flag = false;
             $('#sms').click(function () {
-                alert(11);
+                if (flag) {
+                    return;
+                }
+                flag = true
+                $('#sms').css('background', 'grey');
+                var num = 60;
+                var interval = setInterval(function () {
+                    if (num >= 0) {
+                        $('#sms').html((num--) + '秒后重发');
+                    } else {
+                        $('#sms').html('获取验证码');
+                        $('#sms').css('background', '#56CDB8');
+                        flag = false
+                        clearInterval(interval);
+                        return;
+                    }
+                }, 1000);
                 $('#sms').attr('disabled', 'disabled');
                 var mobile = $('#mobile').val();
+                if (!validateMobile(mobile)) {
+                    return;
+                }
+                $.ajax({
+                    url: '/weixin/teacher/smsCode?userId=#{userIds.userId}',
+                    type: 'post',
+                    data: {mobile: mobile},
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result.success) {
+                            alert(result.message);
+                        } else {
+                            alert(result.message);
+                        }
+                    }
+                });
+            });
 
+            $('#submit').click(function () {
+                var mobile = $('#mobile').val();
+                if (!validateMobile(mobile)) {
+                    return;
+                }
+                var smsCode = $('#smsCode').val();
+                if (!smsCode) {
+                    alert('请输入短信验证码！');
+                    $('#smsCode').focus();
+                    return;
+                }
+                var pic = $('#pic').val();
+                if (!pic) {
+                    alert('请输入图片验证码！');
+                    $('#pic').focus();
+                    return;
+                }
+                $.ajax({
+                    url: '/weixin/teacher/bind?userId=#{userIds.userId}',
+                    type: 'post',
+                    data: {mobile: mobile, smsCode: smsCode, picCode: pic},
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result.success) {
+                            alert(result.message);
+                        } else {
+                            alert(result.message);
+                        }
+                    }
+                });
             });
         });

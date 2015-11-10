@@ -387,6 +387,7 @@
 
 /* start 绑定 */
 .bind {
+    display: block;
     width: 330px;
     margin: 0 auto;
     padding-bottom: 50px;
@@ -394,19 +395,16 @@
 
 .bind-line {
     display: inline-block;
-    margin-left: 20px;
-    height: 40px;
+    margin-left: 30px;
     border-bottom: 1px solid #56CDB8;
-    color: #56CDB8;
 }
 
-.bind input {
-    border: none;
-    font-size: 18px;
-    line-height: 30px;
+.bind-line input {
     display: inline-block;
-    width: 140px;
-    margin-left: 5px;
+    line-height: 40px;
+    border: none;
+    color: #333333;
+    font-size: 16px;
 }
 
 .sms-valid {
@@ -423,11 +421,9 @@
 .pic-valid {
     display: inline-block;
     background: #56CDB8;
-    font-size: 16px;
-    line-height: 30px;
     color: #FFFFFF;
-    width: 75px;
-    margin-left: 8px;
+    height: 35px;
+    width: 90px;
     text-align: center;
     vertical-align: bottom;
 }

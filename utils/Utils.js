@@ -11,7 +11,20 @@ var utils = {
         return sha.digest('hex');
     },
 
+    md5: function md5(plainText) {
+        var md = crypto.createHash('md5').update(plainText);
+        return md.digest('hex');
+    },
 
+    base64: function base64(plainText) {
+        return plainText.toString('base64');
+    },
+
+    strReplace: function (str, data) {
+        return str.replace(/{\w+}/g, function (matchs) {
+            return data[matchs.slice(1, -1)];
+        });
+    }
 };
 
 

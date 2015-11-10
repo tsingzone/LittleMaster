@@ -122,6 +122,17 @@ var UserModel = {
                 callback(null, result);
             })
         };
+
+        userModel.changeMobile = function (source, callback) {
+            var sql = 'update weixin_user set mobile = ? where open_id = ?';
+            DBUtils.getDBConnection().query(sql, [source.mobile, source.openId], function (err, result) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                callback(null, result);
+            });
+        };
         return userModel;
     }
 };

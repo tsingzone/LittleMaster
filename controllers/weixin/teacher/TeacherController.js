@@ -45,6 +45,9 @@ var TeacherController = {
         teacherController.getProfileMobile = profileController.getProfileMobile;
         teacherController.getCollege = profileController.getCollege;
         teacherController.getEducation = profileController.getEducation;
+        teacherController.bindMobile = profileController.bindMobile;
+        teacherController.randomSmsCode = profileController.randomSmsCode;
+        teacherController.randomCaptcha = profileController.randomCaptcha;
 
         teacherController.getSignJobs = jobController.getSignJobs;
         teacherController.getCollectJobs = jobController.getCollectJobs;

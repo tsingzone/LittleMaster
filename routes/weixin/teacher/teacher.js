@@ -43,6 +43,21 @@ router.get('/bind', function (req, res) {
     teacherController.getProfileMobile(req, res);
 });
 
+router.post('/bind', function (req, res) {
+    console.log('绑定手机号');
+    teacherController.bindMobile(req, res);
+});
+
+router.post('/smsCode', function (req, res) {
+    console.log('发送手机验证码');
+    teacherController.randomSmsCode(req, res);
+});
+
+router.get('/random', function (req, res) {
+    console.log('图形验证码');
+    teacherController.randomCaptcha(req, res);
+});
+
 // 已报名兼职
 router.get('/sign', function (req, res) {
     console.log('已报名兼职');
@@ -112,11 +127,12 @@ router.get('/experience/:type/add', function (req, res) {
 router.post('/experience/save', function (req, res) {
     console.log('保存经历');
     teacherController.saveExperience(req, res);
-})
+});
 
 router.post('/experience/delete', function (req, res) {
     console.log('经历 删除');
     teacherController.deleteExperienceById(req, res);
 });
+
 
 module.exports = router;

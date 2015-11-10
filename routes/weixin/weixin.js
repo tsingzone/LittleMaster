@@ -93,10 +93,11 @@ router.use(function (req, res, next) {
         console.log('------ 点击页面链接 -------');
         var userId = req.query.userId;
         var openId = req.query.openId;
-
         if (openId) {
+            console.log(openId);
             updateDb(openId);
         } else if (userId) {
+            console.log(userId);
             teacherController.getWeiXinUserByUserId(userId, function (err, data) {
                 if (err) {
                     console.log(err);
@@ -105,6 +106,7 @@ router.use(function (req, res, next) {
                 updateDb(data[0].openId);
             });
         } else {
+            console.log('None');
             next();
         }
         var updateDb = function (openId) {
@@ -158,6 +160,7 @@ router.use(function (req, res, next) {
                     });
                 }
             ], function (err, result) {
+                console.log(result);
                 if (err) {
                     console.log(err);
                     return;

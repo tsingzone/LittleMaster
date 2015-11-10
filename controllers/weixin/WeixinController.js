@@ -63,10 +63,9 @@ var WeixinController = {
         // 获取acces_token
         weixin.getAccessToken = function (openId, callback) {
             memCache.getObject('WX_ACCESS_TOKEN', function (err, result) {
-                console.log(result);
                 if (result) {
                     var data = {
-                        access_token: data,
+                        access_token: result,
                         openid: openId
                     };
                     callback(null, data);
@@ -77,12 +76,12 @@ var WeixinController = {
                             console.log(err);
                             return;
                         }
-                        data = JSON.parse(data.toString());
+                        json = JSON.parse(data.toString());
                         var result = {
-                            access_token: data.access_token,
+                            access_token: json.access_token,
                             openid: openId
                         };
-                        memCache.putObject('WX_ACCESS_TOKEN', data.access_token, 7200, function (err) {
+                        memCache.putObject('WX_ACCESS_TOKEN', json.access_token, 7200, function (err) {
                             callback(null, result);
                         });
                     });
