@@ -29,7 +29,7 @@ block content
             .job_type 批改
             .job_content
                 .job_time 工作日期: 09/14-09/30
-                .job_title 招小学作文批改兼职老师招小学作文批改兼职老师招小学作文批改兼职老师
+                .job_title 招小学作文批改兼职老师
                 .job_others 网络 不限性别 月结
                     .job_price 150元/天
     #list
@@ -40,6 +40,46 @@ block content
 block script
     script.
         var checked = false;
+        function getJobList() {
+            $("#mask_job,#list").hide();
+            $("#calendar").hide();
+            $("#screening span").removeClass("cur");
+            if(sessionStorage.getItem('type')) {
+                var type = sessionStorage.getItem('type');
+            } else {
+                var type = '';
+            }
+            if(sessionStorage.getItem('area')) {
+                var area = sessionStorage.getItem('area');
+            } else {
+                var area = '';
+            }
+            if(sessionStorage.getItem('time')) {
+                var time = sessionStorage.getItem('time');
+            } else {
+                var time = '';
+            }
+            if(sessionStorage.getItem('sort')) {
+                var sort = sessionStorage.getItem('sort');
+            } else {
+                var sort = '';
+            }
+            var city = sessionStorage.getItem('city');
+            $.ajax({
+                url:"/weixin/company/jobList",
+                type:"get",
+                dataType:"json",
+                data:{city: city,type : type,area : area,time : time,sort : sort},
+                success:function(jobList) {
+                    alert(1);
+                    // var str = "";
+                    // for(var i = 0;i < lists.length;i++) {
+                    //     str += "<div class='list' typeId='" + lists[i]["id"] + "' >" + lists[i]["name"] + "</div>";
+                    // }
+                    // $("#job_list").html(str);
+                }
+            });
+        }
         $(function() {
             $('#find_job').addClass('current');
             if(sessionStorage.getItem('cityCode')) {
@@ -49,12 +89,14 @@ block script
                 sessionStorage.setItem('city', "北京市");
                 sessionStorage.setItem('cityCode', 110100);
             }
+            getJobList();
             new Kalendae(document.getElementById("calendar"), {
                 months:1,
                 mode:'multiple'
             });
         });
         $("#header-back,#screening span").click(function() {
+            $("#list").html('');
             if($(".cur").attr("id") != $(this).attr("id")) {
                 checked = false;
                 $("#list").hide();
@@ -85,7 +127,6 @@ block script
                             var str = "";
                             str += "<div class='list'>最新发布</div>"
                                 + "<div class='list'>高价优先</div>"
-                                + "<div class='list'>离我最近</div>"
                                 + "<div class='list'>日结优先</div>"
                                 + "<div class='list'>周末优先</div>";
                             $("#list").html(str);
@@ -93,6 +134,8 @@ block script
                             $(document).on("click",".list",function() {
                                 $(".list").removeClass("cur");
                                 $(this).addClass("cur");
+                                sessionStorage.setItem('sort',$(this).html());
+                                getJobList();
                             });
                             break;
                         case "type":
@@ -112,6 +155,8 @@ block script
                             $(document).on("click",".list",function() {
                                 $(".list").removeClass("cur");
                                 $(this).addClass("cur");
+                                sessionStorage.setItem('type',$(this).html());
+                                getJobList();
                             });
                             break;
                         case "area":
@@ -133,6 +178,8 @@ block script
                             $(document).on("click",".list",function() {
                                 $(".list").removeClass("cur");
                                 $(this).addClass("cur");
+                                sessionStorage.setItem('area',$(this).html());
+                                getJobList();
                             });
                             break;
                     }
