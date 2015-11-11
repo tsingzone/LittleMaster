@@ -14,8 +14,8 @@ var getView = function (view) {
 
 
 router.get('/', function (req, res) {
-    console.log("company.js /")
-    res.render(getView('company'), {title: "Company"});
+    console.log("company.js /");
+    res.render(getView('company'), {title: "Company",openId:req.userIds.openId});
 });
 
 router.get('/profile', function (req, res) {
@@ -46,6 +46,11 @@ router.get('/area', function (req, res) {
 router.get('/jobList', function (req, res) {
     console.log("company.js jobList");
     companyController.getJobList(req, res);
+});
+
+router.get('/schedule', function (req, res) {
+    console.log("company.js schedule");
+    res.render(getView('schedule'));
 });
 
 

@@ -61,5 +61,48 @@ block content
         .pro_contents
             .pro_content_h2 工作要求
             .pro_content_pro= profile.requirement
-        #registration 立即报名
+        #registration(job-id= profile.id) 立即报名
+    #mask_profile
+    #message_profile
+        #message_title 确定报名？
+        #message_content 确定将您的简历投递至该职位？
+        #message_bottom
+            #message_cancel.message_bottom 取消
+            #message_done.message_bottom 好的
 block footer
+block script
+    script.
+        var profile = true;
+        $("#registration").click(function() {
+            $("#message_profile").css("left",($(window).width() - $("#message_profile").width())/2 + 'px');
+            $("#message_profile").css("top",($(window).height() - $("#message_profile").height())/2 + 'px');
+            $.ajax({
+                url: "/weixin/teacher/profile/percentage?openId=" + sessionStorage.getItem('openId'),
+                type: "get",
+                success: function(data) {
+                    if(data.success) {
+                        profile = true;
+                        $("#message_title").html("确定报名？");
+                        $("#message_content").html("确定将您的简历投递至该职位？");
+                    } else {
+                        profile = false;
+                        $("#message_title").html("请完善简历");
+                        $("#message_content").html("请完善简历后再进行报名");
+                    }
+                }
+            });
+            $("#mask_profile,#message_profile").show();
+        });
+        $("#message_cancel").click(function() {
+            $("#mask_profile,#message_profile").hide();
+        });
+        $("#message_done").click(function() {
+            if(profile) {
+                // window.location.href = "/weixin/company/deliver?openId=" + sessionStorage.getItem('openId')
+                //    + "&jobId=" + $("#registration").attr("job-id");
+                window.location.href = "/weixin/company/schedule";
+            } else {
+                window.location.href = "/weixin/teacher/profile?openId=" + sessionStorage.getItem('openId');
+            }
+            $("#mask_profile,#message_profile").hide();
+        });
