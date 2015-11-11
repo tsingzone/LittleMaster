@@ -2,6 +2,9 @@
    Created by michel_feng on 15/10/24.
 extends ./parent.jade
 
+block style
+    script(src='http://malsup.github.io/jquery.form.js')
+
 block header-title
     | 修改头像
 
@@ -30,7 +33,7 @@ block script
 
             $('#btnUpload').click(function () {
                 var fulAvatarVal = $('#fulAvatar').val();
-                if(!fulAvatarVal){
+                if (!fulAvatarVal) {
                     alert('请选择要上传的头像！');
                     return;
                 }
