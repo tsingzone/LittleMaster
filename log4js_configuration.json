@@ -1,0 +1,16 @@
+{
+  "appenders": [
+    {
+      "type": "console"
+    },
+    {
+      "type": "dateFile",
+      "level": "DEBUG",
+      "filename": "logs/biz_log",
+      "pattern": "-yyyy-MM-dd.log",
+      "alwaysIncludePattern": true,
+      "maxLogSize": 20480
+    }
+  ],
+  "replaceConsole": true
+}

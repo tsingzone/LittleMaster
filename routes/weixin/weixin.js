@@ -11,19 +11,18 @@ var company = require('./company/company');
 var weixinController = require('../../controllers/weixin/WeixinController').createNew();
 var teacherController = require('../../controllers/weixin/teacher/TeacherController').createNew();
 
+var logger = require('../../logger').logger('weixin');
+
 // 路由拦截
 router.use(function (req, res, next) {
-    console.log('Weixin verify....');
-
     var code = req.query.code;
     if (code) {
-        console.log('------ 点击微信菜单 -------');
-
+        logger.info('------ 点击微信菜单 -------');
         async.waterfall([
             function getUserByCode(callback) {
                 weixinController.getUserByCode(code, function (err, data) {
                     if (err) {
-                        console.log(err);
+                        console.error(err);
                         return;
                     }
                     var userInfo = JSON.parse(data.toString());
@@ -90,7 +89,7 @@ router.use(function (req, res, next) {
         });
     }
     else {
-        console.log('------ 点击页面链接 -------');
+        logger.info('------ 点击页面链接 -------');
         var userId = req.query.userId;
         var openId = req.query.openId;
         if (openId) {

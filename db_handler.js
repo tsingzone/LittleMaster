@@ -3,7 +3,7 @@
  */
 "use strict"
 var mysql = require('mysql');
-var logger = require('./logger');
+var logger = require('./logger').logger();
 var _ = require('underscore');
 
 var DBHandler = function() {
