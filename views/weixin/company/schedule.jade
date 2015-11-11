@@ -1,0 +1,20 @@
+//
+   Created by GXP on 2015/11/11.
+
+extends ../layout
+block style
+    link(rel='stylesheet', href='/plugins/kalendae/kalendae.css')
+    script(src='/plugins/kalendae/kalendae.standalone.js')
+block header-back
+    img#back(src='/images/left-arrow.png')
+block header-title
+    | 已报名兼职
+block content
+    #job_list(style='margin-top:0')
+        .job
+            .job_type 批改
+            .job_content
+                .job_time 工作日期: 09/14-09/30
+                .job_title 招小学作文批改兼职老师
+                .job_others 网络 不限性别 月结
+                    .job_price 150元/天

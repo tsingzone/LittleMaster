@@ -2,6 +2,9 @@
    Created by michel_feng on 15/10/21.
 
 extends ../layout
+block style
+    link(rel='stylesheet', href='/plugins/kalendae/kalendae.css')
+    script(src='/plugins/kalendae/kalendae.standalone.js')
 block header-back
     img#dingwei(src='/images/dingwei.png')
     | 北京市
@@ -112,6 +115,7 @@ block script
                 sessionStorage.setItem('city', "北京市");
                 sessionStorage.setItem('cityCode', 110100);
             }
+            sessionStorage.setItem('openId','#{openId}');
             getJobList();
             new Kalendae(document.getElementById("calendar"), {
                 months:1,
