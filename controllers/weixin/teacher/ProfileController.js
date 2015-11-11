@@ -11,6 +11,7 @@ var BaseController = require('./BaseController');
 var oss = require('../../../utils/Oss').createNew();
 var sms = require('../../../utils/SmsUtil').createNew();
 var Memcached = require('../../../utils/Memcached');
+var logger = require('../../../logger').logger('ProfileController');
 
 var ProfileController = {
 
@@ -19,12 +20,27 @@ var ProfileController = {
         var memCache = Memcached.createNew();
 
         var calPercentage = function calPercentage(data) {
-            console.log(data);
+            logger.debug(data);
             return Math.floor(100 * (_.filter(data, function (item) {
                     if (item || item === 0) {
                         return true;
                     }
                 }).length) / 11);
+        };
+
+        profileController.getProfilePercentage = function (req, res) {
+            teacherModel.getProfilePercentage(req.userIds.userId, function (err, result) {
+                if (err) {
+                    logger.error(err);
+                    res.json({success: false, message: err});
+                }
+                var percent = calPercentage(result[0]);
+                if (percent == 100) {
+                    res.json({success: true, message: ''});
+                } else {
+                    res.json({success: false, message: '简历未完成！'});
+                }
+            })
         };
 
         profileController.getUserCenterData = function (req, res) {
@@ -174,7 +190,7 @@ var ProfileController = {
                             };
                             teacherModel.chageTeacherHeadImg(source, function (err, result) {
                                 if (err) {
-                                    console.log(err);
+                                    logger.error(err);
                                     return;
                                 }
                                 res.json({success: true, message: "上传成功！"});
@@ -228,7 +244,7 @@ var ProfileController = {
 
             memCache.getObject('RANDOM_CODE_' + openId, function (err, data) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     res.json({success: false, message: err});
                     return;
                 }
@@ -242,7 +258,7 @@ var ProfileController = {
                 }
                 memCache.getObject('RANDOM_CODE_PIC_' + openId, function (err, data) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         res.json({success: false, message: err});
                         return;
                     }
@@ -259,7 +275,7 @@ var ProfileController = {
                     }
                     teacherModel.changeMobile(source, function (err, result) {
                         if (err) {
-                            console.log(err);
+                            logger.error(err);
                             res.json({success: false, message: err});
                             return;
                         }
@@ -284,7 +300,7 @@ var ProfileController = {
         profileController.randomSmsCode = function (req, res) {
             memCache.getObject('SEND_' + req.userIds.openId, function (err, data) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     res.json({success: false, message: err});
                     return;
                 }
@@ -295,21 +311,21 @@ var ProfileController = {
                     var code = getRandCode();
                     memCache.putObject('SEND_' + req.userIds.openId, code, 61, function (err) {
                         if (err) {
-                            console.log(err);
+                            logger.error(err);
                             res.json({success: false, message: err});
                             return;
                         }
 
                         sms.sendMessage([req.body.mobile], '40816', [code, "5"], function (err, result) {
                             if (err) {
-                                console.log(err);
+                                logger.error(err);
                                 res.json({success: false, message: err});
                                 return;
                             }
                             console.log(result.toString());
                             memCache.putObject('RANDOM_CODE_' + req.userIds.openId, code, 300, function (err) {
                                 if (err) {
-                                    console.log(err);
+                                    logger.error(err);
                                     res.json({success: false, message: err});
                                     return;
                                 }

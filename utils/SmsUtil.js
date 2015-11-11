@@ -8,6 +8,7 @@ var moment = require('moment');
 var Config = require('../configs');
 var smsconfig = Config.getConfig().smsconfig;
 var util = require('./Utils');
+var logger = require('../logger').logger('SmsUtil');
 
 var SmsUtil = {
     createNew: function () {
@@ -68,7 +69,7 @@ var SmsUtil = {
 
             urllib.request(url, args, function (err, result) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         return;
                     }
                     var json = JSON.parse(result);

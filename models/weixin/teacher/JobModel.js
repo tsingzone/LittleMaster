@@ -3,7 +3,7 @@
  */
 
 var DBUtils = require('../../../db_utils');
-
+var logger = require('../../../logger').logger('JobModel');
 var JobModel = {
     createNew: function () {
         var jobModel = {};
@@ -27,7 +27,7 @@ var JobModel = {
             DBUtils.getDBConnection().query(sql, [source.teacherId],
                 function (err, result) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         return;
                     }
                     callback(null, result);
@@ -60,7 +60,7 @@ var JobModel = {
             DBUtils.getDBConnection().query(sql, [source.teacherId],
                 function (err, result) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         return;
                     }
                     callback(null, result);

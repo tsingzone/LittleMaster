@@ -3,7 +3,7 @@
  */
 
 var DBUtils = require('../../../db_utils');
-
+var logger = require('../../../logger').logger('ExperienceModel');
 var ExperienceModel = {
     createNew: function () {
         var experienceModel = {};
@@ -21,7 +21,7 @@ var ExperienceModel = {
                 + ' and status = 1 ';
             DBUtils.getDBConnection().query(sql, [source.teacherId, source.kind], function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);
@@ -47,7 +47,7 @@ var ExperienceModel = {
                 experience.status
             ], function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);
@@ -63,7 +63,7 @@ var ExperienceModel = {
             var sql = 'update teacher_experience set status = -1 where id = ?';
             DBUtils.getDBConnection().query(sql, [source.experienceId], function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);

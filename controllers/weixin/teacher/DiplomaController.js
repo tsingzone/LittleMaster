@@ -6,6 +6,7 @@ var fs = require('fs');
 
 var BaseController = require('./BaseController');
 var oss = require('../../../utils/Oss').createNew();
+var logger = require('../../../logger').logger('DiplomaController');
 
 var DiplomaController = {
 
@@ -25,7 +26,7 @@ var DiplomaController = {
                         res.status(404).end();
                         return;
                     }
-                    console.log(result);
+                    logger.debug(result);
                     res.render(diplomaController.getView('diploma'), {
                         title: type,
                         userIds: req.userIds,
@@ -112,7 +113,7 @@ var DiplomaController = {
                                     }
                                     teacherModel.saveDiploma(source, function (err, result) {
                                         if (err) {
-                                            console.log(err);
+                                            logger.error(err);
                                             return;
                                         }
                                         res.json({

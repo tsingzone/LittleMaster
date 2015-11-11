@@ -10,7 +10,7 @@ var util = require('../../utils/Utils');
 var Config = require('../../configs');
 var wx_config = Config.getConfig().weixinconfig;
 var Memcached = require('../../utils/Memcached');
-
+var logger = require('../../logger').logger('WeixinController');
 
 var WeixinController = {
     createNew: function () {
@@ -73,7 +73,7 @@ var WeixinController = {
                     var url = strReplace(urls.getAccessTokenUrl, wx_config);
                     urllib.request(url, function (err, data) {
                         if (err) {
-                            console.log(err);
+                            logger.error(error);
                             return;
                         }
                         json = JSON.parse(data.toString());
@@ -99,7 +99,7 @@ var WeixinController = {
             var that = this;
             urllib.request(url, function (err, data) {
                 if (err) {
-                    console.log(err);
+                    logger.error(error);
                     return;
                 }
                 that.getAccessToken(JSON.parse(data.toString()).openid, callback);
@@ -114,7 +114,7 @@ var WeixinController = {
             });
             urllib.request(url, function (err, data) {
                 if (err) {
-                    console.log(err);
+                    logger.error(error);
                     return;
                 }
                 callback(null, data);
@@ -129,7 +129,7 @@ var WeixinController = {
             });
             urllib.request(url, function (err, data) {
                 if (err) {
-                    console.log(err);
+                    logger.error(error);
                     return;
                 }
                 callback(null, data);

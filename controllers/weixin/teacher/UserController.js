@@ -3,6 +3,7 @@
  */
 
 var BaseController = require('./BaseController');
+var logger = require('../../../logger').logger('UserController');
 
 var UserController = {
 
@@ -45,7 +46,7 @@ var UserController = {
         userController.saveWeixinUser = function (userInfo, callback) {
             teacherModel.saveWeixinUser(userInfo, function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);
@@ -55,7 +56,7 @@ var UserController = {
         userController.checkIsUserExistInDb = function (userInfo, callback) {
             userController.getWeiXinUserByOpenId(userInfo.openid, function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);
@@ -65,12 +66,12 @@ var UserController = {
         userController.updateWeixinUser = function (userInfo, callback) {
             userController.updateWeinXinUserByOpenId(userInfo, function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 userController.getWeiXinUserByOpenId(userInfo.openid, function (err, data) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         return;
                     }
                     callback(null, data);
@@ -81,12 +82,12 @@ var UserController = {
         userController.insertWeixinUser = function (userInfo, callback) {
             userController.saveWeixinUser(userInfo, function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 userController.getWeiXinUserByOpenId(userInfo.openid, function (err, data) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         return;
                     }
                     callback(null, data);

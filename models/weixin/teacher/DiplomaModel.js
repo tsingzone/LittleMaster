@@ -3,6 +3,7 @@
  */
 
 var DBUtils = require('../../../db_utils');
+var logger = require('../../../logger').logger('DiplomaModel');
 
 var DiplomaModel = {
     createNew: function () {
@@ -29,7 +30,7 @@ var DiplomaModel = {
                 + ' and sys_diploma.status = 1';
             DBUtils.getDBConnection().query(sql, [source.teacherId, source.kind], function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);
@@ -61,7 +62,7 @@ var DiplomaModel = {
                 source.kind
             ], function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);
@@ -80,7 +81,7 @@ var DiplomaModel = {
                 [source.diplomaId],
                 function (err, result) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         return;
                     }
                     callback(null, result);
@@ -97,7 +98,7 @@ var DiplomaModel = {
             DBUtils.getDBConnection().query(sql, [],
                 function (err, result) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         return;
                     }
                     callback(null, result);
@@ -113,7 +114,7 @@ var DiplomaModel = {
             DBUtils.getDBConnection().query(sql, [],
                 function (err, result) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         return;
                     }
                     callback(null, result);
@@ -129,7 +130,7 @@ var DiplomaModel = {
             DBUtils.getDBConnection().query(sql, [],
                 function (err, result) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         return;
                     }
                     callback(null, result);

@@ -7,6 +7,7 @@ var _ = require('underscore');
 
 var Configs = require('../configs');
 var config = Configs.getConfig().memcachedconfig;
+var logger = require('../logger').logger('MemCache');
 
 var MemCache = {
     createNew: function () {
@@ -20,7 +21,7 @@ var MemCache = {
         memcached.getObject = function (key, callback) {
             mem.get(keyPrefix + key, function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);
@@ -37,7 +38,7 @@ var MemCache = {
             console.log(keyArray);
             mem.getMulti(keyArray, function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);
@@ -50,7 +51,7 @@ var MemCache = {
             }
             mem.set(keyPrefix + key, value, lifetime, function (err) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null);
@@ -63,7 +64,7 @@ var MemCache = {
             }
             mem.replace(keyPrefix + key, value, lifetime, function (err) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null);
@@ -73,7 +74,7 @@ var MemCache = {
         memcached.deleteObject = function (key, callback) {
             mem.del(keyPrefix + key, function (err) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null);

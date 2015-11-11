@@ -3,6 +3,7 @@
  */
 
 var BaseController = require('./BaseController');
+var logger = require('../../../logger').logger('ExperienceController');
 
 var ExperienceController = {
     createNew: function (teacherModel) {
@@ -17,7 +18,7 @@ var ExperienceController = {
                 };
                 teacherModel.getExperienceList(source, function (err, result) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                     } else {
                         console.log(JSON.stringify(result));
                         res.render(experienceController.getView('experience'), {
@@ -56,7 +57,7 @@ var ExperienceController = {
             };
             teacherModel.saveExperience(experience, function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     res.json({success: false, message: err});
                     return;
                 } else {

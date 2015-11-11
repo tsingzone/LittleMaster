@@ -7,6 +7,7 @@ var UserModel = require('./UserModel');
 var JobModel = require('./JobModel');
 var ExperienceModel = require('./ExperienceModel');
 var DiplomaModel = require('./DiplomaModel');
+var logger = require('../../../logger').logger('TeacherModel');
 
 var TeacherModel = {
     createNew: function () {
@@ -24,6 +25,7 @@ var TeacherModel = {
         teacherModel.getUserIds = userModel.getUserIds;
         teacherModel.changeMobile = userModel.changeMobile;
 
+        teacherModel.getProfilePercentage = profileModel.getProfilePercentage;
         teacherModel.getUserCenterData = profileModel.getUserCenterData;
         teacherModel.getProfile = profileModel.getProfile;
         teacherModel.saveDefaultProfile = profileModel.saveDefaultProfile;

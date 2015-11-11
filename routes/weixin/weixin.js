@@ -17,7 +17,7 @@ var logger = require('../../logger').logger('weixin');
 router.use(function (req, res, next) {
     var code = req.query.code;
     if (code) {
-        logger.info('------ 点击微信菜单 -------');
+        logger.debug('------ 点击微信菜单 -------');
         async.waterfall([
             function getUserByCode(callback) {
                 weixinController.getUserByCode(code, function (err, data) {
@@ -45,7 +45,7 @@ router.use(function (req, res, next) {
             function checkIsUserExistInDb(userInfo, callback) {
                 teacherController.checkIsUserExistInDb(userInfo, function (err, result) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         return;
                     }
                     console.log(result);
@@ -53,7 +53,7 @@ router.use(function (req, res, next) {
                         // TODO: 已存在，更新用户信息，并返回最新记录信息
                         teacherController.updateWeixinUser(userInfo, function (err, result) {
                             if (err) {
-                                console.log(err);
+                                logger.error(err);
                                 return;
                             }
                             callback(null, result);
@@ -62,7 +62,7 @@ router.use(function (req, res, next) {
                         // TODO: 不存在，插入用户信息，并返回最新记录信息
                         teacherController.insertWeixinUser(userInfo, function (err, result) {
                             if (err) {
-                                console.log(err);
+                                logger.error(err);
                                 return;
                             }
                             callback(null, result);
@@ -72,7 +72,7 @@ router.use(function (req, res, next) {
             }
         ], function (err, result) {
             if (err) {
-                console.log(err);
+                logger.error(err);
                 return;
             }
             if (result) {
@@ -89,17 +89,15 @@ router.use(function (req, res, next) {
         });
     }
     else {
-        logger.info('------ 点击页面链接 -------');
+        logger.debug('------ 点击页面链接 -------');
         var userId = req.query.userId;
         var openId = req.query.openId;
         if (openId) {
-            console.log(openId);
             updateDb(openId);
         } else if (userId) {
-            console.log(userId);
             teacherController.getWeiXinUserByUserId(userId, function (err, data) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 updateDb(data[0].openId);
@@ -113,7 +111,7 @@ router.use(function (req, res, next) {
                 function getAccessToken(callback) {
                     weixinController.getUserByOpenId(openId, function (err, data) {
                         if (err) {
-                            console.log(err);
+                            logger.error(err);
                             return;
                         }
                         var userInfo = JSON.parse(data.toString());
@@ -127,21 +125,21 @@ router.use(function (req, res, next) {
                         callback(null, result);
                     } else {
                         // TODO: 用户未关注，跳转到提示关注的页面
-                        console.log('用户未关注');
+                        logger.debug('用户未关注');
                         throw '用户未关注！';
                     }
                 },
                 function checkIsUserExistInDb(userInfo, callback) {
                     teacherController.checkIsUserExistInDb(userInfo, function (err, result) {
                         if (err) {
-                            console.log(err);
+                            logger.error(err);
                             return;
                         }
                         if (result.length > 0) {
                             // TODO: 已存在，更新用户信息，并返回最新记录信息
                             teacherController.updateWeixinUser(userInfo, function (err, result) {
                                 if (err) {
-                                    console.log(err);
+                                    logger.error(err);
                                     return;
                                 }
                                 callback(null, result);
@@ -150,7 +148,7 @@ router.use(function (req, res, next) {
                             // TODO: 不存在，插入用户信息，并返回最新记录信息
                             teacherController.insertWeixinUser(userInfo, function (err, result) {
                                 if (err) {
-                                    console.log(err);
+                                    logger.error(err);
                                     return;
                                 }
                                 callback(null, result);
@@ -161,7 +159,7 @@ router.use(function (req, res, next) {
             ], function (err, result) {
                 console.log(result);
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 if (result) {

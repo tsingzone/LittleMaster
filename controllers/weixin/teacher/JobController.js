@@ -3,6 +3,7 @@
  */
 
 var BaseController = require('./BaseController');
+var logger = require('../../../logger').logger('JobController');
 
 var JobController = {
 

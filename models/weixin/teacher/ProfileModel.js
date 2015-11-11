@@ -5,6 +5,7 @@ var async = require('async');
 var _ = require('underscore');
 
 var DBUtils = require('../../../db_utils');
+var logger = require('../../../logger').logger('ProfileModel');
 
 var ProfileModel = {
     createNew: function () {
@@ -16,7 +17,7 @@ var ProfileModel = {
         var dealWithData = function (callback) {
             return function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);
@@ -35,12 +36,33 @@ var ProfileModel = {
             async.parallel(getFuncsArray(sqlArray),
                 function (err, results) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         return callback(err);
                     }
-                    console.log(JSON.parse(JSON.stringify(results)));
+                    logger.debug(JSON.parse(JSON.stringify(results)));
                     callback(null, results);
                 });
+        };
+
+        profileModel.getProfilePercentage = function (userId, callback) {
+            var sql = 'select weixin_user.mobile, teacher_infor.img_path, teacher_infor.`name`, teacher_infor.gender, '
+                + ' teacher_infor.birthday, teacher_infor.college, teacher_infor.majar, teacher_infor.education, '
+                + ' teacher_infor.entry_year, diploma.diplomaCount, experience.experienceCount '
+                + ' from teacher_infor '
+                + ' left join weixin_user '
+                + ' on weixin_user.id = teacher_infor.user_id'
+                + ' left join (select count(id) as diplomaCount, teacher_id from teacher_diploma where kind = 0) as diploma '
+                + ' on teacher_infor.id = diploma.teacher_id '
+                + ' left join (select count(id) as experienceCount, teacher_id from teacher_experience) experience '
+                + ' on teacher_infor.id = experience.teacher_id '
+                + ' where teacher_infor.user_id = ?';
+            DBUtils.getDBConnection().query(sql, [userId], function (err, result) {
+                if (err) {
+                    logger.error(err);
+                    return;
+                }
+                callback(null, result);
+            });
         };
 
         profileModel.getUserCenterData = function (source, callback) {
@@ -108,12 +130,12 @@ var ProfileModel = {
             parallelFuncs(sqlArray, callback);
         };
         profileModel.getProfile = function (source, callback) {
-            console.log(source);
+            logger.debug(source);
             var sql = "select id from teacher_infor "
                 + " where user_id = ?";
             DBUtils.getDBConnection().query(sql, [source.userId], function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                 }
                 var searchFunc = function () {
                     var sqlArray = [
@@ -147,10 +169,10 @@ var ProfileModel = {
                     ];
                     parallelFuncs(sqlArray, function (err, result) {
                         if (err) {
-                            console.log(err);
+                            logger.error(err);
                             return;
                         }
-                        console.log(result);
+                        logger.debug(result);
                         callback(null, result);
                     });
                 };
@@ -166,7 +188,7 @@ var ProfileModel = {
                         [source.userId, source.openId, "", 0, "", now, "", "", "", "", now, now],
                         function (err, result) {
                             if (err) {
-                                return console.log(err);
+                                return logger.error(err);
                             }
                             source.teacherId = result.insertId;
                             searchFunc();
@@ -199,7 +221,7 @@ var ProfileModel = {
                 teacher.id
             ], function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);

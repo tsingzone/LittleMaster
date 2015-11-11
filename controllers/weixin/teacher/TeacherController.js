@@ -18,6 +18,7 @@ var DiplomaController = require('./DiplomaController');
 var ExperienceController = require('./ExperienceController');
 var JobController = require('./JobController');
 var UserController = require('./UserController');
+var logger = require('../../../logger').logger('TeacherController');
 
 var TeacherController = {
     createNew: function () {
@@ -37,6 +38,7 @@ var TeacherController = {
         teacherController.insertWeixinUser = userController.insertWeixinUser;
         teacherController.getUserIds = userController.getUserIds;
 
+        teacherController.getProfilePercentage = profileController.getProfilePercentage;
         teacherController.getUserCenterData = profileController.getUserCenterData;
         teacherController.getProfile = profileController.getProfile;
         teacherController.saveProfile = profileController.saveProfile;

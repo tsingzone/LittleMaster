@@ -5,7 +5,7 @@
     },
     {
       "type": "dateFile",
-      "level": "DEBUG",
+      "level": "INFO",
       "filename": "logs/biz_log",
       "pattern": "-yyyy-MM-dd.log",
       "alwaysIncludePattern": true,

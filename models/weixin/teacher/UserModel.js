@@ -3,6 +3,7 @@
  */
 
 var DBUtils = require('../../../db_utils');
+var logger = require('../../../logger').logger('UserModel');
 
 var UserModel = {
     createNew: function () {
@@ -21,7 +22,7 @@ var UserModel = {
                 ],
                 function (err, result) {
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         return;
                     }
                     callback(null, result);
@@ -41,7 +42,7 @@ var UserModel = {
                 + ' where id = ?';
             DBUtils.getDBConnection().query(sql, [userId], function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);
@@ -61,7 +62,7 @@ var UserModel = {
                 + ' where open_id = ?';
             DBUtils.getDBConnection().query(sql, [openId], function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);
@@ -88,7 +89,7 @@ var UserModel = {
                 userInfo.openid
             ], function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);
@@ -116,7 +117,7 @@ var UserModel = {
                 userInfo.subscribe
             ], function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);
@@ -127,7 +128,7 @@ var UserModel = {
             var sql = 'update weixin_user set mobile = ? where open_id = ?';
             DBUtils.getDBConnection().query(sql, [source.mobile, source.openId], function (err, result) {
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     return;
                 }
                 callback(null, result);
