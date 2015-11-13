@@ -11,10 +11,19 @@ block header-title
     | 已报名兼职
 block content
     #job_list(style='margin-top:0')
-        .job
+        .job(job-id= 2)
             .job_type 批改
             .job_content
                 .job_time 工作日期: 09/14-09/30
                 .job_title 招小学作文批改兼职老师
                 .job_others 网络 不限性别 月结
                     .job_price 150元/天
+    #schedule
+
+block footer
+block script
+    script.
+        $(document).on("click",".job",function() {
+            var jobId = $(this).attr("job-id");
+            location.href = "profile?sign=1&jobId=" + jobId;
+        });

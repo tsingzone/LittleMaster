@@ -36,6 +36,7 @@ _.extend(company.prototype, {
     },
     getProfile:function(req,res) {
         var jobId = req.query.jobId;
+        var sign = req.query.sign;
         Company.getProfile(jobId, function (err, result) {
             if (err) {
                 res.status(404);
@@ -43,7 +44,7 @@ _.extend(company.prototype, {
             result[0].start_time = new moment(result[0].start_time).format('YYYY/MM/DD');
             result[0].end_time = new moment(result[0].end_time).format('YYYY/MM/DD');
             result[0].publish_time = new moment(result[0].publish_time).format('YYYY/MM/DD');
-            res.render(getView('profile'), {profile: result[0]});
+            res.render(getView('profile'), {profile: result[0],sign:sign});
         });
     },
     getAreaList:function(req,res) {
@@ -66,6 +67,17 @@ _.extend(company.prototype, {
         Company.getJobList(conditions, function (err, result) {
             if (err) {
                 console.log(err);
+                res.status(404);
+            }
+            res.json(result);
+        });
+    },
+    isSign:function(req,res) {
+        var conditions = [];
+        conditions[0] = req.query.jobId;
+        conditions[1] = req.query.teacherId;
+        Company.isSign(conditions, function (err, result) {
+            if(err) {
                 res.status(404);
             }
             res.json(result);

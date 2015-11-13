@@ -61,7 +61,8 @@ block content
         .pro_contents
             .pro_content_h2 工作要求
             .pro_content_pro= profile.requirement
-        #registration(job-id= profile.id) 立即报名
+        -if(sign != 1)
+            #registration(job-id= profile.id) 立即报名
     #mask_profile
     #message_profile
         #message_title 确定报名？
