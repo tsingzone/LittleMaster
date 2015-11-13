@@ -2,12 +2,11 @@
  * Created by michel_feng on 15/11/6.
  */
 
-var DBUtils = require('../../../db_utils');
-var logger = require('../../../logger').logger('DiplomaModel');
+var BaseModel = require('./BaseModel');
 
 var DiplomaModel = {
     createNew: function () {
-        var diplomaModel = {};
+        var diplomaModel = BaseModel.createNew();
 
         /**
          * 根据kind和teacher_id获取证书列表
@@ -28,13 +27,10 @@ var DiplomaModel = {
                 + ' and teacher_diploma.kind = ? '
                 + ' and teacher_diploma.status = 1 '
                 + ' and sys_diploma.status = 1';
-            DBUtils.getDBConnection().query(sql, [source.teacherId, source.kind], function (err, result) {
-                if (err) {
-                    logger.error(err);
-                    return;
-                }
-                callback(null, result);
-            });
+            diplomaModel.queryDb({
+                sql: sql,
+                params: [source.teacherId, source.kind]
+            }, callback);
         };
 
         /**
@@ -49,24 +45,21 @@ var DiplomaModel = {
                 + ' values ('
                 + ' ?, ?, ?, ?, ?, ?, ?, ?, ?, ?'
                 + ' )';
-            DBUtils.getDBConnection().query(sql, [
-                source.teacherId,
-                source.diplomaId,
-                source.diplomaName,
-                source.number,
-                source.achieveDate,
-                source.period,
-                source.major,
-                source.imgPath,
-                source.status,
-                source.kind
-            ], function (err, result) {
-                if (err) {
-                    logger.error(err);
-                    return;
-                }
-                callback(null, result);
-            });
+            diplomaModel.queryDb({
+                sql: sql,
+                params: [
+                    source.teacherId,
+                    source.diplomaId,
+                    source.diplomaName,
+                    source.number,
+                    source.achieveDate,
+                    source.period,
+                    source.major,
+                    source.imgPath,
+                    source.status,
+                    source.kind
+                ]
+            }, callback);
         };
 
         /**
@@ -76,65 +69,30 @@ var DiplomaModel = {
          */
         diplomaModel.deleteDiplomaById = function (source, callback) {
             var sql = 'update teacher_diploma set status = -1 where id = ?';
-            DBUtils.getDBConnection().query(
-                sql,
-                [source.diplomaId],
-                function (err, result) {
-                    if (err) {
-                        logger.error(err);
-                        return;
-                    }
-                    callback(null, result);
-                }
-            );
+
+            diplomaModel.queryDb({
+                sql: sql,
+                params: [source.diplomaId]
+            }, callback);
         };
 
-        /**
-         * 获取教师资格证中的专业列表
-         * @param callback
-         */
-        diplomaModel.getMajorList = function (callback) {
-            var sql = 'select id, name from sys_major where status = 1';
-            DBUtils.getDBConnection().query(sql, [],
-                function (err, result) {
-                    if (err) {
-                        logger.error(err);
-                        return;
-                    }
-                    callback(null, result);
-                });
-        };
 
         /**
-         * 获取教师资格证中的学段列表
+         * 根据教师id获取各个类型的证书的数量
+         * @param teacherId
          * @param callback
          */
-        diplomaModel.getPeriodList = function (callback) {
-            var sql = 'select id, name from sys_period where status = 1';
-            DBUtils.getDBConnection().query(sql, [],
-                function (err, result) {
-                    if (err) {
-                        logger.error(err);
-                        return;
-                    }
-                    callback(null, result);
-                });
-        };
-
-        /**
-         * 获取其他证书中的证书类型列表
-         * @param callback
-         */
-        diplomaModel.getCertTypeList = function (callback) {
-            var sql = 'select id, name from sys_diploma where status = 1 and id > 1';
-            DBUtils.getDBConnection().query(sql, [],
-                function (err, result) {
-                    if (err) {
-                        logger.error(err);
-                        return;
-                    }
-                    callback(null, result);
-                });
+        diplomaModel.getDiplomaCount = function (teacherId, callback) {
+            var sql = 'select teacherId, kind, kindCount '
+                + ' from '
+                + ' ( select teacher_id as teacherId, kind, count(kind) as kindCount from teacher_diploma '
+                + ' where status = 1 '
+                + ' group by teacher_id, kind) diploma '
+                + ' where diploma.teacherId = ?';
+            diplomaModel.queryDb({
+                sql: sql,
+                params: [teacherId]
+            }, callback);
         };
         return diplomaModel;
     }

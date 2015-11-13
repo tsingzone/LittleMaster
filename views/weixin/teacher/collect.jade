@@ -40,7 +40,7 @@ block script
             $(".job").each(function () {
                 $(this).click(function () {
                     var jobId = $(this).attr("id");
-                    window.location.href = "company/profile/" + jobId;
+                    window.location.href = "company/profile/" + jobId + "?openId=#{userIds.openId}";
                 });
             });
         });

@@ -7,192 +7,169 @@ var fs = require('fs');
 var BaseController = require('./BaseController');
 var oss = require('../../../utils/Oss').createNew();
 var logger = require('../../../logger').logger('DiplomaController');
+var Memcached = require('../../../utils/Memcached');
 
 var DiplomaController = {
 
     createNew: function (teacherModel) {
         var diplomaController = BaseController.createNew();
+        var memCache = Memcached.createNew();
+
+        var diplomaTypes = ['teacher', 'other'];
+        var subTypes = ['major', 'period', 'cert'];
+
+        var checkType = function (req, res, isSub) {
+            var type = req.params.type;
+            var index = isSub ? subTypes.indexOf(type) : diplomaTypes.indexOf(type);
+            if (index == -1) {
+                diplomaController.errorHandler(new Error('选择类型不合法！'), res);
+            }
+            return {type: type, index: index};
+        };
+
+        /**
+         * 获取不同类型的证书列表
+         * @param req
+         * @param res
+         */
         diplomaController.getDiplomaList = function (req, res) {
-            var types = ['teacher', 'other'];
-            var type = req.params.type;
-            var index = types.indexOf(type);
-            if (index != -1) {
-                var source = {
-                    teacherId: req.userIds.teacherId,
-                    kind: index
-                };
-                teacherModel.getDiplomaList(source, function (err, result) {
-                    if (err) {
-                        res.status(404).end();
-                        return;
-                    }
-                    logger.debug(result);
-                    res.render(diplomaController.getView('diploma'), {
-                        title: type,
-                        userIds: req.userIds,
-                        diplomaList: result
-                    });
+            var valid = checkType(req, res);
+            teacherModel.getDiplomaList({
+                teacherId: req.userIds.teacherId,
+                kind: valid.index
+            }, function (err, result) {
+                diplomaController.errorHandler(err, res);
+                res.render(diplomaController.getView('diploma'), {
+                    title: valid.type,
+                    userIds: req.userIds,
+                    diplomaList: result
                 });
-            } else {
-                res.status(404).end();
-            }
+            });
         };
+
+        /**
+         * 跳转到添加证书的页面
+         * @param req
+         * @param res
+         */
         diplomaController.getAddDiploma = function (req, res) {
-            var types = ['teacher', 'other'];
-            var type = req.params.type;
-            if (types.indexOf(type) != -1) {
-                res.render(diplomaController.getView('diploma_add_' + type), {
-                    type:type,
-                    userIds: req.userIds
-                });
-            } else {
-                res.status(404).end();
-            }
+            var valid = checkType(req, res);
+            res.render(diplomaController.getView('diploma_add_' + valid.type), {
+                type: valid.type,
+                userIds: req.userIds
+            });
         };
+
+        /**
+         * 保存证书信息
+         * @param req
+         * @param res
+         */
         diplomaController.saveDiploma = function (req, res) {
-            var types = ['teacher', 'other'];
-            var type = req.params.type;
-            var index = types.indexOf(type);
-            if (index != -1) {
-                var form = diplomaController.getForm('diploma');
-
-                form.parse(req, function (err, fields, files) {
-                        if (err) {
-                            res.json({success: false, message: err});
-                            return;
-                        }
-
-                        console.log(fields);
-
-                        var isValid = diplomaController.validateParams(fields);
-                        if (isValid.length > 0) {
-                            res.json({success: false, message: isValid});
-                            return;
-                        }
-
-                        var extName = diplomaController.getExtName(files.fulAvatar.type);  //后缀名
-
-                        if (extName.length == 0) {
-                            res.json({
-                                success: false,
-                                message: '只支持png和jpg格式图片'
-                            });
-                            return;
-                        }
-
-                        var avatarName = fields.teacherId + '-' + new Date().getTime() + '.' + extName;
-                        var newPath = form.uploadDir + avatarName;
-                        fs.rename(files.fulAvatar.path, newPath, function (err) {
-
-                            oss.putObject({key: newPath},
-                                function (err, data) {
-                                    if (err) {
-                                        res.json({
-                                            success: false,
-                                            message: err
-                                        });
-                                        return;
-                                    }
-                                    var source = {
-                                        teacherId: fields.teacherId,
-                                        number: fields.number,
-                                        achieveDate: fields.achieveDate,
-                                        imgPath: newPath,
-                                        status: 1,
-                                        kind: index
-                                    };
-                                    if (index == 0) {
-                                        source['diplomaId'] = 1;
-                                        source['diplomaName'] = '教师资格证';
-                                        source['period'] = fields.period;
-                                        source['major'] = fields.major;
-                                    }
-                                    else {
-                                        source['diplomaId'] = fields.diplomaId;
-                                        source['diplomaName'] = fields.diplomaName;
-                                    }
-                                    teacherModel.saveDiploma(source, function (err, result) {
-                                        if (err) {
-                                            logger.error(err);
-                                            return;
-                                        }
-                                        res.json({
-                                            success: true,
-                                            message: "上传成功！"
-                                        });
+            var valid = checkType(req, res);
+            diplomaController.formParse(req, res, 'diploma', function (fields, files, uploadPath) {
+                    var isValid = diplomaController.validateParams(fields);
+                    if (!isValid) {
+                        diplomaController.errorHandler(new Error('证书属性填写有误！'), res, true);
+                    }
+                    fs.rename(files.fulAvatar.path, uploadPath, function (err) {
+                        oss.putObject(
+                            {
+                                key: uploadPath
+                            },
+                            function (err, data) {
+                                diplomaController.errorHandler(err, res, true);
+                                var source = {
+                                    teacherId: fields.teacherId,
+                                    number: fields.number,
+                                    achieveDate: fields.achieveDate,
+                                    imgPath: uploadPath,
+                                    status: 1,
+                                    kind: valid.index
+                                };
+                                if (valid.index == 0) {
+                                    source.diplomaId = 1;
+                                    source.diplomaName = '教师资格证';
+                                    source.period = fields.period;
+                                    source.major = fields.major;
+                                }
+                                else {
+                                    source.diplomaId = fields.diplomaId;
+                                    source.diplomaName = fields.diplomaName;
+                                }
+                                teacherModel.saveDiploma(source, function (err, result) {
+                                    diplomaController.errorHandler(err, res, true);
+                                    res.json({
+                                        success: true,
+                                        message: "操作成功！"
                                     });
                                 });
-                        });  //重命名
-                    }
-                );
-            } else {
-                res.status(404).end();
-                return;
-            }
-        };
-        diplomaController.getAddDiplomaSubType = function (req, res) {
-            var types = ['major', 'period', 'cert'];
-            var type = req.params.type;
-            var index = types.indexOf(type);
-            switch (index) {
-                case 0:
-                    teacherModel.getMajorList(function (err, result) {
-                        if (err) {
-                            res.status(404).end();
-                            return;
-                        }
-                        console.log(req.userIds);
-                        res.render(diplomaController.getView(type), {
-                            type: type,
-                            subList: result,
-                            userIds: req.userIds
-                        });
+                            });
                     });
-                    break;
-                case 1:
-                    teacherModel.getPeriodList(function (err, result) {
-                        if (err) {
-                            res.status(404).end();
-                            return;
-                        }
-                        res.render(diplomaController.getView(type), {
-                            type: type,
-                            subList: result,
-                            userIds: req.userIds
-                        });
-                    });
-                    break;
-                case 2:
-                    teacherModel.getCertTypeList(function (err, result) {
-                        if (err) {
-                            res.status(404).end();
-                            return;
-                        }
-                        res.render(diplomaController.getView(type), {
-                            type: type,
-                            subList: result,
-                            userIds: req.userIds
-                        });
-                    });
-                    break;
-                default :
-                    res.status(404).end();
-            }
-        };
-        diplomaController.deleteDiplomaById = function (req, res) {
-            var source = {
-                diplomaId: req.body.diplomaId
-            };
-            teacherModel.deleteDiplomaById(source, function (err, result) {
-                var resJson = {
-                    success: true,
-                    message: '操作成功！'
-                };
-                if (err) {
-                    resJson[success] = false;
-                    resJson[message] = err;
                 }
-                res.json(resJson);
+            );
+        };
+
+        /**
+         * 获取填写证书需要的专业、学段、证书类型列表，并存入memcache，过期时间为6小时
+         * @param req
+         * @param res
+         */
+        diplomaController.getAddDiplomaSubType = function (req, res) {
+            var expireTime = 21600;
+            var valid = checkType(req, res, true);
+            logger.debug(valid);
+            var renderView = function (result) {
+                res.render(diplomaController.getView(valid.type), {
+                    type: valid.type,
+                    subList: result,
+                    userIds: req.userIds
+                });
+            };
+            var callback = function (err, result, inMem) {
+                diplomaController.errorHandler(err, res);
+                if (!inMem) {
+                    memCache.putObject('DIPLOMA_SUB_TYPE_' + valid.type, result, expireTime, function (err) {
+                        diplomaController.errorHandler(err, res);
+                        renderView(result);
+                    });
+                } else {
+                    renderView(result);
+                }
+            };
+
+            memCache.getObject('DIPLOMA_SUB_TYPE_' + valid.type, function (err, data) {
+                logger.debug(err, data);
+                diplomaController.errorHandler(err, res);
+                if (data) {
+                    callback(null, data, true);
+                } else {
+                    switch (valid.index) {
+                        case 0:
+                            teacherModel.getMajorList(callback);
+                            break;
+                        case 1:
+                            teacherModel.getPeriodList(callback);
+                            break;
+                        case 2:
+                            teacherModel.getCertTypeList(callback);
+                            break;
+                    }
+                }
+            });
+        };
+
+        /**
+         * 根据证书id删除证书信息
+         * @param req
+         * @param res
+         */
+        diplomaController.deleteDiplomaById = function (req, res) {
+            teacherModel.deleteDiplomaById({
+                diplomaId: req.body.diplomaId
+            }, function (err, result) {
+                diplomaController.errorHandler(err, res, true);
+                res.json({success: true, message: "操作成功！"});
             });
         };
         return diplomaController;

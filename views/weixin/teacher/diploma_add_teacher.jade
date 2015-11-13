@@ -126,7 +126,7 @@ block script
                                 sessionStorage.removeItem('tCertMajor');
                                 sessionStorage.removeItem('tCertNum');
                                 sessionStorage.removeItem('tCertDate');
-                                window.location.href = '/weixin/teacher/diploma/teacher?userId=#{userIds.userId}';
+                                window.location.href = '/weixin/teacher/diploma/teacher?openId=#{userIds.openId}';
                             }
                         }
                     });
@@ -136,9 +136,9 @@ block script
         });
 
         function goToPeriod() {
-            location.href = "/weixin/teacher/diploma/teacher/add/period?userId=#{userIds.userId}";
+            location.href = "/weixin/teacher/diploma/teacher/add/period?openId=#{userIds.openId}";
         }
 
         function goToMajor() {
-            location.href = "/weixin/teacher/diploma/teacher/add/major?userId=#{userIds.userId}";
+            location.href = "/weixin/teacher/diploma/teacher/add/major?openId=#{userIds.openId}";
         }

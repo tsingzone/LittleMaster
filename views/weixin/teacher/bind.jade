@@ -14,7 +14,7 @@ block content
         div
             div.bind-line
                 input#pic(type="text" placeholder='请输入图片验证码')
-                img(src="/weixin/teacher/random?userId=#{userIds.userId}" onclick='this.src="/weixin/teacher/random?userId=#{userIds.userId}"').pic-valid
+                img(src="/weixin/teacher/random?openId=#{userIds.openId}" onclick='this.src="/weixin/teacher/random?openId=#{userIds.openId}"').pic-valid
 
         div#submit.button
             img(src="/images/correct.png")
@@ -64,7 +64,7 @@ block script
                     return;
                 }
                 $.ajax({
-                    url: '/weixin/teacher/smsCode?userId=#{userIds.userId}',
+                    url: '/weixin/teacher/smsCode?openId=#{userIds.openId}',
                     type: 'post',
                     data: {mobile: mobile},
                     dataType: 'json',
@@ -96,7 +96,7 @@ block script
                     return;
                 }
                 $.ajax({
-                    url: '/weixin/teacher/bind?userId=#{userIds.userId}',
+                    url: '/weixin/teacher/bind?openId=#{userIds.openId}',
                     type: 'post',
                     data: {mobile: mobile, smsCode: smsCode, picCode: pic},
                     dataType: 'json',

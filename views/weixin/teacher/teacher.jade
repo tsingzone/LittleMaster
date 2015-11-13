@@ -39,17 +39,17 @@ block script
 
             // 跳转到我的简历页面
             $('#my_profile').click(function () {
-                window.location.href = "/weixin/teacher/profile?userId=#{userIds.userId}";
+                window.location.href = "/weixin/teacher/profile?openId=#{userIds.openId}";
             });
 
             // 跳转到已报名兼职页面
             $('#sign_jobs').click(function () {
-                window.location.href = "/weixin/teacher/sign?userId=#{userIds.userId}";
+                window.location.href = "/weixin/teacher/sign?openId=#{userIds.openId}";
             });
 
             // 跳转到已收藏兼职页面
             $('#collect_jobs').click(function () {
-                window.location.href = "/weixin/teacher/collect?userId=#{userIds.userId}";
+                window.location.href = "/weixin/teacher/collect?openId=#{userIds.openId}";
             });
         });
 

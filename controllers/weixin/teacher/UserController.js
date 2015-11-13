@@ -4,11 +4,13 @@
 
 var BaseController = require('./BaseController');
 var logger = require('../../../logger').logger('UserController');
+var Memcached = require('../../../utils/Memcached');
 
 var UserController = {
 
     createNew: function (teacherModel) {
         var userController = BaseController.createNew();
+        var memCache = Memcached.createNew();
         userController.getUserIds = function (source, callback) {
             teacherModel.getUserIds(source, function (err, result) {
                 if (err) {
@@ -18,16 +20,8 @@ var UserController = {
             });
         };
 
-        userController.getWeiXinUserByUserId = function (userId, callback) {
-            teacherModel.getWeiXinUserByUserId(userId, function (err, result) {
-                if (err) {
-                    return;
-                }
-                callback(null, result);
-            });
-        };
-        userController.getWeiXinUserByOpenId = function (openId, callback) {
-            teacherModel.getWeiXinUserByOpenId(openId, function (err, result) {
+        userController.getWeiXinUser = function (source, callback) {
+            teacherModel.getWeiXinUser(source, function (err, result) {
                 if (err) {
                     return;
                 }
@@ -54,7 +48,7 @@ var UserController = {
         };
 
         userController.checkIsUserExistInDb = function (userInfo, callback) {
-            userController.getWeiXinUserByOpenId(userInfo.openid, function (err, result) {
+            userController.getWeiXinUser(userInfo, function (err, result) {
                 if (err) {
                     logger.error(err);
                     return;
@@ -69,13 +63,7 @@ var UserController = {
                     logger.error(err);
                     return;
                 }
-                userController.getWeiXinUserByOpenId(userInfo.openid, function (err, data) {
-                    if (err) {
-                        logger.error(err);
-                        return;
-                    }
-                    callback(null, data);
-                });
+                callback(null, result);
             });
         };
 
@@ -85,13 +73,7 @@ var UserController = {
                     logger.error(err);
                     return;
                 }
-                userController.getWeiXinUserByOpenId(userInfo.openid, function (err, data) {
-                    if (err) {
-                        logger.error(err);
-                        return;
-                    }
-                    callback(null, data);
-                });
+                callback(null, result);
             });
         };
 

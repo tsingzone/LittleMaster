@@ -6,11 +6,11 @@ var xml = require('node-xml-lite');
 var _ = require('underscore');
 var urllib = require('urllib');
 
-var util = require('../../utils/Utils');
-var Config = require('../../configs');
+var util = require('../../../utils/Utils');
+var Config = require('../../../configs');
 var wx_config = Config.getConfig().weixinconfig;
-var Memcached = require('../../utils/Memcached');
-var logger = require('../../logger').logger('WeixinController');
+var Memcached = require('../../../utils/Memcached');
+var logger = require('../../../logger').logger('WeixinController');
 
 var WeixinController = {
     createNew: function () {
@@ -99,7 +99,7 @@ var WeixinController = {
             var that = this;
             urllib.request(url, function (err, data) {
                 if (err) {
-                    logger.error(error);
+                    logger.error(err);
                     return;
                 }
                 that.getAccessToken(JSON.parse(data.toString()).openid, callback);
@@ -114,7 +114,7 @@ var WeixinController = {
             });
             urllib.request(url, function (err, data) {
                 if (err) {
-                    logger.error(error);
+                    logger.error(err);
                     return;
                 }
                 callback(null, data);
@@ -129,7 +129,7 @@ var WeixinController = {
             });
             urllib.request(url, function (err, data) {
                 if (err) {
-                    logger.error(error);
+                    logger.error(err);
                     return;
                 }
                 callback(null, data);

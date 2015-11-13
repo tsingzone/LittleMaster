@@ -112,7 +112,7 @@ block script
                                 sessionStorage.removeItem('certName');
                                 sessionStorage.removeItem('certNum');
                                 sessionStorage.removeItem('certDate');
-                                window.location.href = '/weixin/teacher/diploma/other?userId=#{userIds.userId}';
+                                window.location.href = '/weixin/teacher/diploma/other?openId=#{userIds.openId}';
                             }
                         }
                     });
@@ -121,6 +121,6 @@ block script
             });
         });
         function goToCert() {
-            location.href = '/weixin/teacher/diploma/teacher/add/cert?userId=#{userIds.userId}';
+            location.href = '/weixin/teacher/diploma/teacher/add/cert?openId=#{userIds.openId}';
         }
 

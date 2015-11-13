@@ -68,7 +68,7 @@ block script
                     success: function (result) {
                         alert(result.message);
                         if (result.success) {
-                            window.location.href = '/weixin/teacher/experience/' + result.entity + '?userId=#{userIds.userId}';
+                            window.location.href = '/weixin/teacher/experience/' + result.entity + '?openId=#{userIds.openId}';
                         }
                     }
                 });

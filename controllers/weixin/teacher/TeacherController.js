@@ -1,16 +1,6 @@
 /**
  * Created by michel_feng on 15/10/21.
  */
-var path = require('path');
-var fs = require('fs');
-
-var formidable = require('formidable');
-var moment = require('moment');
-var async = require('async');
-
-var oss = require('../../../utils/Oss');
-var Configs = require('../../../configs');
-var ossconfig = Configs.getConfig().ossconfig;
 var TeacherModel = require('../../../models/weixin/teacher/TeacherModel');
 
 var ProfileController = require('./ProfileController');
@@ -18,11 +8,13 @@ var DiplomaController = require('./DiplomaController');
 var ExperienceController = require('./ExperienceController');
 var JobController = require('./JobController');
 var UserController = require('./UserController');
+var BaseController = require('./BaseController');
+
 var logger = require('../../../logger').logger('TeacherController');
 
 var TeacherController = {
     createNew: function () {
-        var teacherController = {};
+        var teacherController = BaseController.createNew();
         var teacherModel = TeacherModel.createNew();
         var profileController = ProfileController.createNew(teacherModel);
         var diplomaController = DiplomaController.createNew(teacherModel);
@@ -30,8 +22,7 @@ var TeacherController = {
         var jobController = JobController.createNew(teacherModel);
         var userController = UserController.createNew(teacherModel);
 
-        teacherController.getWeiXinUserByUserId = userController.getWeiXinUserByUserId;
-        teacherController.getWeiXinUserByOpenId = userController.getWeiXinUserByOpenId;
+        teacherController.getWeiXinUser = userController.getWeiXinUser;
         teacherController.updateWeinXinUserByOpenId = userController.updateWeinXinUserByOpenId;
         teacherController.checkIsUserExistInDb = userController.checkIsUserExistInDb;
         teacherController.updateWeixinUser = userController.updateWeixinUser;

@@ -8,43 +8,56 @@ var logger = require('../../../logger').logger('ExperienceController');
 var ExperienceController = {
     createNew: function (teacherModel) {
         var experienceController = BaseController.createNew();
-        experienceController.getExperienceList = function (req, res) {
-            var type = req.params.type;
-            var index = ['social', 'parttime', 'school'].indexOf(type);
-            if (index != -1) {
-                var source = {
-                    kind: index,
-                    teacherId: req.userIds.teacherId
-                };
-                teacherModel.getExperienceList(source, function (err, result) {
-                    if (err) {
-                        logger.error(err);
-                    } else {
-                        console.log(JSON.stringify(result));
-                        res.render(experienceController.getView('experience'), {
-                            title: type,
-                            userIds: req.userIds,
-                            experienceList: result
-                        });
-                    }
-                });
 
-            } else {
-                res.status(404).end();
-            }
-        };
-        experienceController.getAddExperience = function (req, res) {
+        var experienceTypes = ['social', 'parttime', 'school'];
+
+        var checkType = function (req, res) {
             var type = req.params.type;
-            var index = ['social', 'parttime', 'school'].indexOf(type);
-            if (index != -1) {
-                res.render(experienceController.getView('experience_add'), {
-                    kind: index,
-                    userIds: req.userIds
-                });
-            } else {
-                res.status(404).end();
+            var index = experienceTypes.indexOf(type);
+            if (index == -1) {
+                experienceController.errorHandler(new Error('选择类型不合法！'), res);
             }
+            return {type: type, index: index};
         };
+
+        /**
+         * 根据教师id和类型获取对应的经历列表
+         * @param req
+         * @param res
+         */
+        experienceController.getExperienceList = function (req, res) {
+            var valid = checkType(req, res);
+            teacherModel.getExperienceList({
+                kind: valid.index,
+                teacherId: req.userIds.teacherId
+            }, function (err, result) {
+                experienceController.errorHandler(err, res);
+                res.render(experienceController.getView('experience'), {
+                    title: valid.type,
+                    userIds: req.userIds,
+                    experienceList: result
+                });
+            });
+        };
+
+        /**
+         * 跳转到添加经历页面
+         * @param req
+         * @param res
+         */
+        experienceController.getAddExperience = function (req, res) {
+            var valid = checkType(req, res);
+            res.render(experienceController.getView('experience_add'), {
+                kind: valid.index,
+                userIds: req.userIds
+            });
+        };
+
+        /**
+         * 保存经历信息
+         * @param req
+         * @param res
+         */
         experienceController.saveExperience = function (req, res) {
             var experience = {
                 title: req.body.name,
@@ -55,36 +68,36 @@ var ExperienceController = {
                 status: 1,
                 teacherId: req.body.teacherId
             };
+
+            var isValid = experienceController.validateParams(experience);
+            if (!isValid) {
+                experienceController.errorHandler(new Error('经历信息填写有误！'), res, true);
+            }
+
             teacherModel.saveExperience(experience, function (err, result) {
-                if (err) {
-                    logger.error(err);
-                    res.json({success: false, message: err});
-                    return;
-                } else {
-                    var types = ['social', 'parttime', 'school'];
-                    console.log(types[experience.kind]);
-                    res.json({
-                        success: true,
-                        message: "操作成功！",
-                        entity: types[experience.kind]
-                    });
-                }
+                experienceController.errorHandler(err, res, true);
+                res.json({
+                    success: true,
+                    message: "操作成功！",
+                    entity: experienceTypes[experience.kind]
+                });
             });
         };
+
+        /**
+         * 根据经历id删除对应的经历信息
+         * @param req
+         * @param res
+         */
         experienceController.deleteExperienceById = function (req, res) {
-            var source = {
+            teacherModel.deleteExperienceById({
                 experienceId: req.body.experienceId
-            };
-            teacherModel.deleteExperienceById(source, function (err, result) {
-                var resJson = {
+            }, function (err, result) {
+                experienceController.errorHandler(err, res, true);
+                res.json({
                     success: true,
                     message: '操作成功！'
-                };
-                if (err) {
-                    resJson[success] = false;
-                    resJson[message] = err;
-                }
-                res.json(resJson);
+                });
             });
         };
         return experienceController;

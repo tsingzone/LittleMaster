@@ -8,7 +8,7 @@ var _ = require('underscore');
 
 var DBHandler = function() {
 
-}
+};
 
 _.extend(DBHandler.prototype, {
     init: function (dbconfig) {

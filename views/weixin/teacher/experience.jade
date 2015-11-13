@@ -37,7 +37,7 @@ block script
             $(".container_add_content").last().css("padding-bottom", "0px");
 
             $("#btnAdd").click(function () {
-                window.location.href = '/weixin/teacher/experience/#{title}/add?userId=#{userIds.userId}';
+                window.location.href = '/weixin/teacher/experience/#{title}/add?openId=#{userIds.openId}';
             });
 
             $(".delete").each(function () {

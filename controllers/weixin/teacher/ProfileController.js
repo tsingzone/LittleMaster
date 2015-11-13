@@ -6,6 +6,7 @@ var fs = require('fs');
 
 var _ = require('underscore');
 var captchapng = require('captchapng');
+var async = require('async');
 
 var BaseController = require('./BaseController');
 var oss = require('../../../utils/Oss').createNew();
@@ -19,8 +20,12 @@ var ProfileController = {
         var profileController = BaseController.createNew();
         var memCache = Memcached.createNew();
 
+        /**
+         * 计算简历填写百分比
+         * @param data
+         * @returns {number}
+         */
         var calPercentage = function calPercentage(data) {
-            logger.debug(data);
             return Math.floor(100 * (_.filter(data, function (item) {
                     if (item || item === 0) {
                         return true;
@@ -28,12 +33,14 @@ var ProfileController = {
                 }).length) / 11);
         };
 
+        /**
+         * 根据userId获取简历是否填写完成，若填写百分比为100，表示填写完成
+         * @param req
+         * @param res
+         */
         profileController.getProfilePercentage = function (req, res) {
             teacherModel.getProfilePercentage(req.userIds.userId, function (err, result) {
-                if (err) {
-                    logger.error(err);
-                    res.json({success: false, message: err});
-                }
+                profileController.errorHandler(err, res, true);
                 var percent = calPercentage(result[0]);
                 if (percent == 100) {
                     res.json({success: true, message: ''});
@@ -43,182 +50,276 @@ var ProfileController = {
             })
         };
 
+        /**
+         * 获取用户个人中心首页信息
+         * @param req
+         * @param res
+         */
         profileController.getUserCenterData = function (req, res) {
-            teacherModel.getUserCenterData(req.userIds, function (err, result) {
-                if (err) {
-                    res.status(404);
+            async.parallel([
+                function (callback) {
+                    teacherModel.getWeiXinBaseUserInfo(req.userIds, function (err, result) {
+                        profileController.errorHandler(err, res);
+                        callback(null, result[0]);
+                    });
+                },
+                function (callback) {
+                    teacherModel.getProfilePercentage(req.userIds.userId, function (err, result) {
+                        profileController.errorHandler(err, res);
+                        callback(null, calPercentage(result[0]));
+                    });
+                },
+                function (callback) {
+                    teacherModel.getSignJobsCount(req.userIds.teacherId, function (err, result) {
+                        profileController.errorHandler(err, res);
+                        callback(null, result[0].signCount);
+                    });
+                },
+                function (callback) {
+                    teacherModel.getCollectJobsCount(req.userIds.teacherId, function (err, result) {
+                        profileController.errorHandler(err, res);
+                        callback(null, result[0].collectCount);
+                    });
                 }
-                var percent = calPercentage(result[1][0]);
+            ], function (err, result) {
+                profileController.errorHandler(err, res);
                 res.render(profileController.getView('teacher'), {
-                    user: result[0][0],
-                    percent: percent,
-                    signCount: result[2][0].signCount,
-                    collectCount: result[3][0].collectCount,
+                    user: result[0],
+                    percent: result[1],
+                    signCount: result[2],
+                    collectCount: result[3],
                     userIds: req.userIds
                 });
             });
         };
+
+        /**
+         * 根据用户信息获取个人简历
+         * @param req
+         * @param res
+         */
         profileController.getProfile = function (req, res) {
-            teacherModel.getProfile(req.userIds, function (err, result) {
-                if (err) {
-                    res.redirect(profileController.getView('weixin/error'));
-                } else {
-                    var profile = result[0][0];
-                    if (profile) {
-                        if (profile.mobile) {
-                            profile.mobile = profile.mobile.slice(0, 3) + '****' + profile.mobile.slice(-4);
-                        }
-                        if (profile.birthday) {
-                            profile.birthday = new moment(profile.birthday).format('YYYY-MM-DD')
-                        }
-                        if (profile.entryYear) {
-                            profile.entryYear = new moment(profile.entryYear).format('YYYY');
-                        }
+            async.auto({
+                checkProfileIsExist: function (callback) {
+                    if (req.userIds.teacherId) {
+                        callback(null, true);
+                    } else {
+                        callback(null, false);
                     }
-                    var diploma = result[2];
-                    if (diploma) {
-                        diploma = JSON.parse(JSON.stringify(diploma));
-                        diploma = {
-                            teacher: _.find(diploma, function (item) {
-                                return item.kind === 0;
-                            }),
-                            other: _.find(diploma, function (item) {
-                                return item.kind === 1;
-                            })
-                        };
+                },
+                insertProfileIfNotExist: ['checkProfileIsExist', function (callback, results) {
+                    if (!results.checkProfileIsExist) {
+                        teacherModel.insertDefaultProfile(req.userIds, function (err, result) {
+                            profileController.errorHandler(err, res);
+                            req.userIds.teacherId = result.insertId;
+                            callback(null, req.userIds);
+                        });
+                    } else {
+                        callback(null, req.userIds);
                     }
-                    else {
-                        diploma = {
-                            teacher: {
-                                kindCount: 0
-                            },
-                            other: {
-                                kindCount: 0
+                }],
+                getProfileBaseInfoById: ['insertProfileIfNotExist', function (callback, results) {
+                    teacherModel.getProfileBaseInfoByUserId(results.insertProfileIfNotExist.userId, function (err, result) {
+                        profileController.errorHandler(err, res);
+                        var profileInfo = result[0];
+                        if (profileInfo) {
+                            if (profileInfo.mobile) {
+                                profileInfo.mobile = profileInfo.mobile.slice(0, 3) + '****' + profileInfo.mobile.slice(-4);
+                            }
+                            if (profileInfo.birthday) {
+                                profileInfo.birthday = new moment(profileInfo.birthday).format('YYYY-MM-DD')
+                            }
+                            if (profileInfo.entryYear) {
+                                profileInfo.entryYear = new moment(profileInfo.entryYear).format('YYYY');
                             }
                         }
-                    }
-
-                    var experience = result[1];
-                    if (experience) {
-                        experience = JSON.parse(JSON.stringify(experience));
-                        experience = {
-                            social: _.find(experience, function (item) {
-                                return item.kind === 0;
-                            }),
-                            parttime: _.find(experience, function (item) {
-                                return item.kind === 1;
-                            }),
-                            school: _.find(experience, function (item) {
-                                return item.kind === 2;
-                            })
-                        };
-                    }
-                    else {
-                        experience = {
-                            social: {
-                                kindCount: 0
-                            },
-                            parttime: {
-                                kindCount: 0
-                            },
-                            school: {
-                                kindCount: 0
-                            }
-                        }
-                    }
-
-                    res.render(profileController.getView('profile'), {
-                        profile: profile,
-                        diplomaTeacher: diploma.teacher,
-                        diplomaOther: diploma.other,
-                        experienceSocial: experience.social,
-                        experienceParttime: experience.parttime,
-                        experienceSchool: experience.school,
-                        userIds: req.userIds
+                        callback(null, profileInfo);
                     });
-                }
+                }],
+                getExperienceCount: ['insertProfileIfNotExist', function (callback, results) {
+                    teacherModel.getExperienceCount(results.insertProfileIfNotExist.teacherId, function (err, experience) {
+                        profileController.errorHandler(err, res);
+                        if (experience) {
+                            experience = JSON.parse(JSON.stringify(experience));
+                            callback(null, {
+                                social: _.find(experience, function (item) {
+                                    return item.kind === 0;
+                                }),
+                                parttime: _.find(experience, function (item) {
+                                    return item.kind === 1;
+                                }),
+                                school: _.find(experience, function (item) {
+                                    return item.kind === 2;
+                                })
+                            });
+                        }
+                        else {
+                            callback(null, {
+                                social: {
+                                    kindCount: 0
+                                },
+                                parttime: {
+                                    kindCount: 0
+                                },
+                                school: {
+                                    kindCount: 0
+                                }
+                            });
+                        }
+                    })
+                }],
+                getDiplomaCount: ['insertProfileIfNotExist', function (callback, results) {
+                    teacherModel.getDiplomaCount(results.insertProfileIfNotExist.teacherId, function (err, diploma) {
+                        profileController.errorHandler(err, res);
+                        if (diploma) {
+                            diploma = JSON.parse(JSON.stringify(diploma));
+                            callback(null, {
+                                teacher: _.find(diploma, function (item) {
+                                    return item.kind === 0;
+                                }),
+                                other: _.find(diploma, function (item) {
+                                    return item.kind === 1;
+                                })
+                            });
+                        }
+                        else {
+                            callback(null, {
+                                teacher: {
+                                    kindCount: 0
+                                },
+                                other: {
+                                    kindCount: 0
+                                }
+                            });
+                        }
+                    })
+                }]
+            }, function (err, results) {
+                profileController.errorHandler(err, res);
+                res.render(profileController.getView('profile'), {
+                    profile: results.getProfileBaseInfoById,
+                    diplomaTeacher: results.getDiplomaCount.teacher,
+                    diplomaOther: results.getDiplomaCount.other,
+                    experienceSocial: results.getExperienceCount.social,
+                    experienceParttime: results.getExperienceCount.parttime,
+                    experienceSchool: results.getExperienceCount.school,
+                    userIds: req.userIds
+                });
             });
         };
+
+        /**
+         * 更新简历信息
+         * @param req
+         * @param res
+         */
         profileController.saveProfile = function (req, res) {
             var teacher = req.body.teacher;
             var isParamsOk = profileController.validateParams(teacher);
             if (isParamsOk) {
                 teacherModel.saveProfile(teacher, function (err, result) {
-                    if (err) {
-                        res.json({success: false, message: err});
-                    } else {
-                        res.json({success: true, message: "操作成功！"});
-                    }
+                    profileController.errorHandler(err, res, true);
+                    res.json({success: true, message: "操作成功！"});
                 });
             } else {
                 res.json({success: false, message: isParamsOk});
             }
         };
+
+        /**
+         * 更新简历头像
+         * @param req
+         * @param res
+         */
         profileController.uploadHeadImg = function (req, res) {
-            var form = profileController.getForm('head');
-            form.parse(req, function (err, fields, files) {
-
-                if (err) {
-                    res.json({success: false, message: err});
-                    return;
-                }
-                var extName = profileController.getExtName(files.fulAvatar.type);  //后缀名
-
-                if (extName.length == 0) {
-                    res.json({success: false, message: '只支持png和jpg格式图片'});
-                    return;
-                }
-
-                var avatarName = req.userIds.teacherId + '-' + new Date().getTime() + '.' + extName;
-                var newPath = form.uploadDir + avatarName;
-                fs.rename(files.fulAvatar.path, newPath, function (err) {
-                    if (err) {
-                        res.json({success: false, message: err});
-                        return;
-                    }
-
-                    oss.putObject({key: newPath},
+            profileController.formParse(req, res, 'head', function (fields, files, uploadPath) {
+                fs.rename(files.fulAvatar.path, uploadPath, function (err) {
+                    profileController.errorHandler(err, res, true);
+                    oss.putObject({key: uploadPath},
                         function (err, data) {
-                            if (err) {
-                                console.log('error:', err);
-                                return;
-                            }
-
-                            var source = {
+                            profileController.errorHandler(err, res, true);
+                            teacherModel.chageTeacherHeadImg({
                                 teacherId: req.userIds.teacherId,
-                                imgPath: newPath
-                            };
-                            teacherModel.chageTeacherHeadImg(source, function (err, result) {
-                                if (err) {
-                                    logger.error(err);
-                                    return;
-                                }
-                                res.json({success: true, message: "上传成功！"});
+                                imgPath: uploadPath
+                            }, function (err, result) {
+                                profileController.errorHandler(err, res, true);
+                                res.json({success: true, message: "操作成功！"});
                             });
                         });
 
-                });  //重命名
+                });
             });
         };
+
+        /**
+         * 调整到更新头像的页面
+         * @param req
+         * @param res
+         */
         profileController.getProfileHead = function (req, res) {
-            res.render(profileController.getView('upload'), {title: 'Upload'});
+            res.render(profileController.getView('upload'), {
+                title: 'Upload',
+                userIds: req.userIds
+            });
         };
+
+        /**
+         * 调整到更新手机绑定页面
+         * @param req
+         * @param res
+         */
         profileController.getProfileMobile = function (req, res) {
             res.render(profileController.getView('bind'), {
                 title: 'Bind',
                 userIds: req.userIds
             });
         };
+
+        /**
+         * 调整到大学页面
+         * @param req
+         * @param res
+         */
+        profileController.getCollege = function (req, res) {
+            res.render(profileController.getView('college'), {
+                title: 'College',
+                userIds: req.userIds
+            });
+        };
+
+        /**
+         * 获取学历列表，缓存到memcache
+         * @param req
+         * @param res
+         */
         profileController.getEducation = function (req, res) {
-            teacherModel.getEducation(function (err, result) {
-                console.log(result);
+            var render = function (result) {
                 res.render(profileController.getView('education'), {
                     educations: result,
                     userIds: req.userIds
                 });
+            }
+            memCache.getObject('EDUCATION_LIST', function (err, data) {
+                profileController.errorHandler(err, res);
+                if (data) {
+                    render(data);
+                } else {
+                    teacherModel.getEducationList(function (err, result) {
+                        profileController.errorHandler(err, res);
+                        memCache.putObject('EDUCATION_LIST', result, 21600, function (err) {
+                            profileController.errorHandler(err, res);
+                            render(result);
+                        });
+                    });
+                }
             });
         };
 
+        /**
+         * 更新绑定手机号
+         * @param req
+         * @param res
+         */
         profileController.bindMobile = function (req, res) {
 
             var mobile = req.body.mobile;
@@ -288,15 +389,25 @@ var ProfileController = {
         };
 
         var origin = '1234567890';
-        var getRandCode = function () {
+        /**
+         * 产生length位随机数，默认length为4
+         * @returns {string}
+         */
+        var getRandCode = function (length) {
+            var len = length || 4;
             var selected = [];
-            for (var i = 0; i < 4; i++) {
+            for (var i = 0; i < len; i++) {
                 var index = Math.floor(Math.random() * 10);
                 selected.push(origin.charAt(index));
             }
-            console.log(selected);
             return selected.join('');
         };
+
+        /**
+         * 发送短信验证码
+         * @param req
+         * @param res
+         */
         profileController.randomSmsCode = function (req, res) {
             memCache.getObject('SEND_' + req.userIds.openId, function (err, data) {
                 if (err) {
@@ -326,7 +437,10 @@ var ProfileController = {
                             memCache.putObject('RANDOM_CODE_' + req.userIds.openId, code, 300, function (err) {
                                 if (err) {
                                     logger.error(err);
-                                    res.json({success: false, message: err});
+                                    res.json({
+                                        success: false,
+                                        message: err
+                                    });
                                     return;
                                 }
                                 res.json({
@@ -336,15 +450,20 @@ var ProfileController = {
                             })
                         });
                     });
-
                 }
             });
-
         };
 
+        /**
+         * 生成图片验证码，缓存到memcache，缓存5分钟
+         * @param req
+         * @param res
+         */
         profileController.randomCaptcha = function (req, res) {
             var randomCode = parseInt(Math.floor(Math.random() * 9000 + 1000));
             memCache.putObject('RANDOM_CODE_PIC_' + req.userIds.openId, randomCode, 300, function (err) {
+                profileController.errorHandler(err, res);
+
                 var p = new captchapng(80, 30, randomCode);
                 p.color(0, 0, 0, 0);
                 p.color(255, 255, 255, 255);

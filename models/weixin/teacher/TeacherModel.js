@@ -7,7 +7,8 @@ var UserModel = require('./UserModel');
 var JobModel = require('./JobModel');
 var ExperienceModel = require('./ExperienceModel');
 var DiplomaModel = require('./DiplomaModel');
-var logger = require('../../../logger').logger('TeacherModel');
+var CommonModel = require('./CommonModel');
+var BaseModel = require('./BaseModel');
 
 var TeacherModel = {
     createNew: function () {
@@ -17,35 +18,42 @@ var TeacherModel = {
         var experienceModel = ExperienceModel.createNew();
         var diplomaModel = DiplomaModel.createNew();
         var userModel = UserModel.createNew();
+        var commonModel = CommonModel.createNew();
+        var baseModel = BaseModel.createNew();
 
-        teacherModel.getWeiXinUserByUserId = userModel.getWeiXinUserByUserId;
-        teacherModel.getWeiXinUserByOpenId = userModel.getWeiXinUserByOpenId;
+        teacherModel.getWeiXinBaseUserInfo = baseModel.getWeiXinBaseUserInfo;
+        teacherModel.getUserIds = baseModel.getUserIds;
+
+        teacherModel.getWeiXinUser = userModel.getWeiXinUser;
         teacherModel.updateWeinXinUserByOpenId = userModel.updateWeinXinUserByOpenId;
         teacherModel.saveWeixinUser = userModel.saveWeixinUser;
-        teacherModel.getUserIds = userModel.getUserIds;
         teacherModel.changeMobile = userModel.changeMobile;
 
         teacherModel.getProfilePercentage = profileModel.getProfilePercentage;
-        teacherModel.getUserCenterData = profileModel.getUserCenterData;
-        teacherModel.getProfile = profileModel.getProfile;
-        teacherModel.saveDefaultProfile = profileModel.saveDefaultProfile;
+        teacherModel.getProfileBaseInfoByUserId = profileModel.getProfileBaseInfoByUserId;
+        teacherModel.insertDefaultProfile = profileModel.insertDefaultProfile;
         teacherModel.saveProfile = profileModel.saveProfile;
         teacherModel.chageTeacherHeadImg = profileModel.chageTeacherHeadImg;
-        teacherModel.getEducation = profileModel.getEducation;
 
         teacherModel.getSignJobs = jobModel.getSignJobs;
+        teacherModel.getSignJobsCount = jobModel.getSignJobsCount;
         teacherModel.getCollectJobs = jobModel.getCollectJobs;
+        teacherModel.getCollectJobsCount = jobModel.getCollectJobsCount;
 
         teacherModel.getDiplomaList = diplomaModel.getDiplomaList;
         teacherModel.saveDiploma = diplomaModel.saveDiploma;
         teacherModel.deleteDiplomaById = diplomaModel.deleteDiplomaById;
-        teacherModel.getMajorList = diplomaModel.getMajorList;
-        teacherModel.getPeriodList = diplomaModel.getPeriodList;
-        teacherModel.getCertTypeList = diplomaModel.getCertTypeList;
+        teacherModel.getDiplomaCount = diplomaModel.getDiplomaCount;
 
         teacherModel.getExperienceList = experienceModel.getExperienceList;
         teacherModel.saveExperience = experienceModel.saveExperience;
         teacherModel.deleteExperienceById = experienceModel.deleteExperienceById;
+        teacherModel.getExperienceCount = experienceModel.getExperienceCount;
+
+        teacherModel.getEducationList = commonModel.getEducationList;
+        teacherModel.getMajorList = commonModel.getMajorList;
+        teacherModel.getPeriodList = commonModel.getPeriodList;
+        teacherModel.getCertTypeList = commonModel.getCertTypeList;
 
         return teacherModel;
     }

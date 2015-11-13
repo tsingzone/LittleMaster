@@ -10,6 +10,7 @@ block header-title
 
 block content
     form#uploadForm(method="post" enctype="multipart/form-data")
+        input(name='teacherId',type='hidden', value='#{userIds.teacherId}')
         div.upload
             #preview
                 img#upload_head(src="/images/default-profile.png")
@@ -44,13 +45,12 @@ block script
                         // 对于表单提交成功后处理，message为提交页面saveReport.htm的返回内容
                         if (result.success) {
                             alert(result.message);
-                            window.location.href = '/weixin/teacher/profile';
+                            window.location.href = '/weixin/teacher/profile?openId=#{userIds.openId}';
                         } else {
                             alert(result.message);
                         }
                     });
                     return false; // 必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
                 }
-
             });
         });

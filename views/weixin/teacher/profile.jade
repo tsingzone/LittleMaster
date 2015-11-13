@@ -16,9 +16,6 @@ block header-save
     img#save(src="/images/save.png")
 
 block content
-    input(id="teacherId",type="hidden", value="#{profile ? profile['id'] : ''}")
-    input(id="userId",type="hidden", value="#{profile ? profile['userId'] : ''}")
-    input(id="openId",type="hidden", value="#{profile ? profile['openId'] : ''}")
     #first_line.bottom-line(onclick="goToHead()")
         if profile && profile['headImg']
             - profile['headImg'] = profile['headImg'].substring(profile['headImg'].indexOf('/'))
@@ -169,7 +166,7 @@ block script
 
             $('#header-save').click(function () {
                 var teacherInfo = {
-                    id: $('#teacherId').val(),
+                    id: #{userIds.teacherId},
                     name: $('#name').val(),
                     gender: $(':checked').val(),
                     birthday: $('#birthday').val(),
@@ -200,28 +197,28 @@ block script
         function goToHead() {
             if ($('#headImg').attr('value')) {
                 sessionStorage.setItem('headImg', $('#headImg').attr('src'));
-                window.location.href = "upload";
+                window.location.href = "/weixin/teacher/upload?openId=#{userIds.openId}";
             }
         }
 
         function goToBind() {
-            window.location.href = "/weixin/teacher/bind?userId=#{userIds.userId}";
+            window.location.href = "/weixin/teacher/bind?openId=#{userIds.openId}";
         }
 
         function goToCollege() {
-            window.location.href = "/weixin/teacher/college?userId=#{userIds.userId}";
+            window.location.href = "/weixin/teacher/college?openId=#{userIds.openId}";
         }
 
         function goToEducation() {
-            window.location.href = "/weixin/teacher/education?userId=#{userIds.userId}";
+            window.location.href = "/weixin/teacher/education?openId=#{userIds.openId}";
         }
 
         function goToExperience(type) {
-            window.location.href = "experience/" + type + "?userId=#{userIds.userId}";
+            window.location.href = "experience/" + type + "?openId=#{userIds.openId}";
         }
 
         function goToDiploma(type) {
-            window.location.href = "diploma/" + type + "?userId=#{userIds.userId}";
+            window.location.href = "diploma/" + type + "?openId=#{userIds.openId}";
         }
 
         function loadSessionStorage() {
