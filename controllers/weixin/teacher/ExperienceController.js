@@ -15,7 +15,9 @@ var ExperienceController = {
             var type = req.params.type;
             var index = experienceTypes.indexOf(type);
             if (index == -1) {
-                experienceController.errorHandler(new Error('选择类型不合法！'), res);
+                logger.error(new Error('选择类型不合法！'));
+                throw new Error('选择类型不合法！');
+                return;
             }
             return {type: type, index: index};
         };
@@ -31,7 +33,11 @@ var ExperienceController = {
                 kind: valid.index,
                 teacherId: req.userIds.teacherId
             }, function (err, result) {
-                experienceController.errorHandler(err, res);
+                if(err){
+                    logger.error(err);
+                    throw err;
+                    return;
+                }
                 res.render(experienceController.getView('experience'), {
                     title: valid.type,
                     userIds: req.userIds,
@@ -71,11 +77,17 @@ var ExperienceController = {
 
             var isValid = experienceController.validateParams(experience);
             if (!isValid) {
-                experienceController.errorHandler(new Error('经历信息填写有误！'), res, true);
+                logger.error(new Error('经历信息填写有误！'));
+                throw new Error('经历信息填写有误！');
+                return;
             }
 
             teacherModel.saveExperience(experience, function (err, result) {
-                experienceController.errorHandler(err, res, true);
+                if(err){
+                    logger.error(err);
+                    throw err;
+                    return;
+                }
                 res.json({
                     success: true,
                     message: "操作成功！",
@@ -93,7 +105,11 @@ var ExperienceController = {
             teacherModel.deleteExperienceById({
                 experienceId: req.body.experienceId
             }, function (err, result) {
-                experienceController.errorHandler(err, res, true);
+                if(err){
+                    logger.error(err);
+                    throw err;
+                    return;
+                }
                 res.json({
                     success: true,
                     message: '操作成功！'

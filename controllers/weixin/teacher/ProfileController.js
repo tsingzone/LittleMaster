@@ -40,13 +40,17 @@ var ProfileController = {
          */
         profileController.getProfilePercentage = function (req, res) {
             teacherModel.getProfilePercentage(req.userIds.userId, function (err, result) {
-                profileController.errorHandler(err, res, true);
-                var percent = calPercentage(result[0]);
-                if (percent == 100) {
-                    res.json({success: true, message: ''});
-                } else {
-                    res.json({success: false, message: '简历未完成！'});
+                if (err) {
+                    logger.error(err);
+                    throw err;
+                    return;
                 }
+                var percent = calPercentage(result[0]);
+                var isFull = percent == 100;
+                res.json({
+                    success: isFull,
+                    message: isFull ? '操作成功！' : '简历尚未填写完成！'
+                });
             })
         };
 
@@ -59,37 +63,58 @@ var ProfileController = {
             async.parallel([
                 function (callback) {
                     teacherModel.getWeiXinBaseUserInfo(req.userIds, function (err, result) {
-                        profileController.errorHandler(err, res);
+                        if (err) {
+                            logger.error(err);
+                            callback(err);
+                            return;
+                        }
                         callback(null, result[0]);
                     });
                 },
                 function (callback) {
                     teacherModel.getProfilePercentage(req.userIds.userId, function (err, result) {
-                        profileController.errorHandler(err, res);
+                        if (err) {
+                            logger.error(err);
+                            callback(err);
+                            return;
+                        }
                         callback(null, calPercentage(result[0]));
                     });
                 },
                 function (callback) {
                     teacherModel.getSignJobsCount(req.userIds.teacherId, function (err, result) {
-                        profileController.errorHandler(err, res);
+                        if (err) {
+                            logger.error(err);
+                            callback(err);
+                            return;
+                        }
                         callback(null, result[0].signCount);
                     });
                 },
                 function (callback) {
                     teacherModel.getCollectJobsCount(req.userIds.teacherId, function (err, result) {
-                        profileController.errorHandler(err, res);
+                        if (err) {
+                            logger.error(err);
+                            callback(err);
+                            return;
+                        }
                         callback(null, result[0].collectCount);
                     });
                 }
             ], function (err, result) {
-                profileController.errorHandler(err, res);
-                res.render(profileController.getView('teacher'), {
-                    user: result[0],
-                    percent: result[1],
-                    signCount: result[2],
-                    collectCount: result[3],
-                    userIds: req.userIds
-                });
+                if (err) {
+                    logger.error(err);
+                    throw err;
+                    return;
+                } else {
+                    res.render(profileController.getView('teacher'), {
+                        user: result[0],
+                        percent: result[1],
+                        signCount: result[2],
+                        collectCount: result[3],
+                        userIds: req.userIds
+                    });
+                }
             });
         };
 
@@ -110,7 +135,11 @@ var ProfileController = {
                 insertProfileIfNotExist: ['checkProfileIsExist', function (callback, results) {
                     if (!results.checkProfileIsExist) {
                         teacherModel.insertDefaultProfile(req.userIds, function (err, result) {
-                            profileController.errorHandler(err, res);
+                            if (err) {
+                                logger.error(err);
+                                callback(err);
+                                return;
+                            }
                             req.userIds.teacherId = result.insertId;
                             callback(null, req.userIds);
                         });
@@ -120,7 +149,11 @@ var ProfileController = {
                 }],
                 getProfileBaseInfoById: ['insertProfileIfNotExist', function (callback, results) {
                     teacherModel.getProfileBaseInfoByUserId(results.insertProfileIfNotExist.userId, function (err, result) {
-                        profileController.errorHandler(err, res);
+                        if (err) {
+                            logger.error(err);
+                            callback(err);
+                            return;
+                        }
                         var profileInfo = result[0];
                         if (profileInfo) {
                             if (profileInfo.mobile) {
@@ -138,7 +171,11 @@ var ProfileController = {
                 }],
                 getExperienceCount: ['insertProfileIfNotExist', function (callback, results) {
                     teacherModel.getExperienceCount(results.insertProfileIfNotExist.teacherId, function (err, experience) {
-                        profileController.errorHandler(err, res);
+                        if (err) {
+                            logger.error(err);
+                            callback(err);
+                            return;
+                        }
                         if (experience) {
                             experience = JSON.parse(JSON.stringify(experience));
                             callback(null, {
@@ -170,7 +207,11 @@ var ProfileController = {
                 }],
                 getDiplomaCount: ['insertProfileIfNotExist', function (callback, results) {
                     teacherModel.getDiplomaCount(results.insertProfileIfNotExist.teacherId, function (err, diploma) {
-                        profileController.errorHandler(err, res);
+                        if (err) {
+                            logger.error(err);
+                            callback(err);
+                            return;
+                        }
                         if (diploma) {
                             diploma = JSON.parse(JSON.stringify(diploma));
                             callback(null, {
@@ -195,7 +236,11 @@ var ProfileController = {
                     })
                 }]
             }, function (err, results) {
-                profileController.errorHandler(err, res);
+                if (err) {
+                    logger.error(err);
+                    throw err;
+                    return;
+                }
                 res.render(profileController.getView('profile'), {
                     profile: results.getProfileBaseInfoById,
                     diplomaTeacher: results.getDiplomaCount.teacher,
@@ -218,11 +263,15 @@ var ProfileController = {
             var isParamsOk = profileController.validateParams(teacher);
             if (isParamsOk) {
                 teacherModel.saveProfile(teacher, function (err, result) {
-                    profileController.errorHandler(err, res, true);
-                    res.json({success: true, message: "操作成功！"});
+                    if (err) {
+                        logger.error(err);
+                        throw err;
+                        return;
+                    }
+                    res.json({success: true, message: '操作成功！'});
                 });
             } else {
-                res.json({success: false, message: isParamsOk});
+                res.json({success: false, message: '表单数据填写有误！'});
             }
         };
 
@@ -234,16 +283,28 @@ var ProfileController = {
         profileController.uploadHeadImg = function (req, res) {
             profileController.formParse(req, res, 'head', function (fields, files, uploadPath) {
                 fs.rename(files.fulAvatar.path, uploadPath, function (err) {
-                    profileController.errorHandler(err, res, true);
+                    if (err) {
+                        logger.error(err);
+                        throw err;
+                        return;
+                    }
                     oss.putObject({key: uploadPath},
                         function (err, data) {
-                            profileController.errorHandler(err, res, true);
+                            if (err) {
+                                logger.error(err);
+                                res.json({success: false, message: '操作失败！'});
+                                return;
+                            }
                             teacherModel.chageTeacherHeadImg({
                                 teacherId: req.userIds.teacherId,
                                 imgPath: uploadPath
                             }, function (err, result) {
-                                profileController.errorHandler(err, res, true);
-                                res.json({success: true, message: "操作成功！"});
+                                if (err) {
+                                    logger.error(err);
+                                    throw err;
+                                    return;
+                                }
+                                res.json({success: true, message: '操作成功！'});
                             });
                         });
 
@@ -258,7 +319,6 @@ var ProfileController = {
          */
         profileController.getProfileHead = function (req, res) {
             res.render(profileController.getView('upload'), {
-                title: 'Upload',
                 userIds: req.userIds
             });
         };
@@ -270,7 +330,6 @@ var ProfileController = {
          */
         profileController.getProfileMobile = function (req, res) {
             res.render(profileController.getView('bind'), {
-                title: 'Bind',
                 userIds: req.userIds
             });
         };
@@ -282,7 +341,6 @@ var ProfileController = {
          */
         profileController.getCollege = function (req, res) {
             res.render(profileController.getView('college'), {
-                title: 'College',
                 userIds: req.userIds
             });
         };
@@ -298,16 +356,28 @@ var ProfileController = {
                     educations: result,
                     userIds: req.userIds
                 });
-            }
+            };
             memCache.getObject('EDUCATION_LIST', function (err, data) {
-                profileController.errorHandler(err, res);
+                if (err) {
+                    logger.error(err);
+                    throw err;
+                    return;
+                }
                 if (data) {
                     render(data);
                 } else {
                     teacherModel.getEducationList(function (err, result) {
-                        profileController.errorHandler(err, res);
+                        if(err){
+                            logger.error(err);
+                            throw err;
+                            return;
+                        }
                         memCache.putObject('EDUCATION_LIST', result, 21600, function (err) {
-                            profileController.errorHandler(err, res);
+                            if (err) {
+                                logger.error(err);
+                                throw err;
+                                return;
+                            }
                             render(result);
                         });
                     });
@@ -329,63 +399,65 @@ var ProfileController = {
 
             var reg = /1\d{10}/;
             if (mobile == '' || !reg.test(mobile)) {
-                res.json({success: false, message: "请输入正确的手机号！"});
+                logger.error(new Error('手机号填写错误！'));
+                res.json({success: false, message: '请输入正确的手机号！'});
                 return;
             }
 
             if (smsCode == '') {
-                res.json({success: false, message: "请输入短信验证码！"});
+                logger.error(new Error('短信验证码填写错误！'));
+                res.json({success: false, message: '请输入短信验证码！'});
                 return;
             }
 
             if (picCode == '') {
-                res.json({success: false, message: "请输入图片验证码！"});
+                logger.error(new Error('图片验证码填写错误！'));
+                res.json({success: false, message: '请输入图片验证码！'});
                 return;
             }
 
             memCache.getObject('RANDOM_CODE_' + openId, function (err, data) {
                 if (err) {
                     logger.error(err);
-                    res.json({success: false, message: err});
+                    throw err;
                     return;
                 }
                 if (!data) {
-                    res.json({success: false, message: "短信验证码已过期，请重新获取！"});
+                    logger.error(new Error('短信验证码已过期'));
+                    res.json({success: false, message: '短信验证码已过期，请重新获取！'});
                     return;
                 }
                 if (smsCode != data) {
-                    res.json({success: false, message: "短信验证码错误，请重新输入！"});
+                    logger.error(new Error('短信验证码错误'));
+                    res.json({success: false, message: '短信验证码错误，请重新输入！'});
                     return;
                 }
                 memCache.getObject('RANDOM_CODE_PIC_' + openId, function (err, data) {
                     if (err) {
                         logger.error(err);
-                        res.json({success: false, message: err});
+                        throw err;
                         return;
                     }
                     if (picCode != data) {
                         res.json({
                             success: false,
-                            message: "图片验证码错误，请重新输入！"
+                            message: '图片验证码错误，请重新输入！'
                         });
                         return;
                     }
-                    var source = {
+                    teacherModel.changeMobile({
                         openId: openId,
                         mobile: mobile
-                    }
-                    teacherModel.changeMobile(source, function (err, result) {
+                    }, function (err, result) {
                         if (err) {
                             logger.error(err);
-                            res.json({success: false, message: err});
+                            throw err;
                             return;
                         }
-                        res.json({success: true, message: "绑定成功！"});
-                    })
-
+                        res.json({success: true, message: '绑定成功！'});
+                    });
                 });
             });
-
         };
 
         var origin = '1234567890';
@@ -412,40 +484,37 @@ var ProfileController = {
             memCache.getObject('SEND_' + req.userIds.openId, function (err, data) {
                 if (err) {
                     logger.error(err);
-                    res.json({success: false, message: err});
+                    throw err;
                     return;
                 }
                 if (data) {
-                    res.json({success: false, message: "您的短信已发送请耐心等待！"});
+                    res.json({success: false, message: '您的短信已发送请耐心等待！'});
                 }
                 else {
                     var code = getRandCode();
                     memCache.putObject('SEND_' + req.userIds.openId, code, 61, function (err) {
                         if (err) {
                             logger.error(err);
-                            res.json({success: false, message: err});
+                            throw err;
                             return;
                         }
 
-                        sms.sendMessage([req.body.mobile], '40816', [code, "5"], function (err, result) {
+                        sms.sendMessage([req.body.mobile], '40816', [code, '5'], function (err, result) {
                             if (err) {
                                 logger.error(err);
-                                res.json({success: false, message: err});
+                                throw err;
                                 return;
                             }
                             console.log(result.toString());
                             memCache.putObject('RANDOM_CODE_' + req.userIds.openId, code, 300, function (err) {
                                 if (err) {
                                     logger.error(err);
-                                    res.json({
-                                        success: false,
-                                        message: err
-                                    });
+                                    throw err;
                                     return;
                                 }
                                 res.json({
                                     success: true,
-                                    message: "验证码已发送，请注意查收！"
+                                    message: '验证码已发送，请注意查收！'
                                 });
                             })
                         });
@@ -462,7 +531,11 @@ var ProfileController = {
         profileController.randomCaptcha = function (req, res) {
             var randomCode = parseInt(Math.floor(Math.random() * 9000 + 1000));
             memCache.putObject('RANDOM_CODE_PIC_' + req.userIds.openId, randomCode, 300, function (err) {
-                profileController.errorHandler(err, res);
+                if(err){
+                    logger.error(err);
+                    throw err;
+                    return;
+                }
 
                 var p = new captchapng(80, 30, randomCode);
                 p.color(0, 0, 0, 0);

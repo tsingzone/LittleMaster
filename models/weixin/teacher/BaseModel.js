@@ -29,6 +29,7 @@ var BaseModel = {
             DBUtils.getDBConnection().query(args.sql, args.params, function (err, result) {
                 if (err) {
                     logger.error(err);
+                    callback(err);
                     return;
                 }
                 callback(null, result);

@@ -18,7 +18,11 @@ var JobController = {
             teacherModel.getSignJobs({
                 teacherId: req.teacherId
             }, function (err, result) {
-                jobController.errorHandler(err, res);
+                if(err){
+                    logger.error(err);
+                    throw err;
+                    return;
+                }
                 res.render(jobController.getView('sign'), {
                     jobList: result[0],
                     userIds: req.userIds
@@ -35,7 +39,11 @@ var JobController = {
             teacherModel.getCollectJobs({
                 teacherId: req.teacherId
             }, function (err, result) {
-                jobController.errorHandler(err, res);
+                if(err){
+                    logger.error(err);
+                    throw err;
+                    return;
+                }
                 res.render(jobController.getView('collect'), {
                     jobList: result[0],
                     userIds: req.userIds

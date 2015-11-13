@@ -26,14 +26,10 @@ var JobModel = {
                 + ' left join sys_sallary_type on sys_sallary_type.id = company_job.sallary_type '
                 + ' left join sys_settlement on sys_settlement.id = company_job.settlement_id '
                 + ' where teacher_sign.teacher_id = ?';
-            DBUtils.getDBConnection().query(sql, [source.teacherId],
-                function (err, result) {
-                    if (err) {
-                        logger.error(err);
-                        return;
-                    }
-                    callback(null, result);
-                });
+            jobModel.queryDb({
+                sql: sql,
+                params: [source.teacherId]
+            }, callback);
         };
 
         /**
@@ -64,14 +60,10 @@ var JobModel = {
                 + ' left join sys_settlement'
                 + ' on sys_settlement.id = company_job.settlement_id'
                 + ' where teacher_sign.teacher_id = ?';
-            DBUtils.getDBConnection().query(sql, [source.teacherId],
-                function (err, result) {
-                    if (err) {
-                        logger.error(err);
-                        return;
-                    }
-                    callback(null, result);
-                });
+            jobModel.queryDb({
+                sql: sql,
+                params: [source.teacherId]
+            }, callback);
         };
 
         /**

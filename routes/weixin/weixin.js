@@ -20,7 +20,11 @@ router.use(function (req, res, next) {
         async.auto({
             getUserByCode: function (callback) {
                 weixinController.getUserByCode(code, function (err, data) {
-                    teacherController.errorHandler(err, res);
+                    if (err) {
+                        logger.error(err);
+                        callback(err);
+                        return;
+                    }
                     var userInfo = JSON.parse(data.toString());
                     userInfo.userIp = req.ip;
                     callback(null, userInfo);
@@ -36,7 +40,11 @@ router.use(function (req, res, next) {
             checkIsUserExistInDb: ['checkUserSubscribed', function (callback, results) {
                 if (results.checkUserSubscribed) {
                     teacherController.checkIsUserExistInDb({openId: results.getUserByCode.openid}, function (err, result) {
-                        teacherController.errorHandler(err, res);
+                        if (err) {
+                            logger.error(err);
+                            callback(err);
+                            return;
+                        }
                         if (result.length > 0) {
                             callback(null, true);
                         } else {
@@ -50,7 +58,11 @@ router.use(function (req, res, next) {
             insertUser: ['checkIsUserExistInDb', function (callback, results) {
                 if (!results.checkIsUserExistInDb) {
                     teacherController.insertWeixinUser(results.getUserByCode, function (err, result) {
-                        teacherController.errorHandler(err, res);
+                        if (err) {
+                            logger.error(err);
+                            callback(err);
+                            return;
+                        }
                         callback(null);
                     });
                 } else {
@@ -60,7 +72,11 @@ router.use(function (req, res, next) {
             updateUser: ['checkIsUserExistInDb', function (callback, results) {
                 if (results.checkIsUserExistInDb) {
                     teacherController.updateWeixinUser(results.getUserByCode, function (err, result) {
-                        teacherController.errorHandler(err, res);
+                        if (err) {
+                            logger.error(err);
+                            callback(err);
+                            return;
+                        }
                         callback(null);
                     });
                 } else {
@@ -76,6 +92,11 @@ router.use(function (req, res, next) {
                     teacherController.getUserIds({
                         openId: results.getUserByCode.openid
                     }, function (err, result) {
+                        if (err) {
+                            logger.error(err);
+                            callback(err);
+                            return;
+                        }
                         console.log(result);
                         req.userIds = result[0];
                         next();
@@ -97,7 +118,11 @@ router.use(function (req, res, next) {
                         userId: userId,
                         openId: openId
                     }, function (err, data) {
-                        teacherController.errorHandler(err, res);
+                        if(err){
+                            logger.error(err);
+                            callback(err);
+                            return;
+                        }
                         callback(null, data[0]);
                     })
                 },
@@ -105,7 +130,11 @@ router.use(function (req, res, next) {
                     if (results.getWeiXinUser) {
                         openId = results.getWeiXinUser.openId;
                         weixinController.getUserByOpenId(openId, function (err, data) {
-                            teacherController.errorHandler(err, res);
+                            if(err){
+                                logger.error(err);
+                                callback(err);
+                                return;
+                            }
                             var userInfo = JSON.parse(data.toString());
                             userInfo.userIp = req.ip;
                             callback(null, userInfo);
@@ -124,7 +153,11 @@ router.use(function (req, res, next) {
                 checkIsUserExistInDb: ['checkUserSubscribed', function (callback, results) {
                     if (results.checkUserSubscribed) {
                         teacherController.checkIsUserExistInDb(results.getWeiXinUser, function (err, result) {
-                            teacherController.errorHandler(err, res);
+                            if(err){
+                                logger.error(err);
+                                callback(err);
+                                return;
+                            }
                             if (result.length > 0) {
                                 callback(null, true);
                             } else {
@@ -136,7 +169,11 @@ router.use(function (req, res, next) {
                 insertUser: ['checkIsUserExistInDb', function (callback, results) {
                     if (!results.checkIsUserExistInDb) {
                         teacherController.insertWeixinUser(results.getWeiXinUser, function (err, result) {
-                            teacherController.errorHandler(err, res);
+                            if(err){
+                                logger.error(err);
+                                callback(err);
+                                return;
+                            }
                             callback(null, result);
                         });
                     } else {
@@ -146,7 +183,11 @@ router.use(function (req, res, next) {
                 updateUser: ['checkIsUserExistInDb', function (callback, results) {
                     if (results.checkIsUserExistInDb) {
                         teacherController.updateWeixinUser(results.getWeiXinUser, function (err, result) {
-                            teacherController.errorHandler(err, res);
+                            if(err){
+                                logger.error(err);
+                                callback(err);
+                                return;
+                            }
                             callback(null, result);
                         });
                     } else {
@@ -162,6 +203,10 @@ router.use(function (req, res, next) {
                         teacherController.getUserIds({
                             openId: results.getWeiXinUser.openId
                         }, function (err, result) {
+                            if(err){
+                                logger.error(err);
+                                next(err);
+                            }
                             req.userIds = result[0];
                             next();
                         });

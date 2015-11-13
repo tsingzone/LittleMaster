@@ -13,7 +13,9 @@ var UserController = {
         var memCache = Memcached.createNew();
         userController.getUserIds = function (source, callback) {
             teacherModel.getUserIds(source, function (err, result) {
-                if (err) {
+                if(err){
+                    logger.error(err);
+                    throw err;
                     return;
                 }
                 callback(null, result);
@@ -22,7 +24,9 @@ var UserController = {
 
         userController.getWeiXinUser = function (source, callback) {
             teacherModel.getWeiXinUser(source, function (err, result) {
-                if (err) {
+                if(err){
+                    logger.error(err);
+                    throw err;
                     return;
                 }
                 callback(null, result);
@@ -30,7 +34,9 @@ var UserController = {
         };
         userController.updateWeinXinUserByOpenId = function (userInfo, callback) {
             teacherModel.updateWeinXinUserByOpenId(userInfo, function (err, result) {
-                if (err) {
+                if(err){
+                    logger.error(err);
+                    throw err;
                     return;
                 }
                 callback(null, result);
@@ -39,8 +45,9 @@ var UserController = {
 
         userController.saveWeixinUser = function (userInfo, callback) {
             teacherModel.saveWeixinUser(userInfo, function (err, result) {
-                if (err) {
+                if(err){
                     logger.error(err);
+                    throw err;
                     return;
                 }
                 callback(null, result);
@@ -49,8 +56,9 @@ var UserController = {
 
         userController.checkIsUserExistInDb = function (userInfo, callback) {
             userController.getWeiXinUser(userInfo, function (err, result) {
-                if (err) {
+                if(err){
                     logger.error(err);
+                    throw err;
                     return;
                 }
                 callback(null, result);
@@ -59,8 +67,9 @@ var UserController = {
 
         userController.updateWeixinUser = function (userInfo, callback) {
             userController.updateWeinXinUserByOpenId(userInfo, function (err, result) {
-                if (err) {
+                if(err){
                     logger.error(err);
+                    throw err;
                     return;
                 }
                 callback(null, result);
@@ -69,8 +78,9 @@ var UserController = {
 
         userController.insertWeixinUser = function (userInfo, callback) {
             userController.saveWeixinUser(userInfo, function (err, result) {
-                if (err) {
+                if(err){
                     logger.error(err);
+                    throw err;
                     return;
                 }
                 callback(null, result);

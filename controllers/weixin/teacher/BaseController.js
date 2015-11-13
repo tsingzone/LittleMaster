@@ -16,18 +16,6 @@ var BaseController = {
 
         baseController.ossconfig = Configs.getConfig().ossconfig;
 
-        baseController.errorHandler = function (err, res, isJson) {
-            if (err) {
-                logger.error(err);
-                if (isJson) {
-                    res.json({success: false, message: '操作失败！'});
-                } else {
-                    res.status(404).end();
-                }
-                return;
-            }
-        };
-
         var getForm = function (path) {
             var form = formidable.IncomingForm();
             form.encoding = 'utf-8';

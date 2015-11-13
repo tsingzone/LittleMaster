@@ -22,7 +22,9 @@ var DiplomaController = {
             var type = req.params.type;
             var index = isSub ? subTypes.indexOf(type) : diplomaTypes.indexOf(type);
             if (index == -1) {
-                diplomaController.errorHandler(new Error('选择类型不合法！'), res);
+                logger.error(new Error('选择类型不合法！'));
+                throw new Error('选择类型不合法！');
+                return;
             }
             return {type: type, index: index};
         };
@@ -38,7 +40,11 @@ var DiplomaController = {
                 teacherId: req.userIds.teacherId,
                 kind: valid.index
             }, function (err, result) {
-                diplomaController.errorHandler(err, res);
+                if(err){
+                    logger.error(err);
+                    throw err;
+                    return;
+                }
                 res.render(diplomaController.getView('diploma'), {
                     title: valid.type,
                     userIds: req.userIds,
@@ -70,7 +76,9 @@ var DiplomaController = {
             diplomaController.formParse(req, res, 'diploma', function (fields, files, uploadPath) {
                     var isValid = diplomaController.validateParams(fields);
                     if (!isValid) {
-                        diplomaController.errorHandler(new Error('证书属性填写有误！'), res, true);
+                        logger.error(new Error('证书属性填写有误！'));
+                        throw new Error('证书属性填写有误！');
+                        return;
                     }
                     fs.rename(files.fulAvatar.path, uploadPath, function (err) {
                         oss.putObject(
@@ -78,7 +86,11 @@ var DiplomaController = {
                                 key: uploadPath
                             },
                             function (err, data) {
-                                diplomaController.errorHandler(err, res, true);
+                                if(err){
+                                    logger.error(err);
+                                    throw err;
+                                    return;
+                                }
                                 var source = {
                                     teacherId: fields.teacherId,
                                     number: fields.number,
@@ -98,7 +110,11 @@ var DiplomaController = {
                                     source.diplomaName = fields.diplomaName;
                                 }
                                 teacherModel.saveDiploma(source, function (err, result) {
-                                    diplomaController.errorHandler(err, res, true);
+                                    if(err){
+                                        logger.error(err);
+                                        throw err;
+                                        return;
+                                    }
                                     res.json({
                                         success: true,
                                         message: "操作成功！"
@@ -127,10 +143,18 @@ var DiplomaController = {
                 });
             };
             var callback = function (err, result, inMem) {
-                diplomaController.errorHandler(err, res);
+                if(err){
+                    logger.error(err);
+                    throw err;
+                    return;
+                }
                 if (!inMem) {
                     memCache.putObject('DIPLOMA_SUB_TYPE_' + valid.type, result, expireTime, function (err) {
-                        diplomaController.errorHandler(err, res);
+                        if(err){
+                            logger.error(err);
+                            throw err;
+                            return;
+                        }
                         renderView(result);
                     });
                 } else {
@@ -140,7 +164,11 @@ var DiplomaController = {
 
             memCache.getObject('DIPLOMA_SUB_TYPE_' + valid.type, function (err, data) {
                 logger.debug(err, data);
-                diplomaController.errorHandler(err, res);
+                if(err){
+                    logger.error(err);
+                    throw err;
+                    return;
+                }
                 if (data) {
                     callback(null, data, true);
                 } else {
@@ -168,7 +196,11 @@ var DiplomaController = {
             teacherModel.deleteDiplomaById({
                 diplomaId: req.body.diplomaId
             }, function (err, result) {
-                diplomaController.errorHandler(err, res, true);
+                if(err){
+                    logger.error(err);
+                    throw err;
+                    return;
+                }
                 res.json({success: true, message: "操作成功！"});
             });
         };
