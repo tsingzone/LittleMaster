@@ -65,5 +65,9 @@ _.extend(company.prototype, {
                 break;
         }
         DBUtils.getDBConnection().query(sql, [], callback);
+    },
+    isSign: function(conditions,callback) {
+        var sql = "select id from teacher_sign where status = 1 and job_id = ? and teacher_id = ?";
+        DBUtils.getDBConnection().query(sql, conditions, callback);
     }
 });

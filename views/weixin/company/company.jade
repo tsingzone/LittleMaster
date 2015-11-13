@@ -115,7 +115,8 @@ block script
                 sessionStorage.setItem('city', "北京市");
                 sessionStorage.setItem('cityCode', 110100);
             }
-            sessionStorage.setItem('openId','#{openId}');
+            sessionStorage.setItem('openId','#{userIds.openId}');
+            sessionStorage.setItem('teacherId','#{userIds.teacherId}');
             getJobList();
             new Kalendae(document.getElementById("calendar"), {
                 months:1,
@@ -230,5 +231,18 @@ block script
 
         });
         $(document).on("click",".job",function() {
-            location.href = "company/profile?jobId=" + $(this).attr("job-id");
+            var jobId = $(this).attr("job-id");
+            $.ajax({
+                url : "company/isSign",
+                type: "get",
+                dataType : "json",
+                data : {jobId:jobId,teacherId:sessionStorage.getItem('teacherId')},
+                success : function(sign) {
+                    if(sign.length > 0) {
+                        window.location.href = "/weixin/company/schedule?jobId=" + jobId;
+                    } else {
+                        location.href = "company/profile?jobId=" + jobId;
+                    }
+                }
+            });
         });

@@ -1,0 +1,163 @@
+[2015-11-12 11:13:42.601] [DEBUG] configs - config:{"dbconfig":{"host":"localhost","user":"root","password":"123456","database":"LittleMaster"},"dbconfigslave":{"host":"localhost","user":"root","password":"","database":"LittleMaster"},"ossconfig":{"accessKeyId":"AYHqWkRssXm6pqCv","secretAccessKey":"QRTLrPqWDrqPgoNErniALChTZ1DuGL","bucketName":"little-master-test","endpoint":"http://oss-cn-hangzhou.aliyuncs.com","apiVersion":"2013-10-15"},"weixinconfig":{"appId":"wxbd6f3476bedbb55f","appSecret":"a8d342199c246fbaac755c7c47ea5041","token":"TsingZone2015"},"memcachedconfig":{"server1":{"keyPrefix":"LittleMaster_","server":"127.0.0.1","port":"11211","weight":"1","options":{"maxKeySize":250,"maxExpiration":2592000,"maxValue":1048576,"poolSize":10,"reconnect":18000000,"timeout":5000,"retries":5,"retry":30000}}},"smsconfig":{"server":{"IP":"https://sandboxapp.cloopen.com","Port":"8883"},"accountSid":"8a48b5514bde8c71014be3336e8802b0","accountToken":"3104c11a2bdc400ab0039f929b098f71","appId":"aaf98f8950189e9b01504637d0d91a71","softVersion":"2013-12-26"}}
+[2015-11-12 11:13:47.755] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 11:13:47.756] [INFO] console - None
+[2015-11-12 11:13:47.756] [INFO] console - company.js /
+[2015-11-12 11:15:14.952] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 11:15:14.952] [INFO] console - None
+[2015-11-12 11:15:14.952] [INFO] console - company.js /
+[2015-11-12 11:16:48.243] [DEBUG] configs - config:{"dbconfig":{"host":"localhost","user":"root","password":"123456","database":"LittleMaster"},"dbconfigslave":{"host":"localhost","user":"root","password":"","database":"LittleMaster"},"ossconfig":{"accessKeyId":"AYHqWkRssXm6pqCv","secretAccessKey":"QRTLrPqWDrqPgoNErniALChTZ1DuGL","bucketName":"little-master-test","endpoint":"http://oss-cn-hangzhou.aliyuncs.com","apiVersion":"2013-10-15"},"weixinconfig":{"appId":"wxbd6f3476bedbb55f","appSecret":"a8d342199c246fbaac755c7c47ea5041","token":"TsingZone2015"},"memcachedconfig":{"server1":{"keyPrefix":"LittleMaster_","server":"127.0.0.1","port":"11211","weight":"1","options":{"maxKeySize":250,"maxExpiration":2592000,"maxValue":1048576,"poolSize":10,"reconnect":18000000,"timeout":5000,"retries":5,"retry":30000}}},"smsconfig":{"server":{"IP":"https://sandboxapp.cloopen.com","Port":"8883"},"accountSid":"8a48b5514bde8c71014be3336e8802b0","accountToken":"3104c11a2bdc400ab0039f929b098f71","appId":"aaf98f8950189e9b01504637d0d91a71","softVersion":"2013-12-26"}}
+[2015-11-12 11:16:49.101] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 11:16:49.101] [INFO] console - None
+[2015-11-12 11:16:49.102] [INFO] console - company.js /
+[2015-11-12 11:16:49.673] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 11:16:49.674] [INFO] console - None
+[2015-11-12 11:16:49.674] [INFO] console - company.js jobList
+[2015-11-12 11:16:49.674] [INFO] console - [ city: '北京市', type: '', area: '', time: '', sort: '' ]
+[2015-11-12 11:16:50.542] [ERROR] pro - Failed to get connection: { [Error: ER_ACCESS_DENIED_ERROR: Access denied for user 'root'@'localhost' (using password: YES)]
+  code: 'ER_ACCESS_DENIED_ERROR',
+  errno: 1045,
+  sqlState: '28000',
+  fatal: true }
+Error: ER_ACCESS_DENIED_ERROR: Access denied for user 'root'@'localhost' (using password: YES)
+    at Handshake.Sequence._packetToError (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Handshake.ErrorPacket (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\protocol\sequences\Handshake.js:101:18)
+    at Protocol._parsePacket (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\protocol\Protocol.js:274:23)
+    at Parser.write (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\Connection.js:96:28)
+    at emitOne (events.js:77:13)
+    at Socket.emit (events.js:169:7)
+    at readableAddChunk (_stream_readable.js:146:16)
+    at Socket.Readable.push (_stream_readable.js:110:10)
+    --------------------
+    at Protocol._enqueue (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at Protocol.handshake (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\protocol\Protocol.js:52:41)
+    at PoolConnection.connect (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\Connection.js:123:18)
+    at Pool.getConnection (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\Pool.js:45:23)
+    at _.extend.queryDB (c:\wamp\www\web\LittleMaster\db_handler.js:27:19)
+    at _.extend.query (c:\wamp\www\web\LittleMaster\db_handler.js:53:14)
+    at CompanyModel._.extend.getJobList (c:\wamp\www\web\LittleMaster\models\weixin\company\CompanyModel.js:67:35)
+    at CompanyController._.extend.getJobList (c:\wamp\www\web\LittleMaster\controllers\weixin\company\CompanyController.js:66:17)
+    at c:\wamp\www\web\LittleMaster\routes\weixin\company\company.js:49:23
+    at Layer.handle [as handle_request] (c:\wamp\www\web\LittleMaster\node_modules\express\lib\router\layer.js:95:5)
+[2015-11-12 11:16:50.543] [INFO] console - { [Error: ER_ACCESS_DENIED_ERROR: Access denied for user 'root'@'localhost' (using password: YES)]
+  code: 'ER_ACCESS_DENIED_ERROR',
+  errno: 1045,
+  sqlState: '28000',
+  fatal: true }
+Error: ER_ACCESS_DENIED_ERROR: Access denied for user 'root'@'localhost' (using password: YES)
+    at Handshake.Sequence._packetToError (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\protocol\sequences\Sequence.js:48:14)
+    at Handshake.ErrorPacket (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\protocol\sequences\Handshake.js:101:18)
+    at Protocol._parsePacket (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\protocol\Protocol.js:274:23)
+    at Parser.write (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\protocol\Parser.js:77:12)
+    at Protocol.write (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\protocol\Protocol.js:39:16)
+    at Socket.<anonymous> (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\Connection.js:96:28)
+    at emitOne (events.js:77:13)
+    at Socket.emit (events.js:169:7)
+    at readableAddChunk (_stream_readable.js:146:16)
+    at Socket.Readable.push (_stream_readable.js:110:10)
+    --------------------
+    at Protocol._enqueue (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\protocol\Protocol.js:135:48)
+    at Protocol.handshake (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\protocol\Protocol.js:52:41)
+    at PoolConnection.connect (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\Connection.js:123:18)
+    at Pool.getConnection (c:\wamp\www\web\LittleMaster\node_modules\mysql\lib\Pool.js:45:23)
+    at _.extend.queryDB (c:\wamp\www\web\LittleMaster\db_handler.js:27:19)
+    at _.extend.query (c:\wamp\www\web\LittleMaster\db_handler.js:53:14)
+    at CompanyModel._.extend.getJobList (c:\wamp\www\web\LittleMaster\models\weixin\company\CompanyModel.js:67:35)
+    at CompanyController._.extend.getJobList (c:\wamp\www\web\LittleMaster\controllers\weixin\company\CompanyController.js:66:17)
+    at c:\wamp\www\web\LittleMaster\routes\weixin\company\company.js:49:23
+    at Layer.handle [as handle_request] (c:\wamp\www\web\LittleMaster\node_modules\express\lib\router\layer.js:95:5)
+[2015-11-12 11:18:02.066] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 11:18:02.066] [INFO] console - None
+[2015-11-12 11:18:02.066] [INFO] console - company.js /
+[2015-11-12 11:18:02.290] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 11:18:02.291] [INFO] console - None
+[2015-11-12 11:18:02.291] [INFO] console - company.js jobList
+[2015-11-12 11:18:02.291] [INFO] console - [ city: '北京市', type: '', area: '', time: '', sort: '' ]
+[2015-11-12 12:00:19.032] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 12:00:19.032] [INFO] console - None
+[2015-11-12 12:00:19.032] [INFO] console - company.js profile
+[2015-11-12 12:00:20.429] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 12:00:21.416] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 12:00:21.424] [INFO] console - None
+[2015-11-12 12:00:21.426] [INFO] console - company.js schedule
+[2015-11-12 12:01:04.696] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 12:01:04.701] [INFO] console - None
+[2015-11-12 12:01:04.703] [INFO] console - company.js schedule
+[2015-11-12 13:31:53.019] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 13:31:53.019] [INFO] console - None
+[2015-11-12 13:31:53.020] [INFO] console - company.js profile
+[2015-11-12 13:31:57.377] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 13:32:01.418] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 13:32:01.419] [INFO] console - None
+[2015-11-12 13:32:01.419] [INFO] console - company.js schedule
+[2015-11-12 13:32:51.227] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 13:32:51.227] [INFO] console - None
+[2015-11-12 13:32:51.227] [INFO] console - company.js profile
+[2015-11-12 13:32:55.664] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 13:32:55.669] [INFO] console - None
+[2015-11-12 13:32:55.671] [INFO] console - company.js profile
+[2015-11-12 13:32:58.751] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 13:32:58.751] [INFO] console - None
+[2015-11-12 13:32:58.751] [INFO] console - company.js profile
+[2015-11-12 13:33:07.840] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 13:33:07.840] [INFO] console - None
+[2015-11-12 13:33:07.841] [INFO] console - company.js profile
+[2015-11-12 13:33:11.440] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 13:33:12.423] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 13:33:12.424] [INFO] console - None
+[2015-11-12 13:33:12.424] [INFO] console - company.js schedule
+[2015-11-12 15:19:01.628] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 15:19:01.628] [INFO] console - None
+[2015-11-12 15:19:01.629] [INFO] console - company.js profile
+[2015-11-12 15:19:04.418] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 15:19:04.418] [INFO] console - None
+[2015-11-12 15:19:04.419] [INFO] console - company.js profile
+[2015-11-12 15:34:55.713] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 15:34:57.264] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 15:34:57.265] [INFO] console - None
+[2015-11-12 15:34:57.265] [INFO] console - company.js schedule
+[2015-11-12 15:56:06.883] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 15:56:07.488] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 15:56:07.489] [INFO] console - None
+[2015-11-12 15:56:07.489] [INFO] console - company.js schedule
+[2015-11-12 15:56:16.743] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 15:56:16.745] [INFO] console - None
+[2015-11-12 15:56:16.748] [INFO] console - company.js schedule
+[2015-11-12 19:04:33.284] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:05:30.701] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:05:30.702] [INFO] console - None
+[2015-11-12 19:05:30.702] [INFO] console - company.js profile
+[2015-11-12 19:05:33.373] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:05:33.997] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:05:33.997] [INFO] console - None
+[2015-11-12 19:05:33.997] [INFO] console - company.js schedule
+[2015-11-12 19:06:48.332] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:06:48.333] [INFO] console - None
+[2015-11-12 19:06:48.334] [INFO] console - company.js profile
+[2015-11-12 19:09:29.565] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:09:29.565] [INFO] console - None
+[2015-11-12 19:09:29.565] [INFO] console - company.js profile
+[2015-11-12 19:10:53.501] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:11:00.270] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:11:00.270] [INFO] console - None
+[2015-11-12 19:11:00.272] [INFO] console - company.js schedule
+[2015-11-12 19:11:57.734] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:12:01.545] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:12:02.086] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:12:02.086] [INFO] console - None
+[2015-11-12 19:12:02.086] [INFO] console - company.js schedule
+[2015-11-12 19:12:11.861] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:12:12.808] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:12:12.809] [INFO] console - None
+[2015-11-12 19:12:12.810] [INFO] console - company.js schedule
+[2015-11-12 19:12:35.804] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:12:35.804] [INFO] console - None
+[2015-11-12 19:12:35.804] [INFO] console - company.js profile
+[2015-11-12 19:12:37.982] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:12:39.071] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:12:39.071] [INFO] console - None
+[2015-11-12 19:12:39.071] [INFO] console - company.js schedule
+[2015-11-12 19:13:00.437] [DEBUG] weixin - ------ 点击页面链接 -------
+[2015-11-12 19:13:00.437] [INFO] console - None
+[2015-11-12 19:13:00.437] [INFO] console - company.js profile
