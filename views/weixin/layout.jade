@@ -30,14 +30,6 @@ html
             #footer
                 #find_job.footer 找兼职
                 #personal_center.footer 个人中心
-
-        script.
-            $(document).on('click', '#find_job', function () {
-                window.location.href = '/weixin/company?openId=#{userIds.openId}';
-            });
-            $(document).on('click', '#personal_center', function () {
-                window.location.href = '/weixin/teacher?openId=#{userIds.openId}';
-            });
         block script
 
 

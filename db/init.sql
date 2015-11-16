@@ -59,8 +59,8 @@ CREATE TABLE `company_job` (
   `gender` tinyint(1) NOT NULL COMMENT '性别要求，0表示男性，1表示女性，2表示不限',
   `hire_count` int(11) NOT NULL COMMENT '招聘人数',
   `settlement_id` int(11) NOT NULL COMMENT '结算方式',
-  `sallary` decimal(10,2) NOT NULL COMMENT '薪资待遇金额',
-  `sallary_type` int(11) NOT NULL COMMENT '薪资待遇方式id',
+  `salary` decimal(10,2) NOT NULL COMMENT '薪资待遇金额',
+  `salary_type` int(11) NOT NULL COMMENT '薪资待遇方式id',
   `start_time` datetime NOT NULL COMMENT '工作开始日期',
   `end_time` datetime NOT NULL COMMENT '工作结束日期',
   `expire_time` datetime NOT NULL COMMENT '报名截止日期',
@@ -239,10 +239,10 @@ COMMIT;
 
 
 -- ----------------------------
---  Table structure for `sys_sallary_type`
+--  Table structure for `sys_salary_type`
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_sallary_type`;
-CREATE TABLE `sys_sallary_type` (
+DROP TABLE IF EXISTS `sys_salary_type`;
+CREATE TABLE `sys_salary_type` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL COMMENT '名称',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '使用状态，-1表示删除，1表示使用',
@@ -250,10 +250,10 @@ CREATE TABLE `sys_sallary_type` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
---  Records of `sys_sallary_type`
+--  Records of `sys_salary_type`
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_sallary_type` VALUES ('0', '面议', '1'), ('1', '元/时', '1'), ('2', '元/天', '1'), ('3', '元/周', '1'), ('4', '元/月', '1'), ('5', '元/次', '1');
+INSERT INTO `sys_salary_type` VALUES ('0', '面议', '1'), ('1', '元/时', '1'), ('2', '元/天', '1'), ('3', '元/周', '1'), ('4', '元/月', '1'), ('5', '元/次', '1');
 COMMIT;
 
 -- ----------------------------

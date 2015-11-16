@@ -4,8 +4,22 @@
 extends ./parent
 
 block style
-    script(src='/plugins/kalendae/kalendae.standalone.js')
-    link(rel='stylesheet' href='/plugins/kalendae/kalendae.css')
+    //script(src='/plugins/kalendae/kalendae.standalone.js')
+    //link(rel='stylesheet' href='/plugins/kalendae/kalendae.css')
+
+    script(src="/plugins/MobiScroll/jquery-1.9.1.js")
+    script(src="/plugins/MobiScroll/js/mobiscroll.core-2.5.2.js" type="text/javascript")
+    script(src="/plugins/MobiScroll/js/mobiscroll.core-2.5.2-zh.js" type="text/javascript")
+
+    link(href="/plugins/MobiScroll/css/mobiscroll.core-2.5.2.css" rel="stylesheet" type="text/css")
+    link(href="/plugins/MobiScroll/css/mobiscroll.animation-2.5.2.css" rel="stylesheet" type="text/css")
+    script(src="/plugins/MobiScroll/js/mobiscroll.datetime-2.5.1.js" type="text/javascript")
+    script(src="/plugins/MobiScroll/js/mobiscroll.datetime-2.5.1-zh.js" type="text/javascript")
+
+    <!-- S 可根据自己喜好引入样式风格文件 -->
+    script(src="/plugins/MobiScroll/js/mobiscroll.android-ics-2.5.2.js" type="text/javascript")
+    link(href="/plugins/MobiScroll/css/mobiscroll.android-ics-2.5.2.css" rel="stylesheet" type="text/css")
+    <!-- E 可根据自己喜好引入样式风格文件 -->
 
 block header-back
     img#back(src="/images/left-arrow.png")
@@ -49,7 +63,7 @@ block content
             label(for="female") 女
         div.indent
             span.show-text 生日
-            input#birthday(type="text", placeholder="", name="birthday", value="#{profile ? profile['birthday'] : ''}", data-kal='format:"YYYY-MM-DD"').no-border.auto-kal
+            input#birthday(type="text", placeholder="", name="birthday", value="#{profile ? profile['birthday'] : ''}").no-border
     #teacher_diploma
         div.line-header
             span.vertical-line
@@ -85,7 +99,7 @@ block content
                 img(src="/images/right-arrow.png" alt=">")
         div.indent
             span.show-text 时间
-            input#entryYear.no-border(type="text", name="entryYear", placeholder="", min="1900", max="2999" value="#{profile ? profile['entryYear'] : ''}" data-kal='format:"YYYY-MM-DD"').no-border.auto-kal
+            input#entryYear.no-border(type="text", name="entryYear", placeholder="").no-border
     #other_diploma
         div.line-header
             span.vertical-line
@@ -137,6 +151,25 @@ block content
 
 block script
     script.
+        $(function () {
+            var now = new Date();
+            var currYear = now.getFullYear();
+            var opt = {};
+            opt.date = {preset: 'date'};
+            opt.default = {
+                theme: 'android-ics light', //皮肤样式
+                display: 'modal', //显示方式
+                mode: 'scoller', //日期选择模式
+                lang: 'zh',
+                startYear: currYear - 50, //开始年份
+                endYear: currYear //结束年份
+            };
+
+            $("#birthday").val('#{profile ? profile["birthday"] : '+now+'}').scroller().scroller($.extend(opt['date'], opt['default']));
+            $("#entryYear").val('#{profile ? profile["entryYear"] : '+now+'}').scroller().scroller($.extend(opt['date'], opt['default']));
+
+        });
+
         $(function () {
             $('#name').change(function () {
                 sessionStorage.setItem('profileName', $('#name').val());

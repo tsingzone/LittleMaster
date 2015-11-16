@@ -35,6 +35,15 @@ block content
 block script
     script.
         $(function () {
+            $('#find_job').click(function () {
+                window.location.href = '/weixin/company?openId=#{userIds.openId}';
+            });
+            $('#personal_center').click(function () {
+                //window.location.href = '/weixin/teacher?openId=#{userIds.openId}';
+            });
+        });
+    script.
+        $(function () {
             $('#personal_center').addClass('current');
 
             // 跳转到我的简历页面
