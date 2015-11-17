@@ -99,9 +99,17 @@ block script
         });
         $("#message_done").click(function() {
             if(profile) {
-                // window.location.href = "/weixin/company/deliver?openId=" + sessionStorage.getItem('openId')
-                //    + "&jobId=" + $("#registration").attr("job-id");
-                window.location.href = "/weixin/company/schedule";
+                $.ajax({
+                    url : "/weixin/company/insertSign",
+                    type : "get",
+                    dataType : "json",
+                    data : {teacherId : sessionStorage.getItem('teacherId'),jobId : $("#registration").attr("job-id")},
+                    success : function(data) {
+                        alert('报名成功');
+                        window.location.href = "/weixin/company/schedule?sign=1&teacherId=" + sessionStorage.getItem('teacherId')
+                            + "&jobId=" + $("#registration").attr("job-id");
+                    }
+                });
             } else {
                 window.location.href = "/weixin/teacher/profile?openId=" + sessionStorage.getItem('openId');
             }

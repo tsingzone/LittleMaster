@@ -3,8 +3,7 @@
 
 extends ../layout
 block style
-    link(rel='stylesheet', href='/plugins/kalendae/kalendae.css')
-    script(src='/plugins/kalendae/kalendae.standalone.js')
+
 block header-back
     img#dingwei(src='/images/dingwei.png')
     | 北京市
@@ -28,13 +27,6 @@ block content
             .text 排序
             .dropDown
     #job_list
-        .job
-            .job_type 批改
-            .job_content
-                .job_time 工作日期: 09/14-09/30
-                .job_title 招小学作文批改兼职老师
-                .job_others 网络 不限性别 月结
-                    .job_price 150元/天
     #list
     #calendar
     #mask_job
@@ -72,7 +64,7 @@ block script
                 url:"/weixin/company/jobList",
                 type:"get",
                 dataType:"json",
-                data:{city: city,type : type,area : area,time : time,sort : sort},
+                data:{city: city,type : type,area: area,time: time,sort: sort},
                 success:function(jobList) {
                     var str = "";
                     if(jobList.length > 0) {
@@ -100,7 +92,7 @@ block script
                              str += jobList[i]['salaryName'] + "</div></div></div></div>"
                         }
                     } else {
-                        str = "<div>暂无符合条件的兼职</div>";
+                        str = "<div class='no-result'>暂无符合条件的兼职</div>";
                     }
                     $("#job_list").html(str);
                 }
@@ -118,10 +110,6 @@ block script
             sessionStorage.setItem('openId','#{userIds.openId}');
             sessionStorage.setItem('teacherId','#{userIds.teacherId}');
             getJobList();
-            new Kalendae(document.getElementById("calendar"), {
-                months:1,
-                mode:'multiple'
-            });
         });
         $("#header-back,#screening span").click(function() {
             $("#list").html('');
@@ -147,9 +135,7 @@ block script
                     $(this).addClass("cur");
                     switch (item) {
                         case "time":
-                            $("#calendar").css("left",($(window).width() - $("#calendar").width())/2 + 'px');
-                            $("#calendar").css("top",($(window).height() - $("#calendar").height())/2 + 'px');
-                            $("#calendar").show();
+
                             break;
                         case "sort":
                             var str = "";
@@ -158,13 +144,8 @@ block script
                                 + "<div class='list'>日结优先</div>"
                                 + "<div class='list'>周末优先</div>";
                             $("#list").html(str);
+                            $("#list").attr("item",'sort');
                             $("#list").show();
-                            $(document).on("click",".list",function() {
-                                $(".list").removeClass("cur");
-                                $(this).addClass("cur");
-                                sessionStorage.setItem('sort',$(this).html());
-                                getJobList();
-                            });
                             break;
                         case "type":
                             $.ajax({
@@ -179,13 +160,8 @@ block script
                                     $("#list").html(str);
                                 }
                             });
+                            $("#list").attr("item",'type');
                             $("#list").show();
-                            $(document).on("click",".list",function() {
-                                $(".list").removeClass("cur");
-                                $(this).addClass("cur");
-                                sessionStorage.setItem('type',$(this).attr("typeId"));
-                                getJobList();
-                            });
                             break;
                         case "area":
                             var cityCode = sessionStorage.getItem('cityCode');
@@ -202,13 +178,9 @@ block script
                                     $("#list").html(str);
                                 }
                             });
+                            $("#list").attr("item",'area');
                             $("#list").show();
-                            $(document).on("click",".list",function() {
-                                $(".list").removeClass("cur");
-                                $(this).addClass("cur");
-                                sessionStorage.setItem('area',$(this).html());
-                                getJobList();
-                            });
+
                             break;
                     }
                 }
@@ -245,4 +217,23 @@ block script
                     }
                 }
             });
+        });
+        $(document).on("click",".list",function() {
+            $(".list").removeClass("cur");
+            $(this).addClass("cur");
+            switch ($("#list").attr("item")) {
+                case 'type':
+                    sessionStorage.setItem('type',$(this).attr("typeId"));
+                    break;
+                case 'area':
+                    sessionStorage.setItem('area',$(this).html());
+                    break;
+                case 'sort':
+                    sessionStorage.setItem('sort',$(this).html());
+                    break;
+            }
+            getJobList();
+        });
+        $(document).on('click', '#personal_center', function () {
+            window.location.href = '/weixin/teacher?openId=#{userIds.openId}';
         });

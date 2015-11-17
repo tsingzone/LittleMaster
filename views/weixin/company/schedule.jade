@@ -27,3 +27,10 @@ block script
             var jobId = $(this).attr("job-id");
             location.href = "profile?sign=1&jobId=" + jobId;
         });
+        $(document).on('click', '#back', function () {
+            if($_GET['sign'] == 1) {
+                location.href = "/weixin/company";
+            } else {
+                history.go(-1)
+            }
+        });

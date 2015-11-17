@@ -72,6 +72,18 @@ _.extend(company.prototype, {
             res.json(result);
         });
     },
+    insertSign:function(req,res) {
+        var conditions = [];
+        conditions['jobId'] = req.query.jobId;
+        conditions['teacherId'] = req.query.teacherId;
+        Company.insertSign(conditions, function (err, result) {
+            if(err) {
+                console.log(err);
+                res.status(404);
+            }
+            res.json(result);
+        });
+    },
     isSign:function(req,res) {
         var conditions = [];
         conditions[0] = req.query.jobId;

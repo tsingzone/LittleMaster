@@ -48,6 +48,11 @@ router.get('/jobList', function (req, res) {
     companyController.getJobList(req, res);
 });
 
+router.get('/insertSign', function (req, res) {
+    console.log("company.js insertSign");
+    companyController.insertSign(req, res);
+});
+
 router.get('/schedule', function (req, res) {
     console.log("company.js schedule");
     res.render(getView('schedule'));

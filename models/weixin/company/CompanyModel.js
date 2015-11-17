@@ -66,8 +66,16 @@ _.extend(company.prototype, {
         }
         DBUtils.getDBConnection().query(sql, [], callback);
     },
+    //添加报名记录
+    insertSign: function(conditions,callback) {
+        console.log(conditions);
+        var sql = "insert into teacher_sign(job_id,teacher_id,add_time,progress,status) values(" + conditions['jobId']
+            +"," + conditions['teacherId'] + ",now(),1,1)";
+        DBUtils.getDBConnection().query(sql, [], callback);
+    },
+    //查询是否已报名
     isSign: function(conditions,callback) {
-        var sql = "select id from teacher_sign where status = 1 and job_id = ? and teacher_id = ?";
+        var sql = "select id from teacher_sign where status = 1 and job_id = ? and teacher_id = ? and progress > 0";
         DBUtils.getDBConnection().query(sql, conditions, callback);
     }
 });
