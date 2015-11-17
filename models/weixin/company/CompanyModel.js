@@ -73,6 +73,12 @@ _.extend(company.prototype, {
             +"," + conditions['teacherId'] + ",now(),1,1)";
         DBUtils.getDBConnection().query(sql, [], callback);
     },
+    //更改收藏表中的报名状态
+    updateCollection: function(conditions,callback) {
+        var sql = "update teacher_collection set status = 0 where job_id = " + conditions['jobId']
+            +"and teacher_id" + conditions['teacherId'];
+        DBUtils.getDBConnection().query(sql, [], callback);
+    },
     //查询是否已报名
     isSign: function(conditions,callback) {
         var sql = "select id from teacher_sign where status = 1 and job_id = ? and teacher_id = ? and progress > 0";

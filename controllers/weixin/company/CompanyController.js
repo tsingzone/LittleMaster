@@ -76,12 +76,34 @@ _.extend(company.prototype, {
         var conditions = [];
         conditions['jobId'] = req.query.jobId;
         conditions['teacherId'] = req.query.teacherId;
-        Company.insertSign(conditions, function (err, result) {
-            if(err) {
-                console.log(err);
-                res.status(404);
+        async.auto({
+            insertSign: function (callback) {
+                Company.insertSign(conditions, function (err, result) {
+                    if(err) {
+                        callback(err);
+                        return;
+                    } else {
+                        callback(null, true);
+                    }
+                });
+            },
+            updateCollection: ['insertSign', function (callback, results) {
+                Company.updateCollection(conditions, function (err, result) {
+                    if(err) {
+                        callback(err);
+                        return;
+                    } else {
+                        callback(null, true);
+                    }
+                });
+            }]
+        }, function (err, results) {
+            if (err) {
+                logger.error(err);
+                throw err;
+                return;
             }
-            res.json(result);
+            res.json(results.updateCollection);
         });
     },
     isSign:function(req,res) {

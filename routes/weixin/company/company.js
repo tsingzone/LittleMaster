@@ -15,7 +15,7 @@ var getView = function (view) {
 
 router.get('/', function (req, res) {
     console.log("company.js /");
-    res.render(getView('company'), {title: "Company",userIds:{openId: 'osWbGwcT24U7YgP1AmBZc6b5Wmtg',teacherId: 1}});
+    res.render(getView('company'), {title: "Company",userIds:req.userIds});
 });
 
 router.get('/profile', function (req, res) {
