@@ -16,7 +16,7 @@ var JobController = {
          */
         jobController.getSignJobs = function (req, res) {
             teacherModel.getSignJobs({
-                teacherId: req.teacherId
+                teacherId: req.userIds.teacherId
             }, function (err, result) {
                 if(err){
                     logger.error(err);
@@ -24,7 +24,7 @@ var JobController = {
                     return;
                 }
                 res.render(jobController.getView('sign'), {
-                    jobList: result[0],
+                    jobList: result,
                     userIds: req.userIds
                 });
             });
@@ -37,7 +37,7 @@ var JobController = {
          */
         jobController.getCollectJobs = function (req, res) {
             teacherModel.getCollectJobs({
-                teacherId: req.teacherId
+                teacherId: req.userIds.teacherId
             }, function (err, result) {
                 if(err){
                     logger.error(err);
@@ -45,7 +45,7 @@ var JobController = {
                     return;
                 }
                 res.render(jobController.getView('collect'), {
-                    jobList: result[0],
+                    jobList: result,
                     userIds: req.userIds
                 });
             });
