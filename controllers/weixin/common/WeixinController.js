@@ -62,14 +62,14 @@ var WeixinController = {
 
         // 获取acces_token
         weixin.getAccessToken = function (openId, callback) {
-            memCache.getObject('WX_ACCESS_TOKEN', function (err, result) {
-                if (result) {
-                    var data = {
-                        access_token: result,
-                        openid: openId
-                    };
-                    callback(null, data);
-                } else {
+//            memCache.getObject('WX_ACCESS_TOKEN', function (err, result) {
+//                if (result) {
+//                    var data = {
+//                        access_token: result,
+//                        openid: openId
+//                    };
+//                    callback(null, data);
+//                } else {
                     var url = strReplace(urls.getAccessTokenUrl, wx_config);
                     urllib.request(url, function (err, data) {
                         if (err) {
@@ -81,12 +81,13 @@ var WeixinController = {
                             access_token: json.access_token,
                             openid: openId
                         };
-                        memCache.putObject('WX_ACCESS_TOKEN', json.access_token, 7200, function (err) {
-                            callback(null, result);
-                        });
+                        callback(null, result);
+//                        memCache.putObject('WX_ACCESS_TOKEN', json.access_token, 7200, function (err) {
+//
+//                        });
                     });
-                }
-            });
+//                }
+//            });
         };
 
         // 通过用户授权code获取access_token

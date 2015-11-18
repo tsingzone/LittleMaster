@@ -8,7 +8,11 @@ block header-back
 block header-title
     | &nbsp;
 block header-save
-    img#collection(src='/images/shoucang.png')
+    if sign != 1
+        if collection
+            img#collection.collected(src='/images/yishoucang.png')
+        else
+            img#collection(src='/images/shoucang.png')
 block content
     #pro_top
         #pro_type.job_type= profile.typeName
@@ -61,7 +65,7 @@ block content
         .pro_contents
             .pro_content_h2 工作要求
             .pro_content_pro= profile.requirement
-        -if(sign != 1)
+        if sign != 1
             #registration(job-id= profile.id) 立即报名
     #mask_profile
     #message_profile
@@ -90,9 +94,9 @@ block script
                         $("#message_title").html("请完善简历");
                         $("#message_content").html("请完善简历后再进行报名");
                     }
+                    $("#mask_profile,#message_profile").show();
                 }
             });
-            $("#mask_profile,#message_profile").show();
         });
         $("#message_cancel").click(function() {
             $("#mask_profile,#message_profile").hide();
@@ -105,7 +109,6 @@ block script
                     dataType : "json",
                     data : {teacherId : sessionStorage.getItem('teacherId'),jobId : $("#registration").attr("job-id")},
                     success : function(data) {
-                        alert('报名成功');
                         window.location.href = "/weixin/company/schedule?sign=1&teacherId=" + sessionStorage.getItem('teacherId')
                             + "&jobId=" + $("#registration").attr("job-id");
                     }
@@ -114,4 +117,30 @@ block script
                 window.location.href = "/weixin/teacher/profile?openId=" + sessionStorage.getItem('openId');
             }
             $("#mask_profile,#message_profile").hide();
+        });
+        $("#collection").click(function() {
+            var jobId = $("#registration").attr("job-id");
+            if($(this).hasClass('collected')) {
+                $.ajax({
+                    url : "/weixin/company/deleteCollection",
+                    type : "get",
+                    dataType : "json",
+                    data : {teacherId: sessionStorage.getItem('teacherId'),jobId: jobId},
+                    success : function(data) {
+                        $("#collection").removeClass('collected');
+                        $("#collection").attr('src','/images/shoucang.png')
+                    }
+                });
+            } else {
+                $.ajax({
+                    url : "/weixin/company/collection",
+                    type : "get",
+                    dataType : "json",
+                    data : {teacherId: sessionStorage.getItem('teacherId'),jobId: jobId},
+                    success : function(data) {
+                        $("#collection").addClass('collected');
+                        $("#collection").attr('src','/images/yishoucang.png')
+                    }
+                });
+            }
         });

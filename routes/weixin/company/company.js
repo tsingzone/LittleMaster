@@ -14,17 +14,14 @@ var getView = function (view) {
 
 
 router.get('/', function (req, res) {
-    console.log("company.js /");
     res.render(getView('company'), {title: "Company",userIds:req.userIds});
 });
 
 router.get('/profile', function (req, res) {
-    console.log("company.js profile");
     companyController.getProfile(req, res);
 });
 
 router.get('/city', function (req, res) {
-    console.log("company.js city");
     companyController.getCityList(req, res);
 });
 
@@ -34,33 +31,35 @@ router.get('/get', function (req, res) {
 });
 
 router.get('/type', function (req, res) {
-    console.log("company.js type");
     companyController.getTypeList(req, res);
 });
 
 router.get('/area', function (req, res) {
-    console.log("company.js area");
     companyController.getAreaList(req, res);
 });
 
 router.get('/jobList', function (req, res) {
-    console.log("company.js jobList");
     companyController.getJobList(req, res);
 });
 
 router.get('/insertSign', function (req, res) {
-    console.log("company.js insertSign");
     companyController.insertSign(req, res);
 });
 
 router.get('/schedule', function (req, res) {
-    console.log("company.js schedule");
-    res.render(getView('schedule'));
+    companyController.getSchedule(req, res);
 });
 
 router.get('/isSign', function (req, res) {
-    console.log("company.js isSign");
     companyController.isSign(req, res);
+});
+
+router.get('/collection', function (req, res) {
+    companyController.collection(req, res);
+});
+
+router.get('/deleteCollection', function (req, res) {
+    companyController.deleteCollection(req, res);
 });
 
 

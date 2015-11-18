@@ -204,16 +204,17 @@ block script
         });
         $(document).on("click",".job",function() {
             var jobId = $(this).attr("job-id");
+            var teacherId = sessionStorage.getItem('teacherId');
             $.ajax({
                 url : "company/isSign",
                 type: "get",
                 dataType : "json",
-                data : {jobId:jobId,teacherId:sessionStorage.getItem('teacherId')},
+                data : {jobId:jobId,teacherId:teacherId},
                 success : function(sign) {
                     if(sign.length > 0) {
-                        window.location.href = "/weixin/company/schedule?jobId=" + jobId;
+                        window.location.href = "/weixin/company/schedule?jobId=" + jobId + "&signId=" + sign[0].id;
                     } else {
-                        location.href = "company/profile?jobId=" + jobId;
+                        location.href = "company/profile?jobId=" + jobId + "&teacherId=" + teacherId;
                     }
                 }
             });
