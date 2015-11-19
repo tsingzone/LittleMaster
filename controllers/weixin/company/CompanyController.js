@@ -233,7 +233,10 @@ _.extend(company.prototype, {
                 throw err;
                 return;
             }
-            res.render(getView('schedule'), {job: results.getSignJob,log: results.getSignLog});
+            results.getSignJob[0].start_time = new moment(results.getSignJob[0].start_time).format('YYYY/MM/DD');
+            results.getSignJob[0].end_time = new moment(results.getSignJob[0].end_time).format('YYYY/MM/DD');
+            results.getSignJob[0].publish_time = new moment(results.getSignJob[0].publish_time).format('YYYY/MM/DD');
+            res.render(getView('schedule'), {job: results.getSignJob[0],log: results.getSignLog});
         });
     }
 });

@@ -11,13 +11,21 @@ block header-title
     | 已报名兼职
 block content
     #job_list(style='margin-top:0')
-        .job(job-id= 2)
-            .job_type 批改
+        .job(job-id= job.id)
+            .job_type= job.typeName
             .job_content
-                .job_time 工作日期: 09/14-09/30
-                .job_title 招小学作文批改兼职老师
-                .job_others 网络 不限性别 月结
-                    .job_price 150元/天
+                .job_time 工作日期: #{job.start_time}-#{job.end_time}
+                .job_title= job.title
+                .job_others #{job.address}
+                    case job.gender
+                        when 0
+                            |  男
+                        when 1
+                            |  女
+                        when 2
+                            |  不限
+                    | #{job.settlementName}
+                    .job_price #{job.salary}#{job.salaryName}
     #schedule
 
 block footer
