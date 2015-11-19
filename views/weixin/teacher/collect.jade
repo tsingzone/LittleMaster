@@ -40,11 +40,11 @@ block content
                 | 尚未收藏兼职
 block script
     script.
-        $(function(){
+        $(function () {
             sessionStorage.setItem("teacherId", "#{userIds.teacherId}");
             sessionStorage.setItem("openId", "#{userIds.openId}");
         });
-        $(document).on("click",".job",function() {
+        $(document).on("click", ".job", function () {
             var jobId = $(this).attr("job-id");
-            location.href = "/weixin/company/profile?jobId=" + jobId;
+            location.href = "/weixin/company/profile?jobId=" + jobId + "&teacherId=#{userIds.teacherId}";
         });
