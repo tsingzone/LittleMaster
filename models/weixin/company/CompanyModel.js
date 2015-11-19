@@ -69,13 +69,51 @@ _.extend(company.prototype, {
     //添加报名记录
     insertSign: function(conditions,callback) {
         console.log(conditions);
-        var sql = "insert into teacher_sign(job_id,teacher_id,add_time,progress,status) values(" + conditions['jobId']
-            +"," + conditions['teacherId'] + ",now(),1,1)";
-        DBUtils.getDBConnection().query(sql, [], callback);
+        var sql = "insert into teacher_sign(job_id,teacher_id,add_time,progress,status) values(?,?,now(),1,1)";
+        DBUtils.getDBConnection().query(sql, conditions, callback);
+    },
+    //查询是否有过收藏记录
+    selectCollectionRecord: function(conditions,callback) {
+        var sql = "select id from teacher_collection where job_id = ? and teacher_id = ?";
+        DBUtils.getDBConnection().query(sql, conditions, callback);
+    },
+    //查询是否已收藏
+    isCollection: function(conditions,callback) {
+        var sql = "select id from teacher_collection where status = 1 and job_id = ? and teacher_id = ?";
+        DBUtils.getDBConnection().query(sql, conditions, callback);
+    },
+    //添加新的收藏记录
+    insertCollection: function(conditions,callback) {
+        var sql = "insert into teacher_collection(job_id,teacher_id,add_time,status) values(?,?,now(),1)";
+        DBUtils.getDBConnection().query(sql, conditions, callback);
+    },
+    //将失效的收藏记录设置为有效
+    reviveCollection: function(conditions,callback) {
+        var sql = "update teacher_collection set status = 1 where job_id = ? and teacher_id = ?";
+        DBUtils.getDBConnection().query(sql, conditions, callback);
+    },
+    //将收藏状态设置为失效
+    deleteCollection: function(conditions,callback) {
+        var sql = "update teacher_collection set status = 0 where job_id = ? and teacher_id = ?";
+        DBUtils.getDBConnection().query(sql, conditions, callback);
     },
     //查询是否已报名
     isSign: function(conditions,callback) {
         var sql = "select id from teacher_sign where status = 1 and job_id = ? and teacher_id = ? and progress > 0";
         DBUtils.getDBConnection().query(sql, conditions, callback);
+    },
+    //获取已报名兼职信息
+    getSignJob: function(jobId,callback) {
+        var sql = "select j.id,j.start_time,j.end_time,j.title,j.address,j.gender,j.salary,j.treatment,j.position_id,p.name"
+            + " as typeName,t.name as salaryName,s.name as settlementName from company_job as j join sys_salary_type"
+            + " as t on j.salary_type = t.id join sys_position as p on j.position_id = p.id join sys_settlement as"
+            + " s on j.settlement_id = s.id where j.id = ?";
+        DBUtils.getDBConnection().query(sql, [jobId], callback);
+    },
+    //获取报名进度
+    getSignLog: function(signId,callback) {
+        var sql = "select add_time from teacher_sign_log where sign_id = ? order by status";
+        DBUtils.getDBConnection().query(sql, [signId], callback);
     }
+
 });
