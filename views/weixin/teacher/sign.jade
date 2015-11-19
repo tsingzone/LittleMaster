@@ -12,7 +12,7 @@ block content
     #job_list(style='margin-top:0;')
         if jobList
             for job in jobList
-                .job(job-id="#{job.id}")
+                .job(job-id="#{job.jobId}" sign-id="#{job.signId}")
                     .job_type
                         | #{job.position}
                     .job_content
@@ -47,5 +47,6 @@ block script
         });
         $(document).on("click",".job",function() {
             var jobId = $(this).attr("job-id");
-            location.href = "/weixin/company/schedule?jobId=" + jobId;
+            var signId = $(this).attr("sign-id");
+            location.href = "/weixin/company/schedule?jobId=" + jobId +"&signId=" + signId;
         });
