@@ -16,7 +16,7 @@ var JobModel = {
          * @param callback
          */
         jobModel.getSignJobs = function (source, callback) {
-            var sql = 'select teacher_sign.id as id, teacher_sign.teacher_id as teacherId, company_job.title as title, '
+            var sql = 'select teacher_sign.id as signId, company_job.id as jobId, teacher_sign.teacher_id as teacherId, company_job.title as title, '
                 + ' sys_position.`name` as position, company_job.start_time as startTime, company_job.end_time as endTime, '
                 + ' company_job.gender as gender, company_job.salary as salary, sys_salary_type.`name` as salaryType, '
                 + ' sys_settlement.name as settlement, company_job.address '
