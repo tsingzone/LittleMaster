@@ -236,6 +236,9 @@ _.extend(company.prototype, {
             results.getSignJob[0].start_time = new moment(results.getSignJob[0].start_time).format('YYYY/MM/DD');
             results.getSignJob[0].end_time = new moment(results.getSignJob[0].end_time).format('YYYY/MM/DD');
             results.getSignJob[0].publish_time = new moment(results.getSignJob[0].publish_time).format('YYYY/MM/DD');
+            for(var i=0;i < results.getSignLog.length;i++) {
+                results.getSignLog[i].add_time = moment(results.getSignLog[i].add_time).format('YYYY年MM月DD日 HH:mm');
+            }
             res.render(getView('schedule'), {job: results.getSignJob[0],log: results.getSignLog});
         });
     }

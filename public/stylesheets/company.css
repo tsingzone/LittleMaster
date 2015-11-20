@@ -79,7 +79,7 @@
     text-align: center;
     background: #57CBE9;
     border-radius: 5px;
-    font-size: 22px;
+    font-size: 20px;
     line-height: 60px;
     color: #FFFFFF;
     font-weight: bold;
@@ -94,17 +94,18 @@
 .job_time{
     font-size: 14px;
     color: #333;
-    margin: 6px 0;
+    margin: 10px 0;
 }
 .job_title{
     font-size: 18px;
     color: #333;
-    margin: 6px 0;
+    margin: 10px 0;
+    font-weight: bold;
 }
 .job_others{
     font-size: 12px;
     color: #A4A4A4;
-    margin: 6px 0;
+    margin: 10px 0;
 }
 .job_price{
     float: right;
@@ -275,4 +276,58 @@
     z-index: 3;
 }
 /*end 城市列表页*/
+
+/*start 报名进度页*/
+#schedule{
+    padding: 23px;
+}
+.schedule_line{
+    height: 30px;
+    width: 3px;
+    position: relative;
+    background: #dddddd;
+    left: 28px;
+}
+.schedule_icon{
+    width: 60px;
+    height: 60px;
+    border-radius: 60px;
+    background: url("../images/default-schedule.png");
+    background-size: 100% 100%;
+    display: inline-block;
+    vertical-align: middle;
+}
+.schedule_content{
+    display: inline-block;
+    margin-left: 23px;
+    vertical-align: middle;
+    line-height: 1.5em;
+    font-family: "Microsoft YaHei";
+}
+.schedule_title{
+    font-size: 16px;
+    color: #c1c1c1
+}
+.schedule_time{
+    font-size: 14px;
+    color: #c1c1c1;
+}
+.schedule_complete .schedule_icon{
+    background: url("../images/complete-schedule.png");
+    background-size: 100% 100%;
+}
+.schedule_wait .schedule_icon{
+    background: url("../images/wait-schedule.png");
+    background-size: 100% 100%;
+}
+.schedule_complete .schedule_title{
+   color: #56CDB8;
+}
+.schedule_wait .schedule_title{
+    color: #FEA546;
+}
+.schedule_complete .schedule_line{
+    background: #56CDB8;
+}
+/*end 报名进度页*/
 

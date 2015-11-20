@@ -23,10 +23,99 @@ block content
                         when 1
                             |  女
                         when 2
-                            |  不限
-                    | #{job.settlementName}
+                            |  性别不限
+                    |  #{job.settlementName}
                     .job_price #{job.salary}#{job.salaryName}
     #schedule
+        .schedule_complete
+            .schedule_icon
+            .schedule_content
+                .schedule_title 简历投递成功
+                .schedule_time= log[0].add_time
+        if 2 <= log.length
+            .schedule_complete
+                .schedule_line
+                .schedule_icon
+                .schedule_content
+                    .schedule_title 商家已查看简历
+                    .schedule_time= log[1].add_time
+        else if 2 == log.length + 1
+            .schedule_wait
+                .schedule_line
+                .schedule_icon
+                .schedule_content
+                    .schedule_title 等待商家查看简历
+                    .schedule_time ----------
+        else
+            .schedule_default
+                .schedule_line
+                .schedule_icon
+                .schedule_content
+                    .schedule_title 等待商家查看简历
+                    .schedule_time ----------
+        if 3 <= log.length
+            .schedule_complete
+                .schedule_line
+                .schedule_icon
+                .schedule_content
+                    .schedule_title 商家已联系
+                    .schedule_time= log[2].add_time
+        else if 3 == log.length + 1
+            .schedule_wait
+                .schedule_line
+                .schedule_icon
+                .schedule_content
+                    .schedule_title 等待商家联系
+                    .schedule_time ----------
+        else
+            .schedule_default
+                .schedule_line
+                .schedule_icon
+                .schedule_content
+                    .schedule_title 等待商家联系
+                    .schedule_time ----------
+        if 4 <= log.length
+            .schedule_complete
+                .schedule_line
+                .schedule_icon
+                .schedule_content
+                    .schedule_title 资质审核通过
+                    .schedule_time= log[3].add_time
+        else if 4 == log.length + 1
+            .schedule_wait
+                .schedule_line
+                .schedule_icon
+                .schedule_content
+                    .schedule_title 等待资质审核
+                    .schedule_time ----------
+        else
+            .schedule_default
+                .schedule_line
+                .schedule_icon
+                .schedule_content
+                    .schedule_title 等待资质审核
+                    .schedule_time ----------
+        if 5 <= log.length
+            .schedule_complete
+                .schedule_line
+                .schedule_icon
+                .schedule_content
+                    .schedule_title 已录用
+                    .schedule_time= log[4].add_time
+        else if 5 == log.length + 1
+            .schedule_wait
+                .schedule_line
+                .schedule_icon
+                .schedule_content
+                    .schedule_title 等待录用
+                    .schedule_time ----------
+        else
+            .schedule_default
+                .schedule_line
+                .schedule_icon
+                .schedule_content
+                    .schedule_title 等待录用
+                    .schedule_time ----------
 
 block footer
 block script
