@@ -19,7 +19,7 @@ block content
             .text 地区
             .dropDown
             .vertical
-        span#time
+        span#time(name)
             .text 时间
             .dropDown
             .vertical
@@ -28,7 +28,7 @@ block content
             .dropDown
     #job_list
     #list
-    #calendar
+    input#inputTime
     #mask_job
 
 
@@ -37,7 +37,6 @@ block script
         var checked = false;
         function getJobList() {
             $("#mask_job,#list").hide();
-            $("#calendar").hide();
             $("#screening span").removeClass("cur");
             if(sessionStorage.getItem('type')) {
                 var type = sessionStorage.getItem('type');
@@ -99,6 +98,20 @@ block script
             });
         }
         $(function() {
+            var now = new Date();
+            var currYear = now.getFullYear();
+            var opt = {};
+            opt.date = {preset: 'date'};
+            opt.default = {
+                theme: 'android-ics light', //皮肤样式
+                display: 'modal', //显示方式
+                mode: 'scoller', //日期选择模式
+                lang: 'zh',
+                startYear: currYear - 10, //开始年份
+                endYear: currYear + 1//结束年份
+            };
+            $("#inputTime").val('').scroller().scroller($.extend(opt['date'], opt['default']));
+
             $('#find_job').addClass('current');
             if(sessionStorage.getItem('cityCode')) {
                 $("#header-back").html("<img id='dingwei' src='/images/dingwei.png'/>" + sessionStorage.getItem('city'));
@@ -111,18 +124,16 @@ block script
             sessionStorage.setItem('teacherId','#{userIds.teacherId}');
             getJobList();
         });
-        $("#header-back,#screening span").click(function() {
+        $("#header-back,#type,#area,#sort").click(function() {
             $("#list").html('');
             if($(".cur").attr("id") != $(this).attr("id")) {
                 checked = false;
                 $("#list").hide();
                 $("#mask_job").hide();
-                $("#calendar").hide();
             }
             if (checked) {
                 $("#mask_job").hide();
                 $("#list").hide();
-                $("#calendar").hide();
                 $("#screening span").removeClass("cur");
                 checked = false;
             } else {
@@ -134,9 +145,6 @@ block script
                     $("#screening span").removeClass("cur");
                     $(this).addClass("cur");
                     switch (item) {
-                        case "time":
-
-                            break;
                         case "sort":
                             var str = "";
                             str += "<div class='list'>最新发布</div>"
@@ -190,17 +198,8 @@ block script
         $("#mask_job").click(function() {
             $(this).hide();
             $("#list").hide();
-            $("#calendar").hide();
             $("#screening span").removeClass("cur");
             checked = false;
-        });
-        $(".list").click(function() {
-            var city = $("#header-back").html();
-            var type = $("#type").html();
-            var area = $("#area").html();
-            var time = $("#time").html();
-            var sort = $("#sort").html();
-
         });
         $(document).on("click",".job",function() {
             var jobId = $(this).attr("job-id");
@@ -234,6 +233,18 @@ block script
                     break;
             }
             getJobList();
+        });
+        $(document).on("change","#inputTime",function() {
+            var str = $(this).val();
+            var date = $(this).val() + ' 00:00:00'
+              // str = str.replace(/-/g,"/");
+              // var date = new Date(str);
+            sessionStorage.setItem('time',date);
+            getJobList();
+        });
+        $(document).on("click","#time",function() {
+            $("#mask_job").hide();
+            $("#inputTime").focus();
         });
         $(document).on('click', '#personal_center', function () {
             window.location.href = '/weixin/teacher?openId=#{userIds.openId}';

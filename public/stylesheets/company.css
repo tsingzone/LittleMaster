@@ -5,10 +5,11 @@
 .cur .dropDown{
     background-image: url(../images/dd2.png);
 }
-#calendar{
-    display: none;
-    position: fixed;
-    z-index: 3;
+#inputTime{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
 }
 #screening{
     width: 100%;

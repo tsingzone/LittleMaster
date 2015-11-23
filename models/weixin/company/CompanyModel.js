@@ -51,7 +51,7 @@ _.extend(company.prototype, {
             sql += " and area = '" + conditions['area'] + "'";
         }
         if(conditions['time']) {
-            sql += " and start_time < " + conditions['time'] + "and end_time > " + conditions['time'];
+            sql += " and start_time <= '" + conditions['time'] + "' and end_time >= '" + conditions['time'] +"'";
         }
         switch (conditions['sort']) {
             case "最新发布":
