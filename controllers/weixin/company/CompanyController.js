@@ -99,6 +99,10 @@ _.extend(company.prototype, {
                 console.log(err);
                 res.status(404);
             }
+            for(var i = 0;i < result.length;i++) {
+                result[i].start_time = new moment(result[i].start_time).format('YYYY/MM/DD');
+                result[i].end_time = new moment(result[i].end_time).format('YYYY/MM/DD');
+            }
             res.json(result);
         });
     },

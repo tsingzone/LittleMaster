@@ -70,8 +70,7 @@ block script
                         for(var i = 0;i < jobList.length;i++) {
                              str += "<div class='job' job-id='" + jobList[i]['id'] + "'><div class='job_type'>"
                              + jobList[i]['typeName'] + "</div><div class='job_content'><div class='job_time'>工作日期："
-                             + jobList[i]['start_time'].substring(0,10).replace(/-/g,"/") + "-"
-                             + jobList[i]['end_time'].substring(0,10).replace(/-/g,"/")
+                             + jobList[i]['start_time'] + "-" + jobList[i]['end_time']
                              + "</div><div class='job_title'>" + jobList[i]['title'] + "</div><div class='job_others'>"
                              + jobList[i]['address'] + " ";
                              switch (jobList[i]['gender']) {
@@ -148,9 +147,7 @@ block script
                         case "sort":
                             var str = "";
                             str += "<div class='list'>最新发布</div>"
-                                + "<div class='list'>高价优先</div>"
-                                + "<div class='list'>日结优先</div>"
-                                + "<div class='list'>周末优先</div>";
+                                + "<div class='list'>日结优先</div>";
                             $("#list").html(str);
                             $("#list").attr("item",'sort');
                             $("#list").show();
