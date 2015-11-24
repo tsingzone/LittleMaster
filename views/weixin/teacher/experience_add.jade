@@ -3,10 +3,6 @@
 
 extends ./parent.jade
 
-block style
-    script(src='/plugins/kalendae/kalendae.standalone.js')
-    link(rel='stylesheet' href='/plugins/kalendae/kalendae.css')
-
 block header-title
     | 添加经历
 
@@ -17,9 +13,9 @@ block content
         input#name(type="text").name
     div.add-line
         span.show-text 在职时间
-        input#startTime(type="text", data-kal='format:"YYYY-MM-DD"').date.auto-kal
+        input#startTime(type="text").date
         | &nbsp;&nbsp;-&nbsp;&nbsp;
-        input#endTime(type="text", data-kal='format:"YYYY-MM-DD"').date.auto-kal
+        input#endTime(type="text").date
     div.textarea
         span.show-text 工作描述（至少15字）
         textarea#description(placeholder="简要描述工作内容")
@@ -31,6 +27,22 @@ block content
 block script
     script.
         $(function () {
+            var now = new Date();
+            var currYear = now.getFullYear();
+            var opt = {};
+            opt.date = {preset: 'date'};
+            opt.default = {
+                theme: 'android-ics light', //皮肤样式
+                display: 'modal', //显示方式
+                mode: 'scoller', //日期选择模式
+                lang: 'zh',
+                startYear: currYear - 20, //开始年份
+                endYear: currYear //结束年份
+            };
+
+            $("#startTime").val('').scroller().scroller($.extend(opt['date'], opt['default']));
+            $("#endTime").val('').scroller().scroller($.extend(opt['date'], opt['default']));
+
             $('#saveExp').click(function () {
                 var name = $('#name').val();
                 var startTime = $('#startTime').val();
