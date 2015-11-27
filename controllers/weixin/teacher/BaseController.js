@@ -47,10 +47,10 @@ var BaseController = {
         baseController.formParse = function (req, res, path, callback) {
             var form = getForm(path);
             form.parse(req, function (err, fields, files) {
-                baseController.errorHandler(err, res, true);
+                // baseController.errorHandler(err, res, true);
                 var extName = getExtName(files.fulAvatar.type);  //后缀名
                 if (!extName) {
-                    baseController.errorHandler(new Error('只支持png和jpg格式图片！'), res, true);
+                    // baseController.errorHandler(new Error('只支持png和jpg格式图片！'), res, true);
                 }
                 var fileName = fields.teacherId + '-' + new Date().getTime() + '.' + extName;
                 var filePath = form.uploadDir + fileName;

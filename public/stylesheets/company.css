@@ -255,6 +255,10 @@
     border-right: 1px solid #919191;
     margin-right: -1px;
 }
+#message_content{
+    text-align: center;
+    line-height: 1.5em;
+}
 .message_bottom{
     display: inline-block;
     width: 50%;
